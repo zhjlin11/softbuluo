@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://soft.example.com/sitemap.xml
