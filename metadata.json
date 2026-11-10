@@ -1,6 +1,6 @@
 {
-  "name": "软件资源中心",
-  "description": "专业可信的软件下载、游戏获取与系统维护工具资源发现平台，提供官方正版渠道、详细版本更新与实用技术教程。",
+  "name": "软游部落",
+  "description": "软游部落 - 软件、游戏、电脑工具与技术教程综合资源平台，提供官方正版渠道、详细版本更新与实用技术教程。发现好软件，畅玩好游戏。",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

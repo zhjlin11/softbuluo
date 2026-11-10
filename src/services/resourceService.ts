@@ -1,202 +1,359 @@
 /**
- * 软件与系统资源服务层 (Service Layer)
- * 统一抽象数据读取、多维搜索、参数校验与空状态处理，隔离 UI 与数据层。
+ * 软游部落核心资源服务层 (Service Layer)
+ * 统一连接真实 REST API，处理数据映射、异常状态兜底与防刷打点。
  */
 
-import { categoriesData, softwareData, gamesData, tutorialsData } from '../data/seedData';
-import { Category, SoftwareItem, GameItem, TutorialItem, SearchResult } from '../types/resource';
+import {
+  Category,
+  SoftwareItem,
+  GameItem,
+  TutorialItem,
+  SearchResult,
+} from '../types/resource';
+
+const API_BASE = '/api/v1';
 
 // 允许在演示或测试环境中切换空状态
 let simulateEmptyDb = false;
-
 export const setSimulateEmptyDatabase = (val: boolean) => {
   simulateEmptyDb = val;
 };
-
 export const getSimulateEmptyDatabase = () => simulateEmptyDb;
 
 /**
- * 关键词清洗与安全规范化（限制长度、去除控制字符防注入）
+ * 首页聚合数据结构
  */
-export function sanitizeSearchQuery(query: string): string {
-  if (!query) return '';
-  return query
-    .trim()
-    .slice(0, 50)
-    .replace(/[<>'"\\;]/g, '');
+export interface HomeDataResult {
+  categories: Category[];
+  featured: SoftwareItem[];
+  popular: SoftwareItem[];
+  latest: SoftwareItem[];
+  repairTools: SoftwareItem[];
+  games: GameItem[];
+  tutorials: TutorialItem[];
 }
 
 /**
- * 软件资源多维搜索服务
- * 匹配：中文名、英文名、别名、开发者、分类名称、标签
+ * 获取首页所有核心板块数据（一次请求聚合）
+ */
+export async function getHomeData(): Promise<HomeDataResult> {
+  if (simulateEmptyDb) {
+    return {
+      categories: [],
+      featured: [],
+      popular: [],
+      latest: [],
+      repairTools: [],
+      games: [],
+      tutorials: []
+    };
+  }
+
+  const res = await fetch(`${API_BASE}/home`, {
+    headers: { 'Accept': 'application/json' },
+  });
+
+  if (!res.ok) {
+    throw new Error(`获取首页数据异常 HTTP ${res.status}`);
+  }
+
+  const json = await res.json();
+  if (!json.success) {
+    throw new Error(json.error?.message || '获取首页数据失败');
+  }
+
+  return json.data;
+}
+
+/**
+ * 单个资源独立详情获取 (按 Slug)
+ */
+export async function getResourceDetail(slug: string): Promise<{ resource: SoftwareItem & { historyVersions?: any[]; viewCount?: number }; related: SoftwareItem[] }> {
+  const res = await fetch(`${API_BASE}/resources/${encodeURIComponent(slug)}`);
+  if (!res.ok) {
+    throw new Error(res.status === 404 ? '资源不存在' : `请求失败 HTTP ${res.status}`);
+  }
+  const json = await res.json();
+  if (!json.success) {
+    throw new Error(json.error?.message || '读取资源详情失败');
+  }
+  return json.data;
+}
+
+/**
+ * 软件资源多维搜索
  */
 export async function searchResources(
   rawQuery: string,
   options?: {
     categorySlug?: string;
     limit?: number;
+    type?: string;
   }
 ): Promise<SearchResult> {
-  const query = sanitizeSearchQuery(rawQuery).toLowerCase();
-  const limit = options?.limit || 20;
-
-  if (simulateEmptyDb) {
-    return {
-      items: [],
-      total: 0,
-      query,
-      matchedCategories: [],
-    };
-  }
-
-  let results = [...softwareData];
-
-  // 分类筛选
+  const query = (rawQuery || '').trim();
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
   if (options?.categorySlug && options.categorySlug !== 'all') {
-    results = results.filter((item) => item.categorySlug === options.categorySlug);
+    params.set('categorySlug', options.categorySlug);
+  }
+  if (options?.type) params.set('type', options.type);
+  if (options?.limit) params.set('limit', options.limit.toString());
+
+  const res = await fetch(`${API_BASE}/search?${params.toString()}`);
+  if (!res.ok) {
+    throw new Error(`搜索请求失败 HTTP ${res.status}`);
+  }
+  const json = await res.json();
+  if (!json.success) {
+    throw new Error(json.error?.message || '搜索处理异常');
   }
 
-  // 关键词检索
-  if (query) {
-    results = results.filter((item) => {
-      const matchName = item.name.toLowerCase().includes(query);
-      const matchEnglish = item.englishName.toLowerCase().includes(query);
-      const matchDeveloper = item.developer.toLowerCase().includes(query);
-      const matchSummary = item.summary.toLowerCase().includes(query);
-      const matchCategory = item.categoryName.toLowerCase().includes(query);
-      const matchAliases = item.aliases.some((alias) => alias.toLowerCase().includes(query));
-      const matchTags = item.tags.some((tag) => tag.toLowerCase().includes(query));
+  return json.data;
+}
 
-      return (
-        matchName ||
-        matchEnglish ||
-        matchDeveloper ||
-        matchSummary ||
-        matchCategory ||
-        matchAliases ||
-        matchTags
-      );
-    });
-  }
+/**
+ * 实时搜索建议
+ */
+export async function getSearchSuggestions(query: string): Promise<SoftwareItem[]> {
+  if (!query || query.trim().length < 2) return [];
 
-  // 匹配的相关分类
-  const matchedCategorySlugs = new Set(results.map((i) => i.categorySlug));
-  const matchedCategories = categoriesData.filter((cat) => matchedCategorySlugs.has(cat.slug));
+  const res = await fetch(`${API_BASE}/search/suggestions?q=${encodeURIComponent(query.trim())}`);
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.success ? json.data : [];
+}
 
+/**
+ * P8.7 公开列表与栏目专用数据获取接口
+ */
+export async function getResourcesList(params?: {
+  type?: string;
+  categorySlug?: string;
+  search?: string;
+  sort?: string;
+  platform?: string;
+  license?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<{ items: SoftwareItem[]; total: number; limit: number; offset: number }> {
+  const q = new URLSearchParams();
+  if (params?.type) q.set('type', params.type);
+  if (params?.categorySlug && params.categorySlug !== 'all') q.set('categorySlug', params.categorySlug);
+  if (params?.search) q.set('search', params.search);
+  if (params?.sort) q.set('sort', params.sort);
+  if (params?.platform && params.platform !== 'all') q.set('platform', params.platform);
+  if (params?.license && params.license !== 'all') q.set('license', params.license);
+  if (params?.limit) q.set('limit', String(params.limit));
+  if (params?.offset !== undefined) q.set('offset', String(params.offset));
+
+  const res = await fetch(`${API_BASE}/resources?${q.toString()}`);
+  if (!res.ok) throw new Error(`获取资源列表失败 HTTP ${res.status}`);
+  const json = await res.json();
+  return json.data || { items: [], total: 0, limit: 20, offset: 0 };
+}
+
+export async function getCategoriesList(): Promise<Category[]> {
+  const res = await fetch(`${API_BASE}/categories`);
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.data || [];
+}
+
+export async function getTopicsList(): Promise<any[]> {
+  const res = await fetch(`${API_BASE}/topics`);
+  if (!res.ok) return [];
+  const json = await res.json();
+  return json.data || [];
+}
+
+export async function getTutorialsList(params?: { softwareId?: string; page?: number; limit?: number }): Promise<{ items: any[]; total: number; totalPages: number }> {
+  const q = new URLSearchParams();
+  if (params?.softwareId) q.set('softwareId', params.softwareId);
+  if (params?.page) q.set('page', String(params.page));
+  if (params?.limit) q.set('limit', String(params.limit));
+
+  const res = await fetch(`${API_BASE}/tutorials?${q.toString()}`);
+  if (!res.ok) return { items: [], total: 0, totalPages: 0 };
+  const json = await res.json();
   return {
-    items: results.slice(0, limit),
-    total: results.length,
-    query,
-    matchedCategories,
+    items: json.data || [],
+    total: json.pagination?.total || 0,
+    totalPages: json.pagination?.totalPages || 0,
   };
 }
 
+export async function getTutorialBySlug(slug: string): Promise<any> {
+  const res = await fetch(`${API_BASE}/tutorials/${encodeURIComponent(slug)}`);
+  if (!res.ok) throw new Error(res.status === 404 ? '教程不存在' : '加载教程失败');
+  const json = await res.json();
+  return json.data;
+}
+
+export async function getVersionUpdatesList(params?: { limit?: number; offset?: number; platform?: string }): Promise<{ items: any[]; total: number }> {
+  const q = new URLSearchParams();
+  if (params?.limit) q.set('limit', String(params.limit));
+  if (params?.offset !== undefined) q.set('offset', String(params.offset));
+  if (params?.platform && params.platform !== 'all') q.set('platform', params.platform);
+
+  const res = await fetch(`${API_BASE}/versions/feed?${q.toString()}`);
+  if (!res.ok) return { items: [], total: 0 };
+  const json = await res.json();
+  return json.data || { items: [], total: 0 };
+}
+
 /**
- * 搜索框实时联想建议 (限制 6-8 条精简结果)
+ * 记录下载事件打点
  */
-export async function getSearchSuggestions(rawQuery: string): Promise<SoftwareItem[]> {
-  const query = sanitizeSearchQuery(rawQuery).toLowerCase();
-  if (!query || query.length < 2 || simulateEmptyDb) {
-    return [];
+export async function recordDownloadClick(
+  softwareId: string,
+  sourceId: string,
+  eventType: 'OFFICIAL_LINK_CLICK' | 'HOSTED_DOWNLOAD_AUTHORIZED' = 'OFFICIAL_LINK_CLICK'
+): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/downloads/track`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        softwareId,
+        sourceId,
+        eventType,
+      }),
+    });
+  } catch (err) {
+    console.warn('下载打点上报失败 (不影响正常跳转):', err);
   }
-
-  const searchRes = await searchResources(query, { limit: 6 });
-  return searchRes.items;
 }
 
 /**
- * 获取首页 10 大核心分类
+ * =====================================
+ * 后台管理 API 封装
+ * =====================================
  */
-export async function getQuickCategories(): Promise<Category[]> {
-  if (simulateEmptyDb) return [];
-  return [...categoriesData].sort((a, b) => a.sortOrder - b.sortOrder);
+
+export async function adminLogin(identifier: string, password: string) {
+  const res = await fetch(`${API_BASE}/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ identifier, password }),
+  });
+  return res.json();
 }
 
-/**
- * 获取编辑精选软件 (8 款高质量资源)
- */
-export async function getFeaturedSoftware(): Promise<SoftwareItem[]> {
-  if (simulateEmptyDb) return [];
-  return softwareData
-    .filter((item) => item.isFeatured)
-    .sort((a, b) => (a.featuredRank ?? 99) - (b.featuredRank ?? 99))
-    .slice(0, 8);
+export async function adminGetMe() {
+  const res = await fetch(`${API_BASE}/admin/me`);
+  return res.json();
 }
 
-/**
- * 获取热门下载排行软件 (根据真实下载统计排序)
- */
-export async function getPopularSoftware(limit = 8): Promise<SoftwareItem[]> {
-  if (simulateEmptyDb) return [];
-  return [...softwareData]
-    .sort((a, b) => b.downloadCount - a.downloadCount)
-    .slice(0, limit);
+export async function adminLogout() {
+  try {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.postMessage({ type: 'PURGE_USER_DATA' });
+    }
+  } catch {}
+  const res = await fetch(`${API_BASE}/admin/logout`, { method: 'POST' });
+  return res.json();
 }
 
-/**
- * 获取最新版本更新列表 (按版本发布时间倒序)
- */
-export async function getLatestUpdates(limit = 6): Promise<SoftwareItem[]> {
-  if (simulateEmptyDb) return [];
-  return [...softwareData]
-    .sort((a, b) => {
-      const dateA = new Date(a.latestVersion.releaseDate).getTime();
-      const dateB = new Date(b.latestVersion.releaseDate).getTime();
-      return dateB - dateA;
-    })
-    .slice(0, limit);
+export async function adminGetStatistics() {
+  const res = await fetch(`${API_BASE}/admin/statistics`);
+  return res.json();
 }
 
-/**
- * 获取系统与维修工具专区数据
- * 支持按分类子标签（系统维护、硬件检测、网络工具）切换
- */
-export async function getSystemAndRepairTools(
-  tab: 'all' | 'sys-tools' | 'hardware' | 'network' = 'all'
-): Promise<SoftwareItem[]> {
-  if (simulateEmptyDb) return [];
-  const allowedCategories = ['sys-tools', 'hardware', 'network'];
-  let list = softwareData.filter((item) => allowedCategories.includes(item.categorySlug));
-
-  if (tab !== 'all') {
-    list = list.filter((item) => item.categorySlug === tab);
+export async function adminGetResources(params: Record<string, string | number>) {
+  const query = new URLSearchParams();
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== '') query.set(k, String(v));
   }
+  const res = await fetch(`${API_BASE}/admin/resources?${query.toString()}`);
+  return res.json();
+}
 
-  return list;
+export async function adminCreateResource(payload: any) {
+  const res = await fetch(`${API_BASE}/admin/resources`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+export async function adminSubmitResource(id: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/submit`, { method: 'POST' });
+  return res.json();
+}
+
+export async function adminApproveResource(id: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/approve`, { method: 'POST' });
+  return res.json();
+}
+
+export async function adminRejectResource(id: string, reason?: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/reject`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason }),
+  });
+  return res.json();
+}
+
+export async function adminArchiveResource(id: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/archive`, { method: 'POST' });
+  return res.json();
+}
+
+export async function adminToggleTestData(id: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/toggle-test-data`, { method: 'PATCH' });
+  return res.json();
+}
+
+export async function adminGetDownloadSources() {
+  const res = await fetch(`${API_BASE}/admin/download-sources`);
+  return res.json();
+}
+
+export async function adminCheckDownloadSource(url: string, sourceId?: string) {
+  const res = await fetch(`${API_BASE}/admin/download-sources/check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, sourceId }),
+  });
+  return res.json();
+}
+
+export async function adminGetCategories() {
+  const res = await fetch(`${API_BASE}/categories`);
+  return res.json();
 }
 
 /**
- * 获取正版游戏中心与开源游戏资源
+ * P6-A 增强：审核工作台与证据 API
  */
-export async function getGameResources(): Promise<GameItem[]> {
-  if (simulateEmptyDb) return [];
-  return [...gamesData];
+export async function adminGetNextPendingResource() {
+  const res = await fetch(`${API_BASE}/admin/resources/review/next-pending`);
+  return res.json();
 }
 
-/**
- * 获取实用安装与系统故障排查教程
- */
-export async function getTutorials(): Promise<TutorialItem[]> {
-  if (simulateEmptyDb) return [];
-  return [...tutorialsData];
+export async function adminGetResourceEvidences(id: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/evidences`);
+  return res.json();
 }
 
-/**
- * 根据 Slug 查询软件详情（包含版本历史与官方下载直达）
- */
-export async function getSoftwareBySlug(slug: string): Promise<SoftwareItem | null> {
-  if (simulateEmptyDb) return null;
-  const item = softwareData.find((s) => s.slug === slug);
-  return item || null;
+export async function adminAddResourceEvidence(id: string, data: any) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/evidences`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  return res.json();
 }
 
-/**
- * 记录用户点击官方/授权下载事件 (模拟后端打点统计)
- */
-export async function recordDownloadClick(softwareId: string, sourceId: string): Promise<boolean> {
-  const target = softwareData.find((s) => s.id === softwareId);
-  if (target) {
-    target.downloadCount += 1;
-  }
-  return true;
+export async function adminNeedsCorrection(id: string, notes: string) {
+  const res = await fetch(`${API_BASE}/admin/resources/${id}/needs-correction`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ notes }),
+  });
+  return res.json();
 }
+

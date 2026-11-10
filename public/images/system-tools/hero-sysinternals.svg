@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B1325"/>
+      <stop offset="55%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg5)"/>
+  <rect x="490" y="96" width="400" height="340" rx="18" fill="#0F172A" stroke="#60A5FA" stroke-opacity="0.35" stroke-width="1.5"/>
+  <text x="520" y="138" fill="#93C5FD" font-family="ui-monospace,monospace" font-size="14" font-weight="700">PROCESS &amp; STARTUP TREE</text>
+  <rect x="520" y="160" width="340" height="36" rx="8" fill="#1E3A5F"/>
+  <rect x="546" y="210" width="314" height="32" rx="7" fill="#172B4D"/>
+  <rect x="546" y="254" width="290" height="32" rx="7" fill="#172B4D"/>
+  <rect x="520" y="302" width="340" height="36" rx="8" fill="#153E36"/>
+  <rect x="520" y="354" width="220" height="52" rx="10" fill="#0B192E" stroke="#34D399" stroke-opacity="0.45"/>
+  <text x="540" y="386" fill="#6EE7B7" font-family="ui-monospace,monospace" font-size="14" font-weight="700">AUTORUNS CLEAN</text>
+</svg>

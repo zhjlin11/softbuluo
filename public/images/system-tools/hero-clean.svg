@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="bg6" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="55%" stop-color="#271E4B"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg6)"/>
+  <rect x="505" y="108" width="380" height="320" rx="18" fill="#0F172A" stroke="#A78BFA" stroke-opacity="0.35" stroke-width="1.5"/>
+  <text x="534" y="150" fill="#DDD6FE" font-family="ui-monospace,monospace" font-size="14" font-weight="700">REGISTRY &amp; RESIDUE SCAN</text>
+  <rect x="534" y="176" width="322" height="56" rx="10" fill="#1E1B4B" stroke="#818CF8" stroke-opacity="0.4"/>
+  <rect x="554" y="196" width="170" height="14" rx="4" fill="#6366F1" fill-opacity="0.6"/>
+  <rect x="534" y="250" width="322" height="56" rx="10" fill="#132A4A" stroke="#38BDF8" stroke-opacity="0.4"/>
+  <rect x="554" y="270" width="210" height="14" rx="4" fill="#38BDF8" fill-opacity="0.6"/>
+  <rect x="534" y="324" width="180" height="68" rx="10" fill="#064E3B" fill-opacity="0.65" stroke="#34D399" stroke-opacity="0.5"/>
+  <text x="554" y="364" fill="#A7F3D0" font-family="ui-monospace,monospace" font-size="15" font-weight="700">DEEP UNINSTALL</text>
+</svg>

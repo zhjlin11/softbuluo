@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="esBg2" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#17203B"/>
+      <stop offset="55%" stop-color="#293572"/>
+      <stop offset="100%" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#esBg2)"/>
+  <circle cx="775" cy="145" r="200" fill="#818CF8" fill-opacity="0.1"/>
+  <rect x="506" y="88" width="388" height="364" rx="20" fill="#0F1733" fill-opacity="0.92" stroke="#818CF8" stroke-opacity="0.4" stroke-width="1.5"/>
+  <rect x="536" y="122" width="160" height="114" rx="12" fill="#1B2654" stroke="#60A5FA" stroke-opacity="0.35"/>
+  <rect x="708" y="122" width="156" height="114" rx="12" fill="#1B2654" stroke="#34D399" stroke-opacity="0.35"/>
+  <text x="556" y="164" fill="#93C5FD" font-family="ui-monospace,monospace" font-size="13" font-weight="700">OFFICE SUITE</text>
+  <text x="556" y="188" fill="#E2E8F0" font-family="system-ui,sans-serif" font-size="12">文档与表格套件</text>
+  <text x="556" y="210" fill="#64748B" font-family="ui-monospace,monospace" font-size="11">LibreOffice / Office</text>
+  <text x="728" y="164" fill="#34D399" font-family="ui-monospace,monospace" font-size="13" font-weight="700">FAST INDEX</text>
+  <text x="728" y="188" fill="#E2E8F0" font-family="system-ui,sans-serif" font-size="12">归档与秒搜</text>
+  <text x="728" y="210" fill="#64748B" font-family="ui-monospace,monospace" font-size="11">7-Zip + Everything</text>
+  <rect x="536" y="256" width="328" height="162" rx="14" fill="#131C41" stroke="#A5B4FC" stroke-opacity="0.28"/>
+  <text x="558" y="290" fill="#C7D2FE" font-family="ui-monospace,monospace" font-size="12" font-weight="700">PRODUCTIVITY WORKSPACE STACK</text>
+  <rect x="558" y="310" width="284" height="14" rx="4" fill="#312E81"/>
+  <rect x="558" y="310" width="218" height="14" rx="4" fill="#3B82F6"/>
+  <rect x="558" y="340" width="284" height="14" rx="4" fill="#312E81"/>
+  <rect x="558" y="340" width="248" height="14" rx="4" fill="#10B981"/>
+  <rect x="558" y="370" width="284" height="14" rx="4" fill="#312E81"/>
+  <rect x="558" y="370" width="184" height="14" rx="4" fill="#6366F1"/>
+</svg>

@@ -1,0 +1,372 @@
+{
+  "title": "Download Windows / Office | MAS",
+  "sections": [
+    {
+      "heading": "Overview",
+      "links": [
+        {
+          "text": "",
+          "href": "/",
+          "full_li": "Download Windows / Office"
+        }
+      ],
+      "paragraphs": []
+    },
+    {
+      "level": "h1",
+      "heading": "Download Windows / Office",
+      "links": [
+        {
+          "text": "AB",
+          "href": "https://abdownloadmanager.com/",
+          "full_li": "Slow download? Use a download manager likeABorJDownloader."
+        },
+        {
+          "text": "JDownloader",
+          "href": "https://jdownloader.org/jdownloader2/",
+          "full_li": "Slow download? Use a download manager likeABorJDownloader."
+        },
+        {
+          "text": "WARP",
+          "href": "https://one.one.one.one/",
+          "full_li": "Download link not working? TryWARPVPN to unblock."
+        }
+      ],
+      "paragraphs": []
+    },
+    {
+      "level": "h2",
+      "heading": "Download Windows​",
+      "links": [
+        {
+          "text": "Windows 11",
+          "href": "/windows_11_links",
+          "full_li": "Windows 11"
+        },
+        {
+          "text": "Windows 10",
+          "href": "/windows_10_links",
+          "full_li": "Windows 10"
+        },
+        {
+          "text": "Windows 10 / 11 EnterpriseLTSC",
+          "href": "/windows_ltsc_links",
+          "full_li": "Windows 10 / 11 EnterpriseLTSC"
+        },
+        {
+          "text": "Windows ARM64",
+          "href": "/windows_arm_links",
+          "full_li": "Windows ARM64"
+        },
+        {
+          "text": "Windows 8.1",
+          "href": "/windows_8.1_links",
+          "full_li": "Windows 8.1"
+        },
+        {
+          "text": "Windows 8",
+          "href": "/windows_8_links",
+          "full_li": "Windows 8"
+        },
+        {
+          "text": "Windows 7",
+          "href": "/windows_7_links",
+          "full_li": "Windows 7"
+        },
+        {
+          "text": "Windows Vista",
+          "href": "/windows_vista__links",
+          "full_li": "Windows Vista"
+        },
+        {
+          "text": "Windows XP",
+          "href": "/windows_xp_links",
+          "full_li": "Windows XP"
+        },
+        {
+          "text": "Windows Server",
+          "href": "/windows-server-links",
+          "full_li": "Windows Server"
+        },
+        {
+          "text": "10-11",
+          "href": "https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewiso",
+          "full_li": "Windows Insider10-11-Server/Registrationis needed to download."
+        },
+        {
+          "text": "Server",
+          "href": "https://www.microsoft.com/en-us/software-download/windowsinsiderpreviewserver",
+          "full_li": "Windows Insider10-11-Server/Registrationis needed to download."
+        },
+        {
+          "text": "Registration",
+          "href": "https://www.microsoft.com/en-us/windowsinsider/getting-started",
+          "full_li": "Windows Insider10-11-Server/Registrationis needed to download."
+        }
+      ],
+      "paragraphs": []
+    },
+    {
+      "level": "h2",
+      "heading": "Download Office​",
+      "links": [
+        {
+          "text": "MAS",
+          "href": "/"
+        },
+        {
+          "text": "Office C2R Installers",
+          "href": "/office_c2r_links",
+          "full_li": "Office C2R Installers❤️ (O365, 2024, 2021, 2019, 2016, 2013)"
+        },
+        {
+          "text": "Office C2R Custom Install",
+          "href": "/office_c2r_custom",
+          "full_li": "Office C2R Custom Install(O365, 2024, 2021, 2019, 2016)"
+        },
+        {
+          "text": "Office MSI VL (Old versions)",
+          "href": "/office_msi_links",
+          "full_li": "Office MSI VL (Old versions)(2016, 2013, 2010)"
+        },
+        {
+          "text": "Office ForMac",
+          "href": "/office_for_mac",
+          "full_li": "Office ForMac"
+        }
+      ],
+      "paragraphs": [
+        "Activation withMASis required after the installation of Office."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "Guides​",
+      "links": [
+        {
+          "text": "Clean Install Windows",
+          "href": "/clean_install_windows",
+          "full_li": "Clean Install Windows"
+        },
+        {
+          "text": "Manually Update Windows ISOs",
+          "href": "/update-windows-iso",
+          "full_li": "Manually Update Windows ISOs"
+        },
+        {
+          "text": "In-place Repair Upgrade (Keeping files and apps)",
+          "href": "/in-place_repair_upgrade",
+          "full_li": "In-place Repair Upgrade (Keeping files and apps)"
+        },
+        {
+          "text": "Windows 11 on Unsupported Hardware",
+          "href": "/clean_install_windows#windows-11-on-unsupported-hardware",
+          "full_li": "Windows 11 on Unsupported Hardware"
+        },
+        {
+          "text": "Edition List During Windows Installation",
+          "href": "/clean_install_windows#edition-list-during-windows-installation",
+          "full_li": "Edition List During Windows Installation"
+        },
+        {
+          "text": "Bypass Windows 11 Internet and Microsoft Account Requirements",
+          "href": "/clean_install_windows#bypass-windows-11-internet-and-microsoft-account-requirements",
+          "full_li": "Bypass Windows 11 Internet and Microsoft Account Requirements"
+        },
+        {
+          "text": "Windows 10 Updates After End-Of-Life",
+          "href": "/windows10_eol",
+          "full_li": "Windows 10 Updates After End-Of-Life"
+        }
+      ],
+      "paragraphs": []
+    },
+    {
+      "level": "h4",
+      "heading": "Why are we hosting files on our server when we can download them from Microsoft?​",
+      "links": [
+        {
+          "text": "site",
+          "href": "https://www.microsoft.com/en-us/software-download"
+        },
+        {
+          "text": "MVS",
+          "href": "https://visualstudio.microsoft.com/subscriptions/"
+        },
+        {
+          "text": "M365 Admin Center",
+          "href": "https://learn.microsoft.com/en-us/licensing/vlsc-faqs-home-page"
+        }
+      ],
+      "paragraphs": [
+        "Microsoft provides consumer ISOs for free on theirsite, but business, enterprise, and older ISOs are behind paywalls such asMVSandM365 Admin Center. That's why we need to host files on our servers."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "How can I verify that these files are genuine?​",
+      "links": [
+        {
+          "text": "here",
+          "href": "/genuine-installation-media#verify-authenticity-of-files"
+        }
+      ],
+      "paragraphs": [
+        "You can seehereon how to be sure that files are genuine by verifying the checksum available on the official Microsoft website."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "There are both consumer and business ISOs listed here. What is the difference between them?​",
+      "links": [],
+      "paragraphs": [
+        "For Windows 10/11 General Availability Channel (GAC) releases (i.e., Home and Pro), Microsoft produces two types of ISO files: Consumer and Business.The Consumer ISO includes all editions such as Home, Pro, and Education, but excludes the Enterprise edition. In contrast, the Business ISO contains all editions except for the Home-level editions, and these ISO files come with a KMS key pre-installed (not activated) by default.",
+        "The Consumer ISO includes all editions such as Home, Pro, and Education, but excludes the Enterprise edition. In contrast, the Business ISO contains all editions except for the Home-level editions, and these ISO files come with a KMS key pre-installed (not activated) by default."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "What are Windows N, K, and KN editions, and should I use them?​",
+      "links": [
+        {
+          "text": "Microsoft’s statement",
+          "href": "https://news.microsoft.com/source/2005/03/28/microsoft-statement-on-european-commission-process-2/",
+          "full_li": "Windows N editionsare European versions of Windowswithout media featureslike Windows Media Player. They were created because theEU required Microsoftto offer Windows without built-in media software, as explained inMicrosoft’s statementand theEU decision."
+        },
+        {
+          "text": "EU decision",
+          "href": "https://www.microsoft.com/en-us/legal/antitrust/eu-commission-decision",
+          "full_li": "Windows N editionsare European versions of Windowswithout media featureslike Windows Media Player. They were created because theEU required Microsoftto offer Windows without built-in media software, as explained inMicrosoft’s statementand theEU decision."
+        },
+        {
+          "text": "official statement on the KFTC decision",
+          "href": "https://news.microsoft.com/2005/12/06/microsoft-statement-on-korean-fair-trade-commission-decision/",
+          "full_li": "Windows K and KN editionsare versions forSouth Korea, made after a ruling by the Korea Fair Trade Commission (KFTC) requiring Microsoft to offer Windows without certain media and messaging apps. You can read Microsoft’sofficial statement on the KFTC decision."
+        },
+        {
+          "text": "some functions may still not work fully",
+          "href": "https://support.microsoft.com/en-us/windows/media-feature-pack-for-windows-n-8622b390-4ce6-43c9-9b42-549e5328e407?#:~:text=Note%20that%20some%20of%20these%20may%20not%20work%20properly%20after%20installing%20the%20Media%20Feature%20Pack",
+          "full_li": "You can restore most missing features by installing the Media Feature Pack, butsome functions may still not work fullyeven after installation."
+        },
+        {
+          "text": "Microsoft’s statement",
+          "href": "https://news.microsoft.com/source/2005/03/28/microsoft-statement-on-european-commission-process-2/"
+        },
+        {
+          "text": "EU decision",
+          "href": "https://www.microsoft.com/en-us/legal/antitrust/eu-commission-decision"
+        },
+        {
+          "text": "official statement on the KFTC decision",
+          "href": "https://news.microsoft.com/2005/12/06/microsoft-statement-on-korean-fair-trade-commission-decision/"
+        },
+        {
+          "text": "some functions may still not work fully",
+          "href": "https://support.microsoft.com/en-us/windows/media-feature-pack-for-windows-n-8622b390-4ce6-43c9-9b42-549e5328e407?#:~:text=Note%20that%20some%20of%20these%20may%20not%20work%20properly%20after%20installing%20the%20Media%20Feature%20Pack"
+        }
+      ],
+      "paragraphs": [
+        "Windows N editionsare European versions of Windowswithout media featureslike Windows Media Player. They were created because theEU required Microsoftto offer Windows without built-in media software, as explained inMicrosoft’s statementand theEU decision.",
+        "Windows K and KN editionsare versions forSouth Korea, made after a ruling by the Korea Fair Trade Commission (KFTC) requiring Microsoft to offer Windows without certain media and messaging apps. You can read Microsoft’sofficial statement on the KFTC decision.",
+        "You can restore most missing features by installing the Media Feature Pack, butsome functions may still not work fullyeven after installation.",
+        "Windows N, K, and KN editionsarenot recommended for general use."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "How do I use DumbVersion Patch (.dvp) files?​",
+      "links": [
+        {
+          "text": "this page",
+          "href": "/dumbversion_patches"
+        }
+      ],
+      "paragraphs": [
+        "Seethis page."
+      ]
+    },
+    {
+      "level": "h2",
+      "heading": "Verify Authenticity Of Files​",
+      "links": [
+        {
+          "text": "file hashing method",
+          "href": "https://en.wikipedia.org/wiki/File_verification"
+        },
+        {
+          "text": "7-Zip",
+          "href": "https://7-zip.org/"
+        },
+        {
+          "text": "files.rg-adguard",
+          "href": "https://files.rg-adguard.net/search",
+          "full_li": "files.rg-adguard(the most complete collection)"
+        },
+        {
+          "text": "MVS dump",
+          "href": "https://awuctl.github.io/mvs/",
+          "full_li": "MVS dump"
+        },
+        {
+          "text": "genuine-iso-verifier",
+          "href": "https://genuine-iso-verifier.weebly.com/",
+          "full_li": "genuine-iso-verifier"
+        },
+        {
+          "text": "msdn.rg-adguard",
+          "href": "https://msdn.rg-adguard.net/",
+          "full_li": "msdn.rg-adguard"
+        },
+        {
+          "text": "sha1.rg-adguard",
+          "href": "https://sha1.rg-adguard.net/",
+          "full_li": "sha1.rg-adguard"
+        }
+      ],
+      "paragraphs": [
+        "You can use thefile hashing methodto verify if a file is genuine. This can be done using tools like7-Zip(After installing 7-Zip, right-click on the ISO file and go to 7-Zip > CRC SHA > SHA-256).",
+        "There are many places where you can find these checksums for verification. Examples can be found below."
+      ]
+    },
+    {
+      "level": "h4",
+      "heading": "Microsoft's Official free links for checksums:​",
+      "links": [
+        {
+          "text": "MVS",
+          "href": "https://my.visualstudio.com/Downloads",
+          "full_li": "MVS"
+        },
+        {
+          "text": "Windows 11",
+          "href": "https://www.microsoft.com/en-us/software-download/windows11",
+          "full_li": "Windows 11"
+        },
+        {
+          "text": "Windows 10",
+          "href": "https://www.microsoft.com/en-us/software-download/windows10",
+          "full_li": "Windows 10"
+        }
+      ],
+      "paragraphs": [
+        "MVSOn MVS, you need to login and click on 'All Downloads' button and then search the product name.MVS Limitations:They used to publish only SHA-1, but later started publishing SHA-1 and SHA-256 both and from 2022 they now publish only SHA-256.However they removed all the SHA-1 data and as a result, old files checksums are simply not available on MVS site.Also, around the time when they were publishing SHA-1 and SHA-256 both, they messed up some SHA-256 data, for exampleIncorrect SHA-256 exampleSHA256: BDB3D0C5C933B201ECE736A172FB604AA5D7D0705DD75681F9FCC4B1EE79FAC8File name: en-uk_windows_10_enterprise_ltsc_2019_x64_dvd_723dfbc1.isoSo its useful only for the latest files.Windows 11SHA-256 list will appear if you download the ISO file.Windows 10Microsoft doesn't allow you to download ISO file directly if browser's useragent is Windows OS. So you need to change it to something else like Android or IOS and then download the ISO file to see the list.",
+        "MVS Limitations:They used to publish only SHA-1, but later started publishing SHA-1 and SHA-256 both and from 2022 they now publish only SHA-256.However they removed all the SHA-1 data and as a result, old files checksums are simply not available on MVS site.Also, around the time when they were publishing SHA-1 and SHA-256 both, they messed up some SHA-256 data, for exampleIncorrect SHA-256 exampleSHA256: BDB3D0C5C933B201ECE736A172FB604AA5D7D0705DD75681F9FCC4B1EE79FAC8File name: en-uk_windows_10_enterprise_ltsc_2019_x64_dvd_723dfbc1.isoSo its useful only for the latest files.Windows 11SHA-256 list will appear if you download the ISO file.Windows 10Microsoft doesn't allow you to download ISO file directly if browser's useragent is Windows OS. So you need to change it to something else like Android or IOS and then download the ISO file to see the list.",
+        "Windows 11SHA-256 list will appear if you download the ISO file.Windows 10Microsoft doesn't allow you to download ISO file directly if browser's useragent is Windows OS. So you need to change it to something else like Android or IOS and then download the ISO file to see the list.",
+        "Windows 10Microsoft doesn't allow you to download ISO file directly if browser's useragent is Windows OS. So you need to change it to something else like Android or IOS and then download the ISO file to see the list."
+      ]
+    },
+    {
+      "level": "h2",
+      "heading": "Need help?​",
+      "links": [
+        {
+          "text": "contact us",
+          "href": "/contactus"
+        }
+      ],
+      "paragraphs": [
+        "Feel free tocontact us."
+      ]
+    }
+  ]
+}

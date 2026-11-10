@@ -1,101 +1,113 @@
 import React from 'react';
-import { TrendingUp, Download, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { TrendingUp, ShieldCheck } from 'lucide-react';
 import { SoftwareItem } from '../../types/resource';
+import { SoftwareIcon } from '../common/SoftwareIcon';
+import { getSimpleSoftwareName, getSimpleVersion } from '../../utils/softwareName';
 
 interface PopularDownloadsProps {
   softwareList: SoftwareItem[];
   onSelectSoftware: (software: SoftwareItem) => void;
+  className?: string;
 }
 
 export const PopularDownloads: React.FC<PopularDownloadsProps> = ({
   softwareList,
   onSelectSoftware,
+  className = '',
 }) => {
   if (!softwareList || softwareList.length === 0) {
     return null;
   }
 
+  // 精选 8 款热门资源，紧密匹配中间 8 款精选与左侧分类高度
+  const topList = softwareList.slice(0, 8);
+
   return (
-    <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-              热门下载排行
-            </h2>
-            <div className="flex items-center gap-1 text-[11px] text-blue-600 dark:text-blue-400 font-medium">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>真实获取频次</span>
-            </div>
+    <div
+      className={`bg-white dark:bg-[#141F33] rounded-xl border border-[#E5E9F0] dark:border-slate-800 p-3.5 sm:p-4 shadow-2xs h-full flex flex-col justify-between ${className}`}
+    >
+      <div>
+        <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[#EDF0F4] dark:border-slate-800">
+          <div className="flex items-center gap-1.5">
+            <TrendingUp className="w-4 h-4 text-[#D92D20]" />
+            <h3 className="text-sm font-bold text-[#202938] dark:text-slate-100">
+              热门获取排行榜
+            </h3>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            基于平台用户近期的官方渠道分发与下载计数综合排序
-          </p>
+          <span className="text-[11px] text-[#667085] dark:text-slate-400">
+            全网热度
+          </span>
+        </div>
+
+        <div className="space-y-1 divide-y divide-slate-100 dark:divide-slate-800/60">
+          {topList.map((item, index) => {
+            const rank = index + 1;
+
+            return (
+              <div
+                key={item.id}
+                className="pt-1.5 pb-1.5 first:pt-0 flex items-center justify-between gap-2 group hover:bg-slate-50/70 dark:hover:bg-slate-800/40 rounded px-1.5 transition-colors"
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  {/* 排名数字前三位鲜明区分 */}
+                  <span
+                    className={`w-4.5 h-4.5 rounded flex items-center justify-center text-[11px] font-bold font-mono shrink-0 select-none ${
+                      rank === 1
+                        ? 'bg-[#D92D20] text-white shadow-2xs'
+                        : rank === 2
+                        ? 'bg-amber-500 text-white'
+                        : rank === 3
+                        ? 'bg-[#1769D2] text-white'
+                        : 'text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800'
+                    }`}
+                  >
+                    {rank}
+                  </span>
+
+                  <SoftwareIcon
+                    iconUrl={item.iconUrl}
+                    name={item.name}
+                    slug={item.slug}
+                    categorySlug={item.categorySlug}
+                    size="md"
+                  />
+
+                  <div className="min-w-0 flex-1">
+                    <Link
+                      to={`/software/${item.slug}`}
+                      title={item.name}
+                      className="text-xs font-semibold text-[#202938] dark:text-slate-100 group-hover:text-[#1769D2] transition-colors truncate block leading-tight"
+                    >
+                      {getSimpleSoftwareName(item.name, item.englishName)}
+                    </Link>
+                    <div className="text-[10px] text-[#667085] dark:text-slate-400 flex items-center gap-1 mt-0.5">
+                      <span className="font-mono">{getSimpleVersion(item.latestVersion?.version)}</span>
+                      <span>·</span>
+                      <span className="text-slate-400 truncate">{item.categoryName}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-right shrink-0">
+                  <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 tabular-nums">
+                    {item.downloadCount.toLocaleString()} 次
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* 2-3 列紧凑列表 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-        {softwareList.map((item, index) => {
-          const rank = index + 1;
-          const isTop3 = rank <= 3;
-
-          return (
-            <div
-              key={item.id}
-              onClick={() => onSelectSoftware(item)}
-              className="flex items-center justify-between p-3.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs transition-all cursor-pointer group"
-            >
-              <div className="flex items-center gap-3 min-w-0 pr-2">
-                {/* 排名标识 */}
-                <div
-                  className={`w-6 h-6 rounded-md flex items-center justify-center font-bold text-xs shrink-0 tabular-nums ${
-                    isTop3
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
-                  }`}
-                >
-                  {rank}
-                </div>
-
-                {/* 软件图标 */}
-                <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-xs text-slate-700 dark:text-slate-300 shrink-0">
-                  {item.name.slice(0, 1)}
-                </div>
-
-                {/* 软件标题与分类 */}
-                <div className="min-w-0">
-                  <h3 className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {item.name}
-                  </h3>
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-400 dark:text-slate-500 truncate">
-                    <span>{item.categoryName}</span>
-                    <span aria-hidden="true">·</span>
-                    <span className="tabular-nums">v{item.latestVersion.version}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 右侧下载量与详情按钮 */}
-              <div className="text-right shrink-0">
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 tabular-nums">
-                  {item.downloadCount.toLocaleString()} 次
-                </div>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSelectSoftware(item);
-                  }}
-                  className="mt-1 text-[11px] font-medium text-blue-600 dark:text-blue-400 hover:underline"
-                >
-                  获取软件
-                </button>
-              </div>
-            </div>
-          );
-        })}
+      {/* 底部保障与动态更新标识 */}
+      <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>全网真实热度核验</span>
+        </span>
+        <span className="font-mono text-[10px]">动态加权排序</span>
       </div>
-    </section>
+    </div>
   );
 };

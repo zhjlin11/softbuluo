@@ -1,0 +1,218 @@
+# Office For Mac
+
+All the listed Office installer and activator download links lead to Official Microsoft files only.
+
+## Office Installer
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+
+<TabItem value="macOS 14, 15, 26" label="Tahoe, Sequoia, Sonoma" default>
+
+macOS Tahoe (macOS 26)  
+macOS Sequoia (macOS 15)  
+macOS Sonoma (macOS 14)  
+
+Generation - 2021 / 2024
+
+| Application                  | Link                                              |
+|:-----------------------------|:--------------------------------------------------|
+| Office suite (with Teams)    | https://go.microsoft.com/fwlink/p/?linkid=2009112 |
+| Office suite (without Teams) | https://go.microsoft.com/fwlink/p/?linkid=525133  |
+| Word                         | https://go.microsoft.com/fwlink/p/?linkid=525134  |
+| Excel                        | https://go.microsoft.com/fwlink/p/?linkid=525135  |
+| PowerPoint                   | https://go.microsoft.com/fwlink/p/?linkid=525136  |
+| Outlook                      | https://go.microsoft.com/fwlink/p/?linkid=525137  |
+| OneNote                      | https://go.microsoft.com/fwlink/p/?linkid=820886  |
+
+</TabItem>
+
+<TabItem value="macOS 13" label="Ventura" default>
+
+macOS Ventura (macOS 13)  
+Highest supported office version 16.101 (Generation - 2021 / 2024) (September 2025)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+
+| Application                  | Link                                                                                                                                                    |
+|:-----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite (with Teams)    | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.101.25091314_BusinessPro_Installer.pkg |
+| Office suite (without Teams) | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.101.25091314_Installer.pkg             |
+| Word                         | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.101.25091314_Updater.pkg                         |
+| Excel                        | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.101.25091314_Updater.pkg                        |
+| PowerPoint                   | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.101.25091314_Updater.pkg                   |
+| Outlook                      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.101.25091314_Updater.pkg                      |
+| OneNote                      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.101.25091314_Updater.pkg                      |
+
+</TabItem>
+
+<TabItem value="macOS 12" label="Monterey" default>
+
+macOS Monterey (macOS 12)  
+Highest supported office version 16.88 (Generation - 2021) (August 2024)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+
+| Application                  | Link                                                                                                                                                    |
+|:-----------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite (with Teams)    | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.88.24081116_BusinessPro_Installer.pkg |
+| Office suite (without Teams) | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.88.24081116_Installer.pkg             |
+| Word                         | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.88.24081116_Updater.pkg                         |
+| Excel                        | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.88.24081116_Updater.pkg                        |
+| PowerPoint                   | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.88.24081116_Updater.pkg                   |
+| Outlook                      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.88.24081116_Updater.pkg                      |
+| OneNote                      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.88.24081116_Updater.pkg                      |
+
+</TabItem>
+
+<TabItem value="macOS 11" label="Big Sur" default>
+
+macOS Big Sur (macOS 11)  
+Highest supported office version 16.77 (Generation - 2021/2019) (September 2023)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+
+| Application                  | Link                                                                                                                                                       |
+|:-----------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite (with Teams)    | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.77.23091003_BusinessPro_Installer.pkg |
+| Office suite (without Teams) | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_365_and_Office_16.77.23091003_Installer.pkg             |
+| Word                         | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.77.23091003_Updater.pkg                         |
+| Excel                        | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.77.23091003_Updater.pkg                        |
+| PowerPoint                   | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.77.23091003_Updater.pkg                   |
+| Outlook                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.77.23091003_Updater.pkg                      |
+| OneNote                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.77.23091003_Updater.pkg                      |
+
+</TabItem>
+
+<TabItem value="macOS 10.15" label="Catalina" default>
+
+macOS Catalina (10.15)  
+Highest supported office version 16.66.1 (Generation - 2021/2019) (October 2022)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+| Application                  | Link                                                                                                                                               |
+|:-----------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite (with Teams)    | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.66.22101101_BusinessPro_Installer.pkg |
+| Office suite (without Teams) | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.66.22101101_Installer.pkg             |
+| Word                         | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.66.22101101_Updater.pkg                 |
+| Excel                        | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.66.22101101_Updater.pkg                |
+| PowerPoint                   | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.66.22101101_Updater.pkg           |
+| Outlook                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.66.22101101_Updater.pkg              |
+| OneNote                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.66.22101101_Updater.pkg              |
+
+</TabItem>
+
+<TabItem value="macOS 10.14" label="Mojave" default>
+
+macOS Mojave (10.14)  
+Highest supported office version 16.54 (Generation - 2021/2019) (October 2021)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+| Application                  | Link                                                                                                                                               |
+|:-----------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite (with Teams)    | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.54.21101001_BusinessPro_Installer.pkg |
+| Office suite (without Teams) | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.54.21101001_Installer.pkg             |
+| Word                         | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.54.21101001_Updater.pkg                 |
+| Excel                        | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.54.21101001_Updater.pkg                |
+| PowerPoint                   | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.54.21101001_Updater.pkg           |
+| Outlook                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.54.21101001_Updater.pkg              |
+| OneNote                      | https://officecdnmac.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.54.21101001_Updater.pkg              |
+
+</TabItem>
+
+<TabItem value="macOS 10.13" label="High Sierra" default>
+
+macOS High Sierra (10.13)  
+Highest supported office version 16.43.0 (Generation - 2019) (November 2020)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+| Application  | Link                                                                                                                                  |
+|:-------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.43.20110804_Installer.pkg   |
+| Word         | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.43.20110804_Updater.pkg       |
+| Excel        | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.43.20110804_Updater.pkg      |
+| PowerPoint   | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.43.20110804_Updater.pkg |
+| Outlook      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.43.20110804_Updater.pkg    |
+| OneNote      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.43.20110804_Updater.pkg    |
+
+</TabItem>
+
+<TabItem value="macOS 10.12" label="Sierra" default>
+
+macOS Sierra (10.12)  
+Highest supported office version 16.30 (Generation - 2019) (October 2019)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+| Application  | Link                                                                                                                                  |
+|:-------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.30.19101301_Installer.pkg   |
+| Word         | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.30.19101301_Updater.pkg       |
+| Excel        | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.30.19101301_Updater.pkg      |
+| PowerPoint   | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.30.19101301_Updater.pkg |
+| Outlook      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.30.19101301_Updater.pkg    |
+| OneNote      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.30.19101301_Updater.pkg    |
+
+</TabItem>
+
+<TabItem value="10.11 & 10.10" label="El Capitan, Yosemite" default>
+
+OS X El Capitan (10.11)  
+OS X Yosemite (10.10)  
+
+Highest supported office version 16.16.27 (Generation - 2016) (October 2020)  
+It's no longer supported by Microsoft, and Office doesn't receive updates.
+
+| Application  | Link                                                                                                                                  |
+|:-------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| Office suite | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Office_16.16.20101200_Installer.pkg   |
+| Word         | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Word_16.16.20101200_Updater.pkg       |
+| Excel        | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Excel_16.16.20101200_Updater.pkg      |
+| PowerPoint   | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_PowerPoint_16.16.20101200_Updater.pkg |
+| Outlook      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_Outlook_16.16.20101200_Updater.pkg    |
+| OneNote      | https://officecdn.microsoft.com/pr/C1297A47-86C4-4C1F-97FA-950631F94777/MacAutoupdate/Microsoft_OneNote_16.16.20101200_Updater.pkg    |
+
+</TabItem>
+</Tabs>
+
+**Other Resources**  
+https://learn.microsoft.com/en-us/officeupdates/update-history-office-for-mac
+
+---
+
+## Office Activation
+
+- Install Office for your macOS version from the above table if not installed.
+- If you have ever opened Office apps on your macOS, then run this [Office-Reset tool 2.0 Beta 1](https://web.archive.org/web/20250812220920/https://office-reset.com/) - [(Mirror)](https://buzzheavier.com/mrx6aj8o0pjn) and clean the licenses.
+- Now run the below-listed activator pkg file and install. (**Don't open Office apps before installing activator pkg file**)
+- Your office should be activated now.
+
+---
+
+The activator (serializer) pkg files below are extracted from the official iso files. These serializer files are only available to [paid subscribers](https://learn.microsoft.com/en-us/microsoft-365-apps/mac/volume-license-serializer), however anyone can activate Office using it. 
+
+| Serializer | Activator | Applicable On |
+|:------------------|:---|:---|
+| Office 2024       | [pkg](https://buzzheavier.com/ysb9003nnj0m) - [iso](https://buzzheavier.com/tdvzq09yv4e5) | Tahoe, Sequoia, Sonoma, Ventura |
+| Office 2021       | [pkg](https://buzzheavier.com/lmen5vflrzhf) - [iso](https://buzzheavier.com/tb4mkfbm1wlw) | Tahoe, Sequoia, Sonoma, Ventura, Monterey, Big Sur, Catalina, Mojave |
+| Office 2019 (Old) | [pkg](https://buzzheavier.com/y3illxxr12a4) - [iso](https://buzzheavier.com/2jxft7fq7k79) | High Sierra, Sierra |
+| Office 2016 (Old) | [pkg](https://buzzheavier.com/xiiy1tphoy95) - [iso](https://buzzheavier.com/0bdfywenupt8) | El Capitan, Yosemite |
+| Office 2019 (New) | [pkg](https://buzzheavier.com/net83rkrezr8) - [iso](https://buzzheavier.com/xw9kw1lbkdxb) | |
+| Office 2016 (New) | [pkg](https://buzzheavier.com/0lmtp2i4aa28) - [iso](https://buzzheavier.com/s2b1hnuop88x) | |
+
+## Activation Troubleshooting
+
+- If activation is not working, then:
+  - Uninstall all Office apps.
+  - Clean everything using [Office-Reset Tool 2.0 Beta 1](https://web.archive.org/web/20250812220920/https://office-reset.com/) - [(Mirror)](https://buzzheavier.com/mrx6aj8o0pjn).
+  - Reinstall Office and follow the activation steps explained above.
+  - If you are still facing issues, [erase and reinstall macOS](https://support.apple.com/en-us/guide/mac-help/mh27903/mac), then repeat the process.
+
+:::note
+
+- This activation method is identical to Microsoft’s official process for [paid subscribers](https://learn.microsoft.com/en-us/microsoft-365-apps/mac/volume-license-serializer). No third-party cracks are used.  
+- While activation works for most users, some errors may occur due to macOS issues rather than the activation steps.  
+- As we do not use macOS, we cannot provide system-specific troubleshooting. A clean installation of macOS is recommended as a final option.  
+
+:::

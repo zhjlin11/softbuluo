@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="esBg1" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B1F44"/>
+      <stop offset="52%" stop-color="#154794"/>
+      <stop offset="100%" stop-color="#1E6AD6"/>
+    </linearGradient>
+    <linearGradient id="esPanel1" x1="480" y1="70" x2="900" y2="465" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0E254D" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#081734" stop-opacity="0.96"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#esBg1)"/>
+  <circle cx="800" cy="115" r="195" fill="#60A5FA" fill-opacity="0.1"/>
+  <circle cx="520" cy="480" r="155" fill="#38BDF8" fill-opacity="0.08"/>
+  <g stroke="#93C5FD" stroke-opacity="0.12" stroke-width="1">
+    <line x1="450" y1="50" x2="930" y2="50"/>
+    <line x1="450" y1="145" x2="930" y2="145"/>
+    <line x1="450" y1="240" x2="930" y2="240"/>
+    <line x1="450" y1="335" x2="930" y2="335"/>
+    <line x1="450" y1="430" x2="930" y2="430"/>
+  </g>
+  <rect x="492" y="76" width="406" height="388" rx="22" fill="url(#esPanel1)" stroke="#60A5FA" stroke-opacity="0.38" stroke-width="1.5"/>
+  <rect x="524" y="108" width="134" height="24" rx="12" fill="#1D4ED8" fill-opacity="0.55" stroke="#60A5FA" stroke-opacity="0.4"/>
+  <text x="542" y="124" fill="#DBEAFE" font-family="system-ui,sans-serif" font-size="11" font-weight="700">NEW PC SETUP 3.0</text>
+  <rect x="524" y="152" width="342" height="72" rx="12" fill="#132F60" stroke="#38BDF8" stroke-opacity="0.32"/>
+  <circle cx="556" cy="188" r="16" fill="#2563EB"/>
+  <path d="M549 188l5 5 10-10" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="586" y="182" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="14" font-weight="700">01 · 系统环境与驱动合规引导</text>
+  <text x="586" y="204" fill="#93C5FD" font-family="ui-monospace,monospace" font-size="11">Windows Update + 厂商官方驱动通道</text>
+  <rect x="524" y="242" width="342" height="72" rx="12" fill="#132F60" stroke="#38BDF8" stroke-opacity="0.32"/>
+  <circle cx="556" cy="278" r="16" fill="#0EA5E9"/>
+  <path d="M549 278l5 5 10-10" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="586" y="272" fill="#FFFFFF" font-family="system-ui,sans-serif" font-size="14" font-weight="700">02 · 按场景勾选必装工具组合</text>
+  <text x="586" y="294" fill="#93C5FD" font-family="ui-monospace,monospace" font-size="11">浏览器 · 压缩 · 检索 · 办公 · 运维</text>
+  <rect x="524" y="332" width="342" height="96" rx="12" fill="#0B1E40" stroke="#34D399" stroke-opacity="0.35"/>
+  <text x="546" y="360" fill="#34D399" font-family="ui-monospace,monospace" font-size="12" font-weight="700">CHECKLIST READY · ZERO BUNDLEWARE</text>
+  <rect x="546" y="378" width="142" height="28" rx="7" fill="#163E74"/>
+  <text x="566" y="396" fill="#E0F2FE" font-family="ui-monospace,monospace" font-size="11" font-weight="600">EXPORT TXT / JSON</text>
+  <rect x="702" y="378" width="142" height="28" rx="7" fill="#065F46"/>
+  <text x="724" y="396" fill="#D1FAE5" font-family="ui-monospace,monospace" font-size="11" font-weight="600">OFFICIAL SOURCES</text>
+</svg>

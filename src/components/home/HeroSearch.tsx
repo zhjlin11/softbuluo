@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, X, Shield, ArrowRight, CornerDownLeft, Sparkles, AlertCircle } from 'lucide-react';
+import { Search, X, ArrowRight, Loader2, Compass } from 'lucide-react';
 import { siteConfig } from '../../config/site';
 import { getSearchSuggestions } from '../../services/resourceService';
 import { SoftwareItem } from '../../types/resource';
@@ -42,11 +42,11 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
         setIsSuggestOpen(true);
         setSelectedIndex(-1);
       } catch (err) {
-        console.error("Failed to fetch suggestions", err);
+        console.error('获取搜索建议失败', err);
       } finally {
         setIsLoading(false);
       }
-    }, 250);
+    }, 200);
 
     return () => clearTimeout(timer);
   }, [query]);
@@ -105,7 +105,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
     inputRef.current?.focus();
   };
 
-  const handlePopularClick = (keyword: string) => {
+  const handleKeywordClick = (keyword: string) => {
     setQuery(keyword);
     onSearchSubmit(keyword);
   };
@@ -113,37 +113,28 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
   return (
     <section
       id="hero"
-      className="relative pt-12 pb-16 md:pt-18 md:pb-22 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="bg-gradient-to-b from-[#F7FAFF] to-[#EEF5FF] dark:from-[#172338] dark:to-[#121B2B] border-b border-[#E7EDF5] dark:border-[#2D405C] py-8 sm:py-10 px-4 sm:px-6 lg:px-8 transition-colors"
     >
-      {/* 柔和的现代背景微光 */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-
-      <div className="relative max-w-[800px] mx-auto text-center">
-        {/* 顶部可信信任指示标签 */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full shadow-xs">
-          <Shield className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-          <span>人工核对官方发布源 · 严格杜绝流氓捆绑</span>
-        </div>
-
-        {/* 主标题 */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 mb-4 text-balance">
-          找软件，来这里就够了
+      <div className="max-w-[1320px] mx-auto flex flex-col items-center text-center">
+        {/* 主标题与独立副标题 */}
+        <h1 className="text-2xl sm:text-[26px] md:text-[28px] font-bold text-[#172B4D] dark:text-[#ECF3FF] tracking-tight">
+          找软件 · 找游戏 · 找工具
         </h1>
-
-        {/* 副标题 */}
-        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-8 leading-relaxed text-balance">
-          {siteConfig.description}
+        <p className="mt-2 text-xs sm:text-[13px] text-[#718198] dark:text-[#9AAFCB] font-normal tracking-wide">
+          官方正版来源 · 拒绝流氓捆绑与暗中收费
         </p>
 
-        {/* 核心大搜索框容器 (680-760px) */}
-        <div ref={containerRef} className="relative w-full max-w-[740px] mx-auto mb-5 text-left">
-          <div className="relative flex items-center h-14 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm focus-within:ring-2 focus-within:ring-blue-600 focus-within:border-transparent transition-all">
-            <div className="pl-4.5 pr-2 flex items-center pointer-events-none text-slate-400">
-              <Search className="w-5 h-5 stroke-[2]" />
+        {/* 核心大搜索框 (680–760px, 高度 54px) */}
+        <div ref={containerRef} className="relative w-full max-w-[740px] mt-6">
+          <div className="relative flex items-center h-[54px] bg-[#FFFFFF] dark:bg-[#1E2C43] rounded-[12px] border border-[#DDE7F3] dark:border-[#2D405C] shadow-[0_4px_20px_rgba(30,70,130,0.05)] dark:shadow-none focus-within:border-[#1464E9] dark:focus-within:border-[#4A91FF] focus-within:ring-4 focus-within:ring-[#1464E9]/10 dark:focus-within:ring-[#4A91FF]/15 transition-all duration-200">
+            <div className="pl-4 pr-2 flex items-center pointer-events-none text-[#7A8B9E] dark:text-[#9AAFCB]">
+              <Search className="w-4 h-4 stroke-[2]" />
             </div>
 
             <input
               ref={inputRef}
+              id="main-search-input"
+              name="q"
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -151,9 +142,9 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
               onFocus={() => {
                 if (suggestions.length > 0) setIsSuggestOpen(true);
               }}
-              placeholder="搜索软件、游戏、驱动或系统工具……"
+              placeholder="输入软件名称、英文名、游戏或系统工具（如 Chrome、7-Zip、VS Code、CPU-Z）"
               aria-label="搜索软件或系统工具"
-              className="w-full h-full pr-12 text-sm sm:text-base bg-transparent text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
+              className="w-full h-full pr-10 text-sm sm:text-[14px] bg-transparent text-[#172B4D] dark:text-[#ECF3FF] placeholder:text-[#91A0B5] dark:placeholder:text-[#7E94B3] focus:outline-none"
             />
 
             {/* 清空按钮 */}
@@ -162,7 +153,7 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
                 type="button"
                 onClick={handleClear}
                 aria-label="清空输入内容"
-                className="p-1.5 mr-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-md transition-colors"
+                className="p-1 mr-1 text-[#7A8B9E] hover:text-[#172B4D] dark:text-[#9AAFCB] dark:hover:text-[#ECF3FF] rounded-md transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -172,100 +163,89 @@ export const HeroSearch: React.FC<HeroSearchProps> = ({
             <button
               type="button"
               onClick={handleSubmit}
-              className="h-10 px-5 mr-2 inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg transition-colors shadow-xs shrink-0"
+              className="h-[42px] px-5 sm:px-6 mr-1.5 inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-[#1464E9] hover:bg-[#0F55CD] active:bg-[#0C47AD] rounded-[9px] transition-colors shadow-[0_1px_4px_rgba(20,100,233,0.18)] shrink-0 cursor-pointer"
             >
               <span>搜索</span>
-              <ArrowRight className="w-4 h-4 hidden sm:inline" />
+              <ArrowRight className="w-3.5 h-3.5 hidden sm:inline" />
             </button>
           </div>
 
-          {/* 实时建议浮动面板 */}
+          {/* 实时搜索联想下拉浮层 */}
           {isSuggestOpen && (
             <div
               role="listbox"
-              className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden z-50 animate-in fade-in-50 duration-150"
+              className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E2C43] rounded-[10px] border border-[#DDE7F3] dark:border-[#2D405C] shadow-xl overflow-hidden z-50 text-xs text-left animate-in fade-in-50 duration-100"
             >
-              <div className="px-3.5 py-2 text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span>匹配资源建议 ({suggestions.length})</span>
-                <span className="flex items-center gap-1">
-                  <span>按回车直达</span>
-                  <CornerDownLeft className="w-3 h-3" />
-                </span>
-              </div>
-
-              {suggestions.length === 0 ? (
-                <div className="p-4 text-center text-xs text-slate-500 dark:text-slate-400">
-                  没有找到包含 &quot;{query}&quot; 的相关软件，可按回车查看全站搜索
+              {isLoading ? (
+                <div className="p-4 text-center text-[#718198] dark:text-[#9AAFCB] flex items-center justify-center gap-2">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#1464E9]" />
+                  <span>正在匹配实时库资源...</span>
+                </div>
+              ) : suggestions.length === 0 ? (
+                <div className="p-4 text-center text-[#718198] dark:text-[#9AAFCB]">
+                  未找到包含 “{query}” 的软件资源
                 </div>
               ) : (
-                <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/60">
-                  {suggestions.map((item, index) => {
-                    const isSelected = index === selectedIndex;
-                    return (
-                      <div
-                        key={item.id}
-                        role="option"
-                        aria-selected={isSelected}
-                        onClick={() => {
-                          onSelectSoftware(item);
-                          setIsSuggestOpen(false);
-                        }}
-                        onMouseEnter={() => setSelectedIndex(index)}
-                        className={`flex items-center justify-between p-3.5 cursor-pointer transition-colors ${
-                          isSelected
-                            ? 'bg-blue-50/80 dark:bg-blue-950/40 text-blue-900 dark:text-blue-100'
-                            : 'hover:bg-slate-50 dark:hover:bg-slate-800/60'
-                        }`}
-                      >
-                        <div className="flex items-center gap-3 min-w-0 pr-3">
-                          <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 flex items-center justify-center font-bold text-xs shrink-0">
-                            {item.name.slice(0, 1)}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-slate-100 truncate">
-                                {item.name}
-                              </span>
-                              <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">
-                                v{item.latestVersion.version}
-                              </span>
-                            </div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                              {item.summary}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="shrink-0 text-right text-[11px] text-slate-400">
-                          <span className="text-blue-600 dark:text-blue-400 font-medium">
-                            {item.categoryName}
-                          </span>
-                        </div>
+                <div className="py-1">
+                  <div className="px-3.5 py-2 text-[11px] font-semibold text-[#718198] dark:text-[#9AAFCB] bg-[#F5F8FC] dark:bg-[#172338] border-b border-[#E7EDF5] dark:border-[#2D405C] flex items-center justify-between">
+                    <span>快速匹配</span>
+                    <span className="font-normal text-[10px]">按 ↑↓ 导航，Enter 选中</span>
+                  </div>
+                  {suggestions.map((item, idx) => (
+                    <div
+                      key={item.id}
+                      role="option"
+                      aria-selected={idx === selectedIndex}
+                      onClick={() => {
+                        onSelectSoftware(item);
+                        setIsSuggestOpen(false);
+                      }}
+                      className={`px-3.5 py-2.5 flex items-center justify-between gap-3 cursor-pointer transition-colors ${
+                        idx === selectedIndex
+                          ? 'bg-[#EAF2FF] dark:bg-[#253550] text-[#1464E9] dark:text-[#4A91FF]'
+                          : 'hover:bg-[#F5F8FC] dark:hover:bg-[#172338] text-[#172B4D] dark:text-[#ECF3FF]'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="font-semibold text-xs truncate">{item.name}</span>
+                        <span className="text-[11px] text-[#718198] dark:text-[#9AAFCB] truncate hidden sm:inline">
+                          {item.englishName}
+                        </span>
                       </div>
-                    );
-                  })}
+                      <div className="flex items-center gap-2 shrink-0 text-[11px] text-[#718198] dark:text-[#9AAFCB]">
+                        <span>{item.categoryName}</span>
+                        <span className="text-[#1464E9] dark:text-[#4A91FF] font-medium">
+                          查看官方来源 →
+                        </span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
           )}
         </div>
 
-        {/* 热门搜索标签 (严格从配置读取，无假造热度) */}
-        {siteConfig.popularSearches && siteConfig.popularSearches.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="text-slate-400 dark:text-slate-500">热门搜索：</span>
-            {siteConfig.popularSearches.map((item) => (
+        {/* 推荐搜索词 (单行文字链接，精致点缀) */}
+        <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs text-[#718198] dark:text-[#9AAFCB]">
+          <span className="font-medium text-[#718198] dark:text-[#9AAFCB]">推荐搜索：</span>
+          {siteConfig.popularSearches.map((keyword, index) => (
+            <React.Fragment key={keyword}>
               <button
-                key={item}
                 type="button"
-                onClick={() => handlePopularClick(item)}
-                className="px-2.5 py-1 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 bg-white/70 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-md transition-colors"
+                onClick={() => handleKeywordClick(keyword)}
+                className="hover:text-[#1464E9] dark:hover:text-[#4A91FF] transition-colors cursor-pointer"
               >
-                {item}
+                {keyword}
               </button>
-            ))}
-          </div>
-        )}
+              {index < siteConfig.popularSearches.length - 1 && (
+                <span className="text-[#D0DBEA] dark:text-[#2D405C]" aria-hidden="true">
+                  /
+                </span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
     </section>
   );

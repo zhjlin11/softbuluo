@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B192E"/>
+      <stop offset="55%" stop-color="#112E5B"/>
+      <stop offset="100%" stop-color="#1769D2"/>
+    </linearGradient>
+    <pattern id="grid1" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" stroke="rgba(148,197,255,0.08)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg1)"/>
+  <rect width="960" height="540" fill="url(#grid1)"/>
+  <circle cx="770" cy="130" r="180" fill="#3B82F6" fill-opacity="0.12"/>
+  <circle cx="770" cy="130" r="120" stroke="#60A5FA" stroke-opacity="0.25" stroke-dasharray="6 6" stroke-width="1.5"/>
+  <!-- Diagnostic Console Panel -->
+  <rect x="520" y="96" width="370" height="340" rx="18" fill="#0F2342" fill-opacity="0.88" stroke="#60A5FA" stroke-opacity="0.35" stroke-width="1.5"/>
+  <circle cx="550" cy="124" r="6" fill="#38BDF8"/>
+  <circle cx="570" cy="124" r="6" fill="#34D399"/>
+  <circle cx="590" cy="124" r="6" fill="#FBBF24"/>
+  <rect x="546" y="152" width="150" height="74" rx="10" fill="#173564" stroke="#3B82F6" stroke-opacity="0.4"/>
+  <text x="562" y="178" fill="#93C5FD" font-family="system-ui,sans-serif" font-size="13" font-weight="600">SYS DIAGNOSTICS</text>
+  <text x="562" y="206" fill="#FFFFFF" font-family="ui-monospace,monospace" font-size="22" font-weight="700">100% READY</text>
+  <rect x="712" y="152" width="152" height="74" rx="10" fill="#173564" stroke="#34D399" stroke-opacity="0.4"/>
+  <text x="728" y="178" fill="#6EE7B7" font-family="system-ui,sans-serif" font-size="13" font-weight="600">S.M.A.R.T. BUS</text>
+  <text x="728" y="206" fill="#FFFFFF" font-family="ui-monospace,monospace" font-size="22" font-weight="700">HEALTHY</text>
+  <!-- Telemetry Bars -->
+  <rect x="546" y="246" width="318" height="162" rx="12" fill="#0A172B" stroke="#3B82F6" stroke-opacity="0.25"/>
+  <path d="M568 370 L615 338 L665 352 L715 292 L765 316 L825 270" stroke="#38BDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="715" cy="292" r="5" fill="#38BDF8"/>
+  <circle cx="825" cy="270" r="6" fill="#34D399"/>
+  <rect x="568" y="384" width="110" height="8" rx="4" fill="#1D4ED8"/>
+  <rect x="692" y="384" width="90" height="8" rx="4" fill="#10B981"/>
+  <!-- Shield Accent -->
+  <path d="M120 385 L154 370 V405 C154 428 139 445 120 454 C101 445 86 428 86 405 V370 L120 385Z" fill="#2563EB" fill-opacity="0.28" stroke="#60A5FA" stroke-width="2"/>
+</svg>

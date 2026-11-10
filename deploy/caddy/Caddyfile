@@ -1,0 +1,38 @@
+# 软游部落生产环境 Caddy 配置
+# 支持全自动申请与续期 Let's Encrypt 证书、默认开启 HTTP/3、安全响应头
+
+softbuluo.com, www.softbuluo.com {
+    # 强制将 www 重定向到根域名
+    @www header_regexp host Host ^www\.(.*)$
+    redir @www https://softbuluo.com{uri} permanent
+
+    # 启用 Gzip & Zstandard 压缩
+    encode zstd gzip
+
+    # 生产安全响应头 (HSTS 不随意强制 preload，避免不可撤销风险)
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "SAMEORIGIN"
+        Referrer-Policy "strict-origin-when-cross-origin"
+        -Server
+    }
+
+    # 静态资产长效缓存
+    @static path /assets/*
+    handle @static {
+        root * /var/www/softbuluo/dist
+        file_server
+        header Cache-Control "public, max-age=31536000, immutable"
+    }
+
+    # 反向代理到 Fastify 后端服务
+    handle {
+        reverse_proxy 127.0.0.1:3001 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+}

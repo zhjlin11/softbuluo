@@ -1,0 +1,63 @@
+[
+  {
+    "key": "win11",
+    "title": "Windows 11 官方原版镜像",
+    "url": "https://massgrave.dev/windows_11_links",
+    "items": []
+  },
+  {
+    "key": "win10",
+    "title": "Windows 10 官方原版镜像",
+    "url": "https://massgrave.dev/windows_10_links",
+    "items": []
+  },
+  {
+    "key": "win_ltsc",
+    "title": "Windows 10 / 11 Enterprise LTSC 长期服务版",
+    "url": "https://massgrave.dev/windows_ltsc_links",
+    "items": []
+  },
+  {
+    "key": "win_arm",
+    "title": "Windows ARM64 官方原版镜像",
+    "url": "https://massgrave.dev/windows_arm_links",
+    "items": []
+  },
+  {
+    "key": "win_server",
+    "title": "Windows Server 官方服务器操作系统镜像",
+    "url": "https://massgrave.dev/windows-server-links",
+    "items": []
+  },
+  {
+    "key": "win7",
+    "title": "Windows 7 SP1 官方典藏原版镜像",
+    "url": "https://massgrave.dev/windows_7_links",
+    "items": [
+      {
+        "language": "English",
+        "arch": "x86/x64",
+        "filename": "Official Download",
+        "url": "https://www.microsoft.com/en-us/download/details.aspx?id=11887"
+      }
+    ]
+  },
+  {
+    "key": "win81",
+    "title": "Windows 8.1 官方原版镜像",
+    "url": "https://massgrave.dev/windows_8.1_links",
+    "items": []
+  },
+  {
+    "key": "office_c2r",
+    "title": "Microsoft Office 原厂 C2R 离线安装镜像",
+    "url": "https://massgrave.dev/office_c2r_links",
+    "items": []
+  },
+  {
+    "key": "office_mac",
+    "title": "Microsoft Office for Mac 官方原版安装包",
+    "url": "https://massgrave.dev/office_for_mac",
+    "items": []
+  }
+]

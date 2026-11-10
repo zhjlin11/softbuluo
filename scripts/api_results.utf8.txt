@@ -1,0 +1,59 @@
+[OK] Windows 11 官方原版镜像 (windows-11) | 4 versions
+     Latest: 24H2 官方 ARM64 消费者版 (简体中文) [4.9 GB]
+        * [微软官方 CDN 镜像直链]: https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26200.6584.250915-1905.25h2_ge_release_svc_refresh_CLIENT_CONSUMER_A64FRE_zh-cn.iso
+     Other: 24H2 消费者版 (x64 English) [5.4 GB]
+        * [原厂 ISO 镜像直链 (ZeroFS)]: https://zerofs.link/f/mLqGgJBBs9gT7TJBD10Wi-SoS4j0zXQkbsmomWb9LtWhu4w/
+     Other: 24H2 商业版 (x64 简体中文) [5.3 GB]
+        * [原厂 ISO 镜像极速直链 (ZeroFS 高速节点)]: https://zerofs.link/f/ludBx62GJT4smNtMa29mFXrnuIoutGnbT3s4W0-WX6cnnjw/
+     Other: 24H2 消费者版 (x64 简体中文) [5.4 GB]
+        * [原厂 ISO 镜像极速直链 (ZeroFS 高速节点)]: https://zerofs.link/f/cdwnwjSac16F8yvpLHl-FOAew7gnp_CMq8ovKl-j8fi4cFw/
+        * [微软官方下载站官方引导通道]: https://www.microsoft.com/zh-cn/software-download/windows11
+[OK] Windows 10 官方原版镜像 (windows-10) | 3 versions
+     Latest: 22H2 消费者版 (x86 32位 简体中文) [4.1 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/e30zxw5wto68
+     Other: 22H2 商业版 (x64 简体中文) [5.6 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/aurx019brgmc
+     Other: 22H2 消费者版 (x64 简体中文) [5.7 GB]
+        * [原厂 ISO 镜像极速直链 (Buzzheavier)]: https://buzzheavier.com/h4zeh5r6vtjq
+        * [微软官方下载通道]: https://www.microsoft.com/zh-cn/software-download/windows10
+[OK] Windows 10 / 11 Enterprise LTSC 长期服务版 (windows-ltsc) | 3 versions
+     Latest: Windows 10 Enterprise LTSC 2019 (x64 简体中文) [4.2 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/ue3zuuxwwa59
+     Other: Windows 10 IoT Enterprise LTSC 2021 (x64 简体中文) [4.7 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/h1yn52aj10ft
+     Other: Windows 11 IoT Enterprise LTSC 2024 (x64 简体中文) [4.8 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/k2laem70enbn
+[OK] Windows Server 企业服务器操作系统原版镜像 (windows-server) | 3 versions
+     Latest: Windows Server 2019 (x64 简体中文) [4.9 GB]
+        * [原厂 ISO 镜像直链 (Buzzheavier)]: https://buzzheavier.com/sqddwet2qb3j
+     Other: Windows Server 2022 (x64 简体中文) [5.1 GB]
+        * [原厂 ISO 镜像直链 (ZeroFS 高速节点)]: https://zerofs.link/f/GE5sD3M8Ly-C4EobAr-a-Rb21SdCDCFez8dfMdTzi2ioFV0/
+     Other: Windows Server 2025 (x64 简体中文) [5.2 GB]
+        * [原厂 ISO 镜像直链 (ZeroFS 高速节点)]: https://zerofs.link/f/yCSsC0cgJteYPgjLabIpg27EbyzLTrtWtWrvXxy9OKEZ5jU/
+[OK] Windows 7 SP1 官方纯净原版镜像 (windows-7) | 2 versions
+     Latest: 旗舰版 SP1 (x86 32位 简体中文原版) [2.47 GB]
+        * [原厂纯净 ISO 直链 (ZeroFS)]: https://zerofs.link/f/m-9MPxa3PDtr2Mks4giyPdFZXGL_A9_qUToO9sJXo9izPsk/
+     Other: 旗舰版 SP1 (x64 简体中文原版) [3.19 GB]
+        * [原厂纯净 ISO 直链 (ZeroFS)]: https://zerofs.link/f/MI2MsTlTy-aVCjcZnWewW0ekA-5GMmqCzeRRQB7Stff9qqk/
+[OK] Microsoft Office 2024 专业增强版 (office-2024) | 1 versions
+     Latest: ProPlus 2024 完整离线镜像 (x32/x64 简体中文) [4.6 GB]
+        * [微软官方 OfficeCDN 离线镜像直链 (IMG 格式)]: https://officecdn.microsoft.com/db/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/zh-cn/ProPlus2024Retail.img
+        * [微软官方在线安装器 (x64 极速部署)]: https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2024Retail&platform=x64&language=zh-cn&version=O16GA
+        * [微软官方在线安装器 (x86 32位部署)]: https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2024Retail&platform=x86&language=zh-cn&version=O16GA
+[OK] Microsoft Office 2021 专业增强版 (office-2021) | 1 versions
+     Latest: ProPlus 2021 完整离线镜像 (x32/x64 简体中文) [4.4 GB]
+        * [微软官方 OfficeCDN 离线镜像直链 (IMG 格式)]: https://officecdn.microsoft.com/db/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/zh-cn/ProPlus2021Retail.img
+        * [微软官方在线安装器 (x64 极速部署)]: https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2021Retail&platform=x64&language=zh-cn&version=O16GA
+[OK] Microsoft 365 官方离线安装包 (microsoft-365) | 1 versions
+     Latest: Microsoft 365 ProPlus 官方离线镜像 (x32/x64 简体中文) [4.5 GB]
+        * [微软官方 OfficeCDN 离线镜像直链 (IMG 格式)]: https://officecdn.microsoft.com/db/492350f6-3a01-4f97-b9c0-c7c6ddf67d60/media/zh-cn/O365ProPlusRetail.img
+        * [微软官方在线安装器 (x64 极速部署)]: https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=O365ProPlusRetail&platform=x64&language=zh-cn&version=O16GA
+[OK] Microsoft Office for Mac 官方原版安装包 (office-mac) | 2 versions
+     Latest: Office 2024 / M365 Mac 套件安装包 (精简无 Teams, PKG) [1.9 GB]
+        * [微软官方 CDN 直链 (精简无 Teams 套件)]: https://go.microsoft.com/fwlink/p/?linkid=525133
+     Other: Office 2024 / M365 Mac 套件安装包 (含 Teams, PKG) [2.2 GB]
+        * [微软官方 CDN 直链 (含 Teams 套件)]: https://go.microsoft.com/fwlink/p/?linkid=2009112
+[OK] AB Download Manager 极速多线程下载器 (ab-download-manager) | 1 versions
+     Latest: v1.5.4 官方安装版 (Windows x64) [85 MB]
+        * [GitHub 官方 Releases 下载源]: https://github.com/amir1376/ab-download-manager/releases
+        * [AB Download Manager 官方网站]: https://abdownloadmanager.com/

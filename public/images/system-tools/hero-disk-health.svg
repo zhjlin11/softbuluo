@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#111827"/>
+      <stop offset="50%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#0F766E"/>
+    </linearGradient>
+    <pattern id="grid2" width="36" height="36" patternUnits="userSpaceOnUse">
+      <path d="M36 0H0v36" stroke="rgba(110,231,183,0.08)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg2)"/>
+  <rect width="960" height="540" fill="url(#grid2)"/>
+  <!-- Disk Partition Schematic -->
+  <rect x="500" y="110" width="390" height="310" rx="18" fill="#0B1626" fill-opacity="0.9" stroke="#2DD4BF" stroke-opacity="0.35" stroke-width="1.5"/>
+  <text x="528" y="150" fill="#5EEAD4" font-family="ui-monospace,monospace" font-size="14" font-weight="700">NVMe0n1 · GPT PARTITION MAP</text>
+  <rect x="528" y="172" width="70" height="44" rx="6" fill="#0EA5E9" fill-opacity="0.35" stroke="#38BDF8"/>
+  <rect x="606" y="172" width="165" height="44" rx="6" fill="#10B981" fill-opacity="0.35" stroke="#34D399"/>
+  <rect x="779" y="172" width="83" height="44" rx="6" fill="#F59E0B" fill-opacity="0.35" stroke="#FBBF24"/>
+  <text x="546" y="199" fill="#E0F2FE" font-family="ui-monospace,monospace" font-size="12">EFI</text>
+  <text x="646" y="199" fill="#D1FAE5" font-family="ui-monospace,monospace" font-size="12">NTFS SYSTEM</text>
+  <text x="795" y="199" fill="#FEF3C7" font-family="ui-monospace,monospace" font-size="12">BACKUP</text>
+  <!-- SMART Ring -->
+  <circle cx="620" cy="312" r="56" stroke="#1E293B" stroke-width="10"/>
+  <circle cx="620" cy="312" r="56" stroke="#10B981" stroke-width="10" stroke-dasharray="290 360" stroke-linecap="round"/>
+  <text x="593" y="319" fill="#FFFFFF" font-family="ui-monospace,monospace" font-size="20" font-weight="700">98%</text>
+  <rect x="706" y="266" width="156" height="24" rx="6" fill="#16283E"/>
+  <rect x="706" y="302" width="132" height="24" rx="6" fill="#16283E"/>
+  <rect x="706" y="338" width="144" height="24" rx="6" fill="#16283E"/>
+</svg>

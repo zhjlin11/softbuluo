@@ -9,7 +9,12 @@ import {
   Code2,
   Layers,
   Gamepad2,
+  ShieldCheck,
   Grid,
+  ChevronRight,
+  Flame,
+  Wrench,
+  Sparkles,
   LucideIcon,
 } from 'lucide-react';
 import { Category } from '../../types/resource';
@@ -24,6 +29,7 @@ const iconMap: Record<string, LucideIcon> = {
   Code2,
   Layers,
   Gamepad2,
+  ShieldCheck,
   Grid,
 };
 
@@ -31,81 +37,119 @@ interface QuickCategoriesProps {
   categories: Category[];
   selectedCategory: string;
   onSelectCategory: (slug: string) => void;
+  className?: string;
 }
 
 export const QuickCategories: React.FC<QuickCategoriesProps> = ({
   categories,
   selectedCategory,
   onSelectCategory,
+  className = '',
 }) => {
   if (!categories || categories.length === 0) {
     return null;
   }
 
   return (
-    <section className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            快捷分类导航
-          </h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            覆盖 Windows 核心应用、系统装机与专业维护工具
-          </p>
-        </div>
-        {selectedCategory !== 'all' && (
-          <button
-            onClick={() => onSelectCategory('all')}
-            className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            清除分类筛选
-          </button>
-        )}
-      </div>
-
-      {/* 5 列 × 2 行 电脑端，2 列 × 5 行 手机端 */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
-        {categories.map((cat) => {
-          const IconComponent = iconMap[cat.iconName] || Grid;
-          const isSelected = selectedCategory === cat.slug;
-
-          return (
+    <div
+      className={`bg-white dark:bg-[#141F33] rounded-xl border border-[#E5E9F0] dark:border-slate-800 p-3.5 sm:p-4 shadow-2xs h-full flex flex-col justify-between ${className}`}
+    >
+      <div>
+        {/* 侧栏标题 */}
+        <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-[#EDF0F4] dark:border-slate-800">
+          <span className="text-xs font-bold text-[#202938] dark:text-slate-200 uppercase tracking-wider">
+            软件分类导航
+          </span>
+          {selectedCategory !== 'all' && (
             <button
-              key={cat.id}
-              onClick={() => onSelectCategory(isSelected ? 'all' : cat.slug)}
-              className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all duration-150 group ${
-                isSelected
-                  ? 'bg-blue-50/80 dark:bg-blue-950/40 border-blue-500/50 dark:border-blue-500/40 shadow-xs'
-                  : 'bg-white dark:bg-slate-900 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs'
-              }`}
+              onClick={() => onSelectCategory('all')}
+              className="text-[11px] text-[#1769D2] dark:text-blue-400 hover:underline cursor-pointer"
             >
-              <div
-                className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+              显示全部分类
+            </button>
+          )}
+        </div>
+
+        {/* 分类垂直列表 (桌面端紧凑列表，高信息密度) */}
+        <nav aria-label="软件分类列表" className="space-y-0.5">
+          <button
+            type="button"
+            onClick={() => onSelectCategory('all')}
+            className={`w-full flex items-center justify-between px-2.5 py-2 rounded-md text-xs font-medium transition-colors cursor-pointer text-left ${
+              selectedCategory === 'all'
+                ? 'bg-[#1769D2] text-white font-semibold'
+                : 'text-[#202938] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Grid className="w-3.5 h-3.5 shrink-0" />
+              <span>全站所有精选</span>
+            </div>
+            <ChevronRight className={`w-3.5 h-3.5 ${selectedCategory === 'all' ? 'text-white' : 'text-slate-400'}`} />
+          </button>
+
+          {categories.map((cat) => {
+            const IconComponent = iconMap[cat.iconName] || Grid;
+            const isSelected = selectedCategory === cat.slug;
+
+            return (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => onSelectCategory(cat.slug)}
+                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition-colors cursor-pointer text-left ${
                   isSelected
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 group-hover:bg-blue-50 dark:group-hover:bg-slate-800 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                    ? 'bg-[#1769D2] text-white font-semibold'
+                    : 'text-[#202938] dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                 }`}
               >
-                <IconComponent className="w-4.5 h-4.5 stroke-[1.8]" />
-              </div>
-
-              <div className="min-w-0">
-                <div className="flex items-center justify-between gap-1">
-                  <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
-                    {cat.name}
-                  </span>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums shrink-0">
-                    {cat.itemCount}
-                  </span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <IconComponent className={`w-3.5 h-3.5 shrink-0 ${isSelected ? 'text-white' : 'text-slate-500 dark:text-slate-400'}`} />
+                  <span className="truncate">{cat.name}</span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                  {cat.description}
-                </p>
-              </div>
-            </button>
-          );
-        })}
+                <span
+                  className={`text-[11px] tabular-nums shrink-0 ml-1 ${
+                    isSelected ? 'text-white/80' : 'text-slate-400 dark:text-slate-500'
+                  }`}
+                >
+                  {cat.itemCount > 0 ? cat.itemCount : ''}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
-    </section>
+
+      {/* 门户特色装机专题快速通道 */}
+      <div className="mt-4 pt-3 border-t border-[#EDF0F4] dark:border-slate-800 space-y-1">
+        <div className="text-[11px] font-bold text-slate-400 dark:text-slate-500 px-2 mb-1.5 uppercase tracking-wider">
+          常用专题入口
+        </div>
+        <a
+          href="#tools"
+          className="flex items-center justify-between px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors"
+        >
+          <span className="flex items-center gap-1.5">
+            <Wrench className="w-3.5 h-3.5 text-amber-500" />
+            <span>系统与维修工具箱</span>
+          </span>
+          <span className="text-[10px] text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.2 rounded font-medium">
+            装机必备
+          </span>
+        </a>
+        <a
+          href="#games"
+          className="flex items-center justify-between px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-md transition-colors"
+        >
+          <span className="flex items-center gap-1.5">
+            <Gamepad2 className="w-3.5 h-3.5 text-indigo-500" />
+            <span>官方正版与开源游戏</span>
+          </span>
+          <span className="text-[10px] text-blue-600 bg-blue-50 dark:bg-blue-950/40 px-1.5 py-0.2 rounded font-medium">
+            游戏频道
+          </span>
+        </a>
+      </div>
+    </div>
   );
 };

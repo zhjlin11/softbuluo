@@ -1,101 +1,85 @@
 import React from 'react';
-import { Clock, ArrowRight, ShieldCheck, Calendar } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Clock, ArrowRight, ShieldCheck } from 'lucide-react';
 import { SoftwareItem } from '../../types/resource';
+import { SoftwareIcon } from '../common/SoftwareIcon';
+import { getSimpleSoftwareName, getSimpleVersion } from '../../utils/softwareName';
 
 interface LatestUpdatesProps {
   softwareList: SoftwareItem[];
   onSelectSoftware: (software: SoftwareItem) => void;
   onViewAllClick?: () => void;
+  className?: string;
 }
 
 export const LatestUpdates: React.FC<LatestUpdatesProps> = ({
   softwareList,
   onSelectSoftware,
   onViewAllClick,
+  className = '',
 }) => {
   if (!softwareList || softwareList.length === 0) {
     return null;
   }
 
   return (
-    <section id="updates" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              最新版本更新
-            </h2>
-            <span className="flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-              <Clock className="w-3.5 h-3.5" />
-              <span>官方发布核验</span>
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            追踪收录软件的最新稳定版本与更新日志
-          </p>
+    <div className={`bg-white dark:bg-[#141F33] rounded-lg border border-[#E5E9F0] dark:border-slate-800 p-4 sm:p-5 shadow-2xs ${className}`}>
+      {/* 标题栏 */}
+      <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#EDF0F4] dark:border-slate-800">
+        <div className="flex items-center gap-2">
+          <Clock className="w-4 h-4 text-[#1769D2]" />
+          <h3 className="text-base sm:text-lg font-bold text-[#202938] dark:text-slate-100">
+            全站最新版本发布动态
+          </h3>
+          <span className="text-xs text-[#667085] dark:text-slate-400 hidden sm:inline">
+            | 原厂官方发布同步追踪，实时展示变更日志与更新日期
+          </span>
         </div>
 
-        <button
-          onClick={onViewAllClick}
-          className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors self-start sm:self-auto"
-        >
-          <span>查看全部更新动态</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
-      </div>
-
-      {/* 2-3 列更新日志卡片 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {softwareList.map((item) => (
-          <div
-            key={item.id}
-            onClick={() => onSelectSoftware(item)}
-            className="flex flex-col justify-between p-4.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-xs transition-all cursor-pointer group"
+        {onViewAllClick && (
+          <button
+            onClick={onViewAllClick}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-[#1769D2] dark:text-blue-400 hover:text-[#1258B5] transition-colors cursor-pointer"
           >
-            <div>
-              {/* 头部：名称与版本 */}
-              <div className="flex items-center justify-between gap-2 mb-2.5">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center shrink-0">
-                    {item.name.slice(0, 1)}
-                  </div>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                    {item.name}
-                  </h3>
-                </div>
-
-                <span className="text-xs font-mono font-medium text-blue-600 dark:text-blue-400 tabular-nums shrink-0">
-                  v{item.latestVersion.version}
-                </span>
-              </div>
-
-              {/* 更新日志摘要 */}
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4 bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800/70">
-                {item.latestVersion.changelog || "优化系统稳定性并修复若干已知异常。"}
-              </p>
-            </div>
-
-            {/* 底部信息：更新日期与详情 */}
-            <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 dark:text-slate-500">
-              <span className="flex items-center gap-1 tabular-nums">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>{item.latestVersion.releaseDate}</span>
-              </span>
-
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectSoftware(item);
-                }}
-                className="text-slate-700 dark:text-slate-300 font-medium hover:text-blue-600 dark:hover:text-blue-400"
-              >
-                查看更新详情 →
-              </button>
-            </div>
-          </div>
-        ))}
+            <span>查看全部更新</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
-    </section>
+
+      {/* 动态网格：8 列紧凑高密度排版 · 纯净软件名 · 紧凑间距 */}
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-1.5 sm:gap-2">
+        {softwareList.slice(0, 16).map((item) => {
+          const simpleName = getSimpleSoftwareName(item.name, item.englishName);
+          return (
+            <Link
+              key={item.id}
+              to={`/software/${item.slug}`}
+              title={item.name}
+              className="p-1.5 sm:p-2 bg-slate-50/60 dark:bg-slate-900/40 rounded-lg border border-[#E5E9F0] dark:border-slate-800/80 hover:border-blue-400 dark:hover:border-blue-600 transition-all flex flex-col items-center justify-between group hover:shadow-xs text-center"
+            >
+              <div className="flex flex-col items-center w-full">
+                <SoftwareIcon
+                  iconUrl={item.iconUrl}
+                  name={item.name}
+                  slug={item.slug}
+                  categorySlug={item.categorySlug}
+                  size="md"
+                  className="group-hover:scale-106 transition-transform"
+                />
+                <span className="w-full text-xs font-bold text-[#202938] dark:text-slate-100 group-hover:text-[#1769D2] transition-colors truncate mt-1 block">
+                  {simpleName}
+                </span>
+                <div className="flex items-center justify-center gap-1 mt-0.5 text-[10px] text-slate-400 font-mono tabular-nums">
+                  <span className="text-[#1769D2] dark:text-blue-400 font-semibold">{getSimpleVersion(item.latestVersion?.version)}</span>
+                  <span>·</span>
+                  <span>{item.latestVersion?.releaseDate || '近期'}</span>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </div>
   );
 };

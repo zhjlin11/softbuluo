@@ -1,0 +1,20 @@
+=== Windows 11 官方原版镜像 (24H2) (3114 links) ===
+  Chinese: 3112, English: 2
+    [ZH] ar-sa_windows_11_consumer_editions_version_26h2_x64_dvd_e4fa21a2.iso -> https://zerofs.link/f/of0tctVT25gh3d1_pJX0b_R-XjPHkHzdbkpxYM5Z3wT5CEc/
+    [ZH] bg-bg_windows_11_consumer_editions_version_26h2_x64_dvd_e71b6d73.iso -> https://zerofs.link/f/L3HybwdbD257ke8L2wPJqAC5JQ8sVTIjZguLOrVOkfLVlyo/
+    [ZH] cs-cz_windows_11_consumer_editions_version_26h2_x64_dvd_6f352243.iso -> https://zerofs.link/f/q5r264utNFCoalWFLvJ_Dyx-55nH3Gk-30oJM210HF8TceQ/
+    [EN] en-us_windows_11_iot_enterprise_version_26h2_x64_dvd_7788c4bc.iso -> https://zerofs.link/f/CJFJLTuLGL79HrLNjh0x0FM7S1e8XcUJmszet9cyEZXiShA/
+    [EN] en-us_windows_11_iot_enterprise_version_26h2_x64_dvd_7788c4bc.iso -> https://zerofs.link/f/CJFJLTuLGL79HrLNjh0x0FM7S1e8XcUJmszet9cyEZXiShA/
+=== Windows 10 官方原版镜像 (22H2) (6000 links) ===
+  Chinese: 5998, English: 2
+    [ZH] ar-sa_windows_10_consumer_editions_version_22h2_updated_oct_2025_x64_dvd_38efd00d.iso -> https://buzzheavier.com/ej66gt35b6n3
+    [ZH] ar-sa_windows_10_consumer_editions_version_22h2_updated_oct_2025_x86_dvd_38efd00d.iso -> https://buzzheavier.com/r9l8htzvtqv7
+    [ZH] bg-bg_windows_10_consumer_editions_version_22h2_updated_oct_2025_x64_dvd_38efd00d.iso -> https://buzzheavier.com/86f9owe73ne0
+    [EN] en-us_windows_10_iot_enterprise_version_22h2_x64_dvd_51cc370f.iso -> https://buzzheavier.com/5eerq83cpgwi
+    [EN] en-us_windows_10_iot_enterprise_version_22h2_x64_dvd_51cc370f.iso -> https://buzzheavier.com/5eerq83cpgwi
+=== Windows 7 SP1 官方原版镜像 (62 links) ===
+  Chinese: 0, English: 62
+    [EN] en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso (Buzzheavier) -> https://buzzheavier.com/lllag2h2uc17
+    [EN] en_windows_7_ultimate_with_sp1_x64_dvd_u_677332.iso (ZeroFS) -> https://zerofs.link/f/qiHFCODLNnrmF5rVH0SBNy7HKD9f73ztnJnAc_F5TZu4lYw/
+=== Microsoft Office for Mac 官方安装包 (256 links) ===
+  Chinese: 0, English: 0

@@ -1,0 +1,932 @@
+[
+  {
+    "name": "0 A.D.",
+    "slug": "0ad",
+    "englishName": "0 A.D. Empires Ascendant",
+    "iconUrl": null,
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "7-Zip",
+    "slug": "7zip",
+    "englishName": "7-Zip",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "AB Download Manager 极速多线程下载器",
+    "slug": "ab-download-manager",
+    "englishName": "AB Download Manager",
+    "iconUrl": null,
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Advanced IP Scanner 快速局域网设备扫描与管理软件",
+    "slug": "advanced-ip-scanner",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=advanced-ip-scanner",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "AIDA64 Extreme 硬件规格分析与全面诊断套件",
+    "slug": "aida64",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=aida64",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "Angry IP Scanner 开源高速局域网 IP 扫描工具",
+    "slug": "angry-ip-scanner",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=angry-ip-scanner",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "AnyDesk 极速流畅远程桌面控制协助工具",
+    "slug": "anydesk",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=anydesk",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Audacity 多轨道音频编辑与声音录制神器",
+    "slug": "audacity",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=audacity",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "AutoHotkey 强大的脚本自动化与快捷键定制引擎",
+    "slug": "autohotkey",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=autohotkey",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Bandizip 高颜值高速解压缩软件",
+    "slug": "bandizip",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=bandizip",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Battle for Wesnoth",
+    "slug": "battle-for-wesnoth",
+    "englishName": "The Battle for Wesnoth",
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=battle-for-wesnoth",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "BleachBit 开源系统隐私清理工具",
+    "slug": "bleachbit",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=bleachbit",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Blender 顶尖开源全能三维动画与渲染套件",
+    "slug": "blender",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=blender",
+    "category": {
+      "slug": "graphic",
+      "name": "图像设计"
+    }
+  },
+  {
+    "name": "Calibre 强大的全功能电子书管理与格式转换神器",
+    "slug": "calibre",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=calibre",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Core Temp 轻量 CPU 各核心温度实时监视器",
+    "slug": "core-temp",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=core-temp",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "CPU-Z",
+    "slug": "cpu-z",
+    "englishName": "CPU-Z",
+    "iconUrl": "",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "CrystalDiskInfo 硬盘健康状态与 S.M.A.R.T. 监控工具",
+    "slug": "crystaldiskinfo",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=crystaldiskinfo",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "CrystalDiskMark 硬盘读写速度基准测试工具",
+    "slug": "crystaldiskmark",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=crystaldiskmark",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "DBeaver 跨平台通用开源数据库管理工具",
+    "slug": "dbeaver",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=dbeaver",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "DiskGenius 硬盘分区与数据恢复",
+    "slug": "diskgenius",
+    "englishName": "DiskGenius",
+    "iconUrl": "",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Docker Desktop 容器化应用开发与运行环境",
+    "slug": "docker-desktop",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=docker-desktop",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Draw.io (diagrams.net) 免费开源架构图与流程图设计工具",
+    "slug": "drawio",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=drawio",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Endless Sky 广阔宇宙探索与星际贸易太空沙盒游戏",
+    "slug": "endless-sky",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=endless-sky",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "Everything 快速文件搜索",
+    "slug": "everything",
+    "englishName": "Everything",
+    "iconUrl": "",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "FastCopy Extreme",
+    "slug": "fastcopy-extreme",
+    "englishName": null,
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "FileZilla 跨平台快速 FTP/SFTP 传输客户端",
+    "slug": "filezilla",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=filezilla",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Flameshot 跨平台交互式截图工具",
+    "slug": "flameshot",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=flameshot",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "FurMark 显卡压力测试与甜甜圈烤机神器",
+    "slug": "furmark",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=furmark",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "Geek Uninstaller 强力卸载工具",
+    "slug": "geek-uninstaller",
+    "englishName": "Geek Uninstaller",
+    "iconUrl": "",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "GIMP 免费开源跨平台图像处理利器",
+    "slug": "gimp",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=gimp",
+    "category": {
+      "slug": "graphic",
+      "name": "图像设计"
+    }
+  },
+  {
+    "name": "Git for Windows",
+    "slug": "git",
+    "englishName": "Git for Windows",
+    "iconUrl": null,
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Go 语言官方编译器与工具链 (Golang)",
+    "slug": "golang",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=golang",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Google Chrome",
+    "slug": "chrome",
+    "englishName": "Google Chrome",
+    "iconUrl": "https://www.google.com/chrome/static/images/chrome-logo.svg",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "HandBrake 开源通用视频转码工具",
+    "slug": "handbrake",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=handbrake",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "HWiNFO64 专业硬件传感器监控",
+    "slug": "hwinfo",
+    "englishName": "HWiNFO64",
+    "iconUrl": null,
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "Inkscape 专业级开源矢量图形绘制软件",
+    "slug": "inkscape",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=inkscape",
+    "category": {
+      "slug": "graphic",
+      "name": "图像设计"
+    }
+  },
+  {
+    "name": "Joplin 端到端加密开源笔记与待办清单工具",
+    "slug": "joplin",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=joplin",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Kdenlive 强大易用的开源非线性视频剪辑软件",
+    "slug": "kdenlive",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=kdenlive",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "Krita 自由开源数字绘画与插画原画设计软件",
+    "slug": "krita",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=krita",
+    "category": {
+      "slug": "graphic",
+      "name": "图像设计"
+    }
+  },
+  {
+    "name": "LibreOffice 免费开源全功能办公套件",
+    "slug": "libreoffice",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=libreoffice",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Luanti (原 Minetest)",
+    "slug": "luanti-minetest",
+    "englishName": "Luanti",
+    "iconUrl": null,
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "MemTest86 独立内存故障与稳定性诊断工具",
+    "slug": "memtest86",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=memtest86",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "Microsoft 365 官方离线安装包",
+    "slug": "microsoft-365",
+    "englishName": "Microsoft 365 Apps for Enterprise (C2R)",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Microsoft Office 2021 专业增强版",
+    "slug": "office-2021",
+    "englishName": "Microsoft Office 2021 Professional Plus (C2R)",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Microsoft Office 2024 专业增强版",
+    "slug": "office-2024",
+    "englishName": "Microsoft Office 2024 Professional Plus (C2R)",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Microsoft Office for Mac 官方原版安装包",
+    "slug": "office-mac",
+    "englishName": "Microsoft Office for Mac Official PKG",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Mindustry (像素工厂)",
+    "slug": "mindustry",
+    "englishName": "Mindustry",
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=mindustry",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "MobaXterm 终极远程计算与全能终端工作站",
+    "slug": "mobaxterm",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=mobaxterm",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Mozilla Thunderbird 开源邮件、日历与通讯录客户端",
+    "slug": "thunderbird",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=thunderbird",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Neovim 现代可扩展 Vim 编辑器分叉",
+    "slug": "neovim",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=neovim",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Nmap 行业标准网络探测与安全端口扫描器",
+    "slug": "nmap",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=nmap",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Node.js 官方 JavaScript 服务端运行环境 (LTS)",
+    "slug": "nodejs",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=nodejs",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Notepad++ 经典免费文本代码编辑器",
+    "slug": "notepad-plus-plus",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=notepad-plus-plus",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "OBS Studio 行业标准级视频直播与屏幕录制套件",
+    "slug": "obs-studio",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=obs-studio",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "Obsidian 基于本地 Markdown 的网状双链知识库",
+    "slug": "obsidian",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=obsidian",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "OpenRA 开源即时战略游戏重制引擎 (红警/沙丘/泰伯利亚)",
+    "slug": "openra",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=openra",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "OpenTTD",
+    "slug": "openttd",
+    "englishName": "OpenTTD",
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=openttd",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "PeaZip",
+    "slug": "peazip",
+    "englishName": "PeaZip",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Postman 专业的 API 设计、调试与自动化测试平台",
+    "slug": "postman",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=postman",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "PotPlayer 高性能全能影音播放器",
+    "slug": "potplayer",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=potplayer",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "Prime95 极限 CPU 稳定性与散热压力测试软件",
+    "slug": "prime95",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=prime95",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "PuTTY 经典轻量 SSH 与 Telnet 终端客户端",
+    "slug": "putty",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=putty",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Python 官方通用编程语言运行环境",
+    "slug": "python",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=python",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "QuickLook Windows 空格快速预览神器",
+    "slug": "quicklook",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=quicklook",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Rufus 启动盘制作工具",
+    "slug": "rufus",
+    "englishName": "Rufus",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "RustDesk 开源自建服务器远程桌面控制软件",
+    "slug": "rustdesk",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=rustdesk",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "ScreenToGif 开源轻量屏幕录制与 GIF 编辑器",
+    "slug": "screentogif",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=screentogif",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "ShareX 全功能开源截图与文件分享工具",
+    "slug": "sharex",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=sharex",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Shattered Pixel Dungeon (破碎的像素地牢) 经典开源 Roguelike 地牢冒险",
+    "slug": "shattered-pixel-dungeon",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=shattered-pixel-dungeon",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "Shotcut 跨平台免费开源视频编辑器",
+    "slug": "shotcut",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=shotcut",
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "Sublime Text",
+    "slug": "sublime-text",
+    "englishName": "Sublime Text",
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Sumatra PDF 超轻量极速 PDF 阅读器",
+    "slug": "sumatrapdf",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=sumatrapdf",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "SuperTuxKart",
+    "slug": "supertuxkart",
+    "englishName": "SuperTuxKart",
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=supertuxkart",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "Sysinternals Autoruns 终极开机自启动项治理工具",
+    "slug": "autoruns",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=autoruns",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Sysinternals Process Explorer 微软官方进程管理器增强利器",
+    "slug": "process-explorer",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=process-explorer",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Sysinternals TCPView 网络连接与活动套接字实时监控工具",
+    "slug": "tcpview",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=tcpview",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "TechPowerUp GPU-Z 专业显卡识别与传感器检测工具",
+    "slug": "gpuz",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=gpuz",
+    "category": {
+      "slug": "hardware",
+      "name": "硬件检测"
+    }
+  },
+  {
+    "name": "Termius 现代多端同步 SSH 终端工具",
+    "slug": "termius",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=termius",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "TortoiseGit Windows 资源管理器右键 Git 客户端",
+    "slug": "tortoisegit",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=tortoisegit",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "Ventoy 新一代多系统启动 U 盘制作工具",
+    "slug": "ventoy",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=ventoy",
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Visual Studio Code",
+    "slug": "vscode",
+    "englishName": "Visual Studio Code",
+    "iconUrl": null,
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "VLC Media Player",
+    "slug": "vlc",
+    "englishName": "VLC Media Player",
+    "iconUrl": null,
+    "category": {
+      "slug": "media",
+      "name": "影音播放"
+    }
+  },
+  {
+    "name": "VS Code",
+    "slug": "vs-code",
+    "englishName": null,
+    "iconUrl": null,
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  },
+  {
+    "name": "Warzone 2100 开源全 3D 末世即时战略科技战游戏",
+    "slug": "warzone2100",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=warzone2100",
+    "category": {
+      "slug": "games",
+      "name": "单机游戏"
+    }
+  },
+  {
+    "name": "Windows 10 / 11 Enterprise LTSC 长期服务版",
+    "slug": "windows-ltsc",
+    "englishName": "Windows Enterprise LTSC Genuine Media",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Windows 10 官方原版镜像",
+    "slug": "windows-10",
+    "englishName": "Windows 10 Genuine Installation Media",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Windows 11 官方原版镜像",
+    "slug": "windows-11",
+    "englishName": "Windows 11 Genuine Installation Media",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Windows 7 SP1 官方纯净原版镜像",
+    "slug": "windows-7",
+    "englishName": "Windows 7 SP1 Genuine MSDN Media",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Windows Server 企业服务器操作系统原版镜像",
+    "slug": "windows-server",
+    "englishName": "Windows Server Genuine Installation Media",
+    "iconUrl": null,
+    "category": {
+      "slug": "sys-tools",
+      "name": "系统工具"
+    }
+  },
+  {
+    "name": "Windows Terminal 微软官方现代选项卡命令行终端",
+    "slug": "windows-terminal",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=windows-terminal",
+    "category": {
+      "slug": "dev",
+      "name": "编程开发"
+    }
+  },
+  {
+    "name": "WinSCP 开源 SFTP、FTP 与 WebDAV 文件传输客户端",
+    "slug": "winscp",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=winscp",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Wireshark 网络抓包分析仪",
+    "slug": "wireshark",
+    "englishName": "Wireshark",
+    "iconUrl": "",
+    "category": {
+      "slug": "network",
+      "name": "网络工具"
+    }
+  },
+  {
+    "name": "Zotero 个人科研文献与参考引用管理专家",
+    "slug": "zotero",
+    "englishName": null,
+    "iconUrl": "https://api.dicebear.com/7.x/identicon/svg?seed=zotero",
+    "category": {
+      "slug": "office",
+      "name": "办公软件"
+    }
+  }
+]

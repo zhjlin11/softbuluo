@@ -1,36 +1,53 @@
 {
-  "name": "react-example",
+  "name": "softbuluo",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "server": "tsx server/src/index.ts",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
+    "db:push": "prisma db push --schema=./server/prisma/schema.prisma",
+    "db:seed": "tsx server/prisma/seed.ts",
+    "admin:init": "tsx server/src/scripts/initAdmin.ts",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@fastify/cookie": "^11.1.5",
+    "@fastify/cors": "^11.4.1",
+    "@fastify/multipart": "^10.1.8",
+    "@fastify/session": "^11.1.6",
     "@google/genai": "^2.4.0",
+    "@prisma/client": "^6.19.3",
     "@tailwindcss/vite": "^4.3.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2",
+    "fastify": "^5.12.8",
     "lucide-react": "^0.546.0",
+    "motion": "^12.23.24",
+    "pino": "^10.4.0",
+    "pino-pretty": "^13.2.0",
+    "prisma": "^6.19.3",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
+    "react-router-dom": "^7.18.5",
     "vite": "^8.3.0",
-    "express": "^4.21.2",
-    "dotenv": "^17.2.3",
-    "motion": "^12.23.24"
+    "xlsx": "^0.18.5",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
+    "playwright": "^1.65.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
-    "typescript": "^7.0.2",
-    "@types/express": "^4.17.21"
+    "typescript": "^7.0.2"
   }
 }

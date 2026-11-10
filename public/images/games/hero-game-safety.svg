@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="gameSafetyBg" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0B1325"/>
+      <stop offset="55%" stop-color="#112A46"/>
+      <stop offset="100%" stop-color="#0E4A6D"/>
+    </linearGradient>
+    <pattern id="dotGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="rgba(56,189,248,0.16)"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="540" fill="url(#gameSafetyBg)"/>
+  <rect width="960" height="540" fill="url(#dotGrid)"/>
+  <circle cx="760" cy="240" r="190" fill="#06B6D4" fill-opacity="0.12"/>
+  <rect x="530" y="108" width="360" height="324" rx="20" fill="#0D1E36" fill-opacity="0.92" stroke="#38BDF8" stroke-opacity="0.35" stroke-width="1.5"/>
+  <path d="M710 154 L768 178 V230 C768 272 742 304 710 320 C678 304 652 272 652 230 V178 L710 154 Z" fill="#0EA5E9" fill-opacity="0.2" stroke="#38BDF8" stroke-width="2.5"/>
+  <path d="M686 232 L704 250 L738 214" stroke="#34D399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="572" y="346" width="276" height="14" rx="7" fill="#38BDF8" fill-opacity="0.45"/>
+  <rect x="610" y="372" width="200" height="10" rx="5" fill="#94A3B8" fill-opacity="0.35"/>
+</svg>

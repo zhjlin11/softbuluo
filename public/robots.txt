@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Allow: /software
+Allow: /system-tools
+Allow: /games
+Allow: /essentials
 
-Sitemap: https://soft.example.com/sitemap.xml
+Sitemap: https://softtribe.top/sitemap.xml
+Sitemap: https://softtribe.top/sitemap-essentials.xml

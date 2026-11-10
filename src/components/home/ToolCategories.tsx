@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { Wrench, Shield, Check, Cpu, HardDrive, Wifi, Settings, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Wrench, Settings, Cpu, Wifi, HardDrive, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import { SoftwareItem } from '../../types/resource';
+import { SoftwareIcon } from '../common/SoftwareIcon';
+import { getSimpleSoftwareName, getSimpleVersion } from '../../utils/softwareName';
 
 interface ToolCategoriesProps {
   toolList: SoftwareItem[];
@@ -11,123 +14,97 @@ export const ToolCategories: React.FC<ToolCategoriesProps> = ({
   toolList,
   onSelectSoftware,
 }) => {
-  const [activeTab, setActiveTab] = useState<'all' | 'sys-tools' | 'hardware' | 'network'>('all');
+  const [activeScenario, setActiveScenario] = useState<string>('all');
 
-  const tabs = [
-    { id: 'all', label: '全部运维工具', icon: Wrench },
-    { id: 'sys-tools', label: 'Windows系统维护与分区', icon: Settings },
-    { id: 'hardware', label: 'CPU与硬件体质检测', icon: Cpu },
-    { id: 'network', label: '网卡与网络协议诊断', icon: Wifi },
-  ] as const;
+  const scenarios = [
+    { id: 'all', label: '全部装机与运维利器', icon: Wrench },
+    { id: 'install', label: '新电脑装机必备', icon: Settings },
+    { id: 'hardware', label: '硬件体质与稳定性检测', icon: Cpu },
+    { id: 'network', label: '网络故障与端口诊断', icon: Wifi },
+  ];
 
-  const filteredTools =
-    activeTab === 'all'
-      ? toolList
-      : toolList.filter((item) => item.categorySlug === activeTab);
+  const filteredTools = toolList.filter((item) => {
+    if (activeScenario === 'all') return true;
+    if (activeScenario === 'hardware') return item.categorySlug === 'hardware' || item.slug.includes('cpu');
+    if (activeScenario === 'network') return item.categorySlug === 'network' || item.slug.includes('net');
+    if (activeScenario === 'install') return item.categorySlug === 'sys-tools' || item.slug.includes('zip') || item.isFeatured;
+    return true;
+  });
 
   return (
-    <section id="tools" className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 mb-2 text-[11px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 rounded border border-blue-200/60 dark:border-blue-900/40">
-            <span>IT 运维与装机维修精选专区</span>
+    <section id="tools" className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8 mb-12 scroll-mt-20">
+      <div className="bg-white dark:bg-[#141F33] rounded-lg border border-[#E5E9F0] dark:border-slate-800 p-5 sm:p-6">
+        {/* 标题与场景过滤器 */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 mb-5 border-b border-[#EDF0F4] dark:border-slate-800">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Wrench className="w-4 h-4 text-[#1769D2]" />
+              <h2 className="text-base sm:text-lg font-bold text-[#202938] dark:text-slate-100">
+                装机与维修工具箱
+              </h2>
+              <span className="text-xs text-[#667085] dark:text-slate-400 hidden sm:inline">
+                | 面向装机维护、系统重装与硬件检测的纯净无捆绑实用工具
+              </span>
+            </div>
+            <p className="text-xs text-slate-500">
+              杜绝任何第三方商业篡改与捆绑流氓软件，提供官方 SHA-256 完整性校验与直连通道。
+            </p>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            系统与维修工具
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            为技术员、运维工程师量身整理的高效装机验机、网络排障与分区急救利器
-          </p>
+
+          {/* 场景切换标签 */}
+          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 md:pb-0">
+            {scenarios.map((sc) => {
+              const Icon = sc.icon;
+              const isActive = activeScenario === sc.id;
+              return (
+                <button
+                  key={sc.id}
+                  onClick={() => setActiveScenario(sc.id)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
+                    isActive
+                      ? 'bg-[#1769D2] text-white font-semibold'
+                      : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{sc.label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* 横向分类切换标签 (遵守 interactive filter controls 规范) */}
-        <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-800/80 rounded-xl overflow-x-auto max-w-full">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
+        {/* 工具条目高密度网格 (8列紧密排布 · 纯净软件名 · 紧凑间距) */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 gap-1.5 sm:gap-2">
+          {filteredTools.map((tool) => {
+            const simpleName = getSimpleSoftwareName(tool.name, tool.englishName);
             return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-colors ${
-                  isActive
-                    ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-xs'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
+              <Link
+                key={tool.id}
+                to={`/tool/${tool.slug}`}
+                title={tool.name}
+                className="p-1.5 sm:p-2 bg-slate-50/70 dark:bg-slate-900/60 rounded-lg border border-[#E5E9F0] dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all flex flex-col items-center justify-between group hover:shadow-xs text-center"
               >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{tab.label}</span>
-              </button>
+                <div className="flex flex-col items-center w-full">
+                  <SoftwareIcon
+                    iconUrl={tool.iconUrl}
+                    name={tool.name}
+                    slug={tool.slug}
+                    categorySlug={tool.categorySlug}
+                    size="md"
+                    className="group-hover:scale-106 transition-transform"
+                  />
+                  <span className="w-full text-xs font-bold text-[#202938] dark:text-slate-100 group-hover:text-[#1769D2] transition-colors truncate mt-1 block">
+                    {simpleName}
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-mono mt-0.5 tabular-nums truncate max-w-full">
+                    {getSimpleVersion(tool.latestVersion?.version) || '最新版'}
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>
-      </div>
-
-      {/* 资源卡片网格 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredTools.map((tool) => (
-          <div
-            key={tool.id}
-            onClick={() => onSelectSoftware(tool)}
-            className="flex flex-col justify-between p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-500/50 hover:shadow-xs transition-all cursor-pointer group"
-          >
-            <div>
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center font-bold text-sm shrink-0">
-                    {tool.name.slice(0, 1)}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                      {tool.name}
-                    </h3>
-                    <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                      {tool.categoryName}
-                    </span>
-                  </div>
-                </div>
-
-                <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 tabular-nums shrink-0">
-                  v{tool.latestVersion.version}
-                </span>
-              </div>
-
-              <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4">
-                {tool.summary}
-              </p>
-
-              {/* 关键标签 */}
-              <div className="flex flex-wrap items-center gap-1.5 mb-4">
-                {tool.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/80 px-2 py-0.5 rounded"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
-              <span className="text-emerald-600 dark:text-emerald-400 font-medium text-[11px] flex items-center gap-1">
-                <Shield className="w-3.5 h-3.5" />
-                <span>官方原厂源</span>
-              </span>
-
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectSoftware(tool);
-                }}
-                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
-              >
-                查看工具参数 →
-              </button>
-            </div>
-          </div>
-        ))}
       </div>
     </section>
   );

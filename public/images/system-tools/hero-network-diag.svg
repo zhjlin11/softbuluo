@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" fill="none">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="960" y2="540" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <pattern id="grid3" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0v44" stroke="rgba(165,180,252,0.08)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg3)"/>
+  <rect width="960" height="540" fill="url(#grid3)"/>
+  <!-- Network Topology Nodes -->
+  <rect x="515" y="102" width="380" height="328" rx="18" fill="#0B132B" fill-opacity="0.88" stroke="#818CF8" stroke-opacity="0.4" stroke-width="1.5"/>
+  <line x1="595" y1="215" x2="705" y2="170" stroke="#38BDF8" stroke-width="2" stroke-opacity="0.65"/>
+  <line x1="705" y1="170" x2="815" y2="235" stroke="#38BDF8" stroke-width="2" stroke-opacity="0.65"/>
+  <line x1="595" y1="215" x2="705" y2="305" stroke="#818CF8" stroke-width="2" stroke-opacity="0.65"/>
+  <line x1="705" y1="305" x2="815" y2="235" stroke="#34D399" stroke-width="2" stroke-opacity="0.7"/>
+  <circle cx="595" cy="215" r="22" fill="#1D4ED8" stroke="#60A5FA" stroke-width="2"/>
+  <circle cx="705" cy="170" r="24" fill="#0F766E" stroke="#34D399" stroke-width="2"/>
+  <circle cx="815" cy="235" r="22" fill="#4338CA" stroke="#A5B4FC" stroke-width="2"/>
+  <circle cx="705" cy="305" r="20" fill="#0369A1" stroke="#38BDF8" stroke-width="2"/>
+  <path d="M555 378 H640 L660 356 L680 396 L702 368 L725 378 H855" stroke="#34D399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

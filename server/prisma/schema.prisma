@@ -1,0 +1,1595 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  REVIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum ResourceType {
+  SOFTWARE
+  GAME
+  TOOL
+}
+
+enum ResourceStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum SourceType {
+  OFFICIAL_EXTERNAL
+  LICENSED_HOSTED
+  OFFICIAL_DIRECT
+  OFFICIAL_RELEASE
+  AUTHORIZED_MIRROR
+  EXTERNAL_DOWNLOAD_PAGE
+  UNAVAILABLE
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  DISABLED
+}
+
+enum ScanStatus {
+  PENDING
+  SCANNING
+  CLEAN
+  SUSPICIOUS
+  MALICIOUS
+  FAILED
+}
+
+enum SignatureStatus {
+  NOT_CHECKED
+  VALID
+  INVALID
+  UNSIGNED
+  ERROR
+}
+
+enum EventType {
+  OFFICIAL_LINK_CLICK
+  HOSTED_DOWNLOAD_AUTHORIZED
+  HOSTED_DOWNLOAD_COMPLETED
+  DOWNLOAD_CLICK
+  DOWNLOAD_REDIRECT
+  TRANSFER_STARTED
+  TRANSFER_COMPLETED
+  TRANSFER_FAILED
+}
+
+enum MemberStatus {
+  ACTIVE
+  DISABLED
+  BANNED
+}
+
+enum ProductType {
+  SINGLE_SERVICE
+  MONTHLY_MEMBERSHIP
+  YEARLY_MEMBERSHIP
+  LICENSED_DOWNLOAD
+  TECHNICAL_SUPPORT
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  CLOSED
+  REFUND_PENDING
+  PARTIALLY_REFUNDED
+  REFUNDED
+}
+
+enum EntitlementType {
+  SERVICE_ACCESS
+  LICENSED_DOWNLOAD
+  PREMIUM_TUTORIAL
+  MEMBERSHIP_ACCESS
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
+
+enum RefundStatus {
+  PENDING_REVIEW
+  APPROVED
+  PROCESSING
+  SUCCESS
+  FAILED
+  REJECTED
+  CANCELLED
+}
+
+enum SoftwareSourceType {
+  OFFICIAL_WEBSITE
+  OFFICIAL_API
+  GITHUB_RELEASES
+  GITLAB_RELEASES
+  OFFICIAL_RSS
+  MANUAL_IMPORT
+}
+
+enum SourceTrustStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  DISABLED
+}
+
+enum ImportType {
+  CSV
+  EXCEL
+  OFFICIAL_URL
+  API_RELEASE
+}
+
+enum ImportBatchStatus {
+  PENDING_REVIEW
+  PROCESSING
+  PARTIAL_SUCCESS
+  COMPLETED
+  FAILED
+}
+
+enum MatchStatus {
+  NEW_RESOURCE
+  EXACT_MATCH
+  POSSIBLE_DUPLICATE
+  CONFLICT
+}
+
+enum BatchItemReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  IMPORTED
+}
+
+enum CandidateReviewStatus {
+  DISCOVERED
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  PUBLISHED
+}
+
+enum LinkHealthStatus {
+  HEALTHY
+  REDIRECTED
+  TEMPORARY_ERROR
+  BROKEN
+  NEEDS_REVIEW
+  UNKNOWN
+}
+
+enum TopicStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum JobType {
+  SOURCE_DISCOVERY
+  VERSION_CHECK
+  LINK_HEALTH_CHECK
+  RESOURCE_QUALITY_CHECK
+  SITEMAP_REBUILD
+  SEO_PRERENDER_WARMUP
+}
+
+enum JobStatus {
+  IDLE
+  RUNNING
+  DISABLED
+}
+
+enum JobRunStatus {
+  PENDING
+  RUNNING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum NotificationLevel {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+
+// ------------------------------------------
+// 1. 管理员与系统人员体系 (严格与前台普通用户隔离)
+// ------------------------------------------
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  username     String     @unique
+  passwordHash String
+  role         Role       @default(EDITOR)
+  status       UserStatus @default(ACTIVE)
+  tokenVersion Int        @default(0)
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  auditLogs    AuditLog[]
+}
+
+// ------------------------------------------
+// 2. 前台普通会员/用户体系
+// ------------------------------------------
+model MemberUser {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  username     String       @unique
+  passwordHash String
+  status       MemberStatus @default(ACTIVE)
+  avatarUrl    String?
+  lastLoginAt  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  orders                     Order[]
+  entitlements               Entitlement[]
+  downloadAuthorizationLogs DownloadAuthorizationLog[]
+  refunds                    Refund[]
+  reviews                    SoftwareReview[]
+  reviewVotes                ReviewVote[]
+  reviewReports              ReviewReport[]
+  corrections                ResourceCorrection[]
+  bookmarks                  MemberBookmark[]
+  developerProfile           DeveloperProfile?
+  discussionThreads          DiscussionThread[]
+  discussionPosts            DiscussionPost[]
+  discussionReports          DiscussionReport[]
+}
+
+// ------------------------------------------
+// 3. 软件与资源主体
+// ------------------------------------------
+model Category {
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  icon        String?
+  parentId    String?
+  sortOrder   Int        @default(0)
+  isVisible   Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryHierarchy")
+  softwares   Software[]
+}
+
+model Software {
+  id             String         @id @default(cuid())
+  name           String
+  slug           String         @unique
+  englishName    String?
+  aliases        String         @default("[]") // JSON array of string aliases
+  developer      String
+  summary        String
+  description    String
+  iconUrl        String?
+  type           ResourceType   @default(SOFTWARE)
+  categoryId     String
+  status         ResourceStatus @default(DRAFT)
+  isFeatured     Boolean        @default(false)
+  featuredOrder  Int            @default(0)
+  isTestData     Boolean        @default(false)
+  viewCount      Int            @default(0)
+  publishedAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  // 游戏专区与发行扩展属性 (P3 增强)
+  publisher            String?
+  genre                String?
+  supportedPlatforms   String?        @default("Windows 10/11")
+  releaseDate          String?
+  coverUrl             String?
+  officialWebsite      String?
+  distributionPlatform String?        // Steam, Epic Games, GOG, Official, OpenSource
+  priceType            String?        // FREE, PAID, FREE_TO_PLAY, OPEN_SOURCE
+  licenseType          String?        @default("FREE")
+
+  // P5 数据真实性与质量治理扩展
+  dataIntegrityStatus  DataIntegrityStatus @default(UNVERIFIED)
+  officialDomainVerified Boolean           @default(false)
+  lastAuditedAt        DateTime?
+  auditNotes           String?
+
+  category       Category       @relation(fields: [categoryId], references: [id])
+  versions       SoftwareVersion[]
+  licenses       ResourceLicense[]
+  downloadEvents DownloadEvent[]
+  sources        SoftwareSource[]
+  versionCandidates VersionCandidate[]
+  qualityReport  ResourceQualityReport?
+  topicResources TopicResource[]
+  tutorials      Tutorial[]
+  comparisonItems   SoftwareComparisonItem[]
+  alternativesFrom  SoftwareAlternative[]    @relation("SoftwareAlternativesFrom")
+  alternativesTo    SoftwareAlternative[]    @relation("SoftwareAlternativesTo")
+  reviews           SoftwareReview[]
+  corrections       ResourceCorrection[]
+  reviewEvidences   ResourceReviewEvidence[]
+  claims            SoftwareClaim[]
+  discussionThreads DiscussionThread[]
+}
+
+
+model SoftwareVersion {
+  id              String            @id @default(cuid())
+  softwareId      String
+  version         String
+  platform        String            @default("Windows 10/11")
+  architecture    String            @default("x64")
+  fileSize        String
+  releaseDate     String
+  changelog       String?
+  isLatest        Boolean           @default(false)
+  reviewStatus    String            @default("PENDING")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  software        Software          @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  downloadSources DownloadSource[]
+}
+
+model DownloadSource {
+  id                        String             @id @default(cuid())
+  versionId                 String
+  sourceType                SourceType         @default(OFFICIAL_EXTERNAL)
+  sourceName                String
+  url                       String
+  directFileUrl             String?            // P8.8 直接安装包地址 (若与 url 分离或指向 Release 具体文件)
+  fileName                  String?            // 预期文件名 (例如 VSCodeUserSetup-x64-1.96.2.exe)
+  fileVersion               String?            // 文件声明版本号
+  platform                  String             @default("windows") // windows, macos, linux, cross
+  architecture              String             @default("x64")     // x64, x86, arm64, universal
+  sha256                    String?            // 原厂核验 SHA-256 哈希
+  fileSizeBytes             BigInt?            // 精确文件字节数
+  fileSizeLabel             String?            // 可读体积 (例如 95.4 MB)
+  fileId                    String?
+  mirrorAuthorizationStatus String             @default("NONE")    // NONE, PENDING, APPROVED, REVOKED
+  scanStatus                ScanStatus         @default(PENDING)
+  signatureStatus           SignatureStatus    @default(NOT_CHECKED)
+  reviewStatus              String             @default("PENDING") // PENDING, APPROVED, REJECTED
+  reviewNotes               String?
+  verificationStatus        VerificationStatus @default(PENDING) // 仅代表来源 URL 是否核实，不等价于文件安全或数字签名
+  lastCheckStatus           String             @default("UNKNOWN") // HEALTHY, DEGRADED, FAILED, UNKNOWN
+  lastFinalUrl              String?            // 重定向追踪后的最终域名/地址
+  priority                  Int                @default(10)        // 排序优先级：1=官方直链, 2=官方Release, 3=授权镜像, 4=官方下载页
+  lastCheckedAt             DateTime?
+  lastHttpStatus            Int?
+  isActive                  Boolean            @default(true)
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+
+  version                   SoftwareVersion    @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  file                      HostedFile?        @relation(fields: [fileId], references: [id], onDelete: SetNull)
+  downloadEvents            DownloadEvent[]
+  linkCheckLogs             LinkCheckLog[]
+}
+
+
+model ResourceLicense {
+  id                              String    @id @default(cuid())
+  softwareId                      String
+  licenseType                     String    @default("FREE")
+  redistributionAllowed           Boolean   @default(false)
+  commercialRedistributionAllowed Boolean   @default(false)
+  evidenceFileKey                 String?
+  licenseUrl                      String?
+  expiresAt                       DateTime?
+  reviewStatus                    String    @default("PENDING")
+  reviewedBy                      String?
+  reviewedAt                      DateTime?
+
+  software                        Software  @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+}
+
+// ------------------------------------------
+// 4. 文件存储、真实安全扫描与独立数字签名模型 (P1.5 核心解耦)
+// ------------------------------------------
+model HostedFile {
+  id                String                 @id @default(cuid())
+  storageKey        String                 @unique
+  originalName      String
+  mimeType          String
+  sizeBytes         BigInt
+  sha256            String
+  scanStatus        ScanStatus             @default(PENDING)
+  scanEngine        String?
+  scanEngineVersion String?
+  scannedAt         DateTime?
+  scanResult        String?
+  scanError         String?
+  uploadedBy        String
+  createdAt         DateTime               @default(now())
+
+  downloadSources       DownloadSource[]
+  signatureVerification SignatureVerification?
+}
+
+model SignatureVerification {
+  id                           String          @id @default(cuid())
+  fileId                       String          @unique
+  signatureStatus              SignatureStatus @default(NOT_CHECKED) // 真实数字签名核验状态
+  signerName                   String?
+  signerCertificateFingerprint String?
+  verifiedAt                   DateTime?
+  verifier                     String?
+  verificationDetails          String?
+  createdAt                    DateTime        @default(now())
+  updatedAt                    DateTime        @updatedAt
+
+  file                         HostedFile      @relation(fields: [fileId], references: [id], onDelete: Cascade)
+}
+
+model Tutorial {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  summary     String
+  content     String
+  coverUrl    String?
+  authorId    String
+  softwareId  String?
+  status      String    @default("PUBLISHED")
+  isPremium   Boolean   @default(false) // 会员专属深度实操教程标记
+  viewCount   Int       @default(0)
+  seoTitle    String?
+  seoKeywords String?
+  seoDescription String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  software    Software? @relation(fields: [softwareId], references: [id], onDelete: SetNull)
+
+  @@index([slug])
+  @@index([softwareId])
+}
+
+
+model DownloadEvent {
+  id          String    @id @default(cuid())
+  softwareId  String
+  sourceId    String
+  eventType   EventType
+  requestId   String?
+  errorReason String?
+  isTestEvent Boolean   @default(false)
+  ipHash      String?
+  userAgent   String?
+  createdAt   DateTime  @default(now())
+
+  software    Software       @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  source      DownloadSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+}
+
+// ------------------------------------------
+// 5. 商业化产品、订单、支付流水、权益与退款 (P2 核心体系)
+// ------------------------------------------
+model Product {
+  id                 String        @id @default(cuid())
+  name               String
+  slug               String        @unique
+  productType        ProductType   @default(SINGLE_SERVICE)
+  description        String
+  priceFen           Int           // 真实售价 (分)
+  originalPriceFen   Int?          // 原价划线价 (分)
+  durationDays       Int           @default(0) // 会员或服务生效天数，0 为单次
+  status             ProductStatus @default(ACTIVE)
+  entitlementsConfig String        @default("{}") // 权益模板 JSON
+  sortOrder          Int           @default(0)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  orders             Order[]
+  entitlements       Entitlement[]
+}
+
+model Order {
+  id                  String      @id @default(cuid())
+  orderNo             String      @unique // 业务防碰撞订单号: ORD20261108...
+  userId              String
+  productId           String
+  productNameSnapshot String
+  priceSnapshotFen    Int
+  quantity            Int         @default(1)
+  totalAmountFen      Int
+  totalRefundedFen    Int         @default(0) // 累计已确认退款金额 (分)
+  currency            String      @default("CNY")
+  status              OrderStatus @default(PENDING_PAYMENT)
+  payChannel          String?     @default("WECHAT")
+  transactionId       String?     // 微信交易号
+  codeUrl             String?     // Native 扫码支付串 (weixin://wxpay/bizpayurl?...)
+  expiresAt           DateTime
+  paidAt              DateTime?
+  closedAt            DateTime?
+  refundedAt          DateTime?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  user                MemberUser    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product             Product       @relation(fields: [productId], references: [id])
+  entitlements        Entitlement[]
+  refunds             Refund[]
+  payments            PaymentLog[]
+
+  @@index([userId, status])
+  @@index([orderNo])
+  @@index([status, expiresAt])
+}
+
+model Entitlement {
+  id              String            @id @default(cuid())
+  userId          String
+  productId       String
+  orderId         String
+  entitlementType EntitlementType
+  resourceId      String?           // 可选绑定特定资源或通用
+  startsAt        DateTime          @default(now())
+  expiresAt       DateTime?         // null 表示买断/永久
+  quotaRemaining  Int               @default(0) // 剩余下载或服务次数
+  status          EntitlementStatus @default(ACTIVE)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  user            MemberUser        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         Product           @relation(fields: [productId], references: [id])
+  order           Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([userId, entitlementType, status])
+  @@unique([orderId, entitlementType]) // 数据库级保障单个订单同类型权益严格唯一，杜绝高并发重复发放
+}
+
+model PaymentLog {
+  id              String   @id @default(cuid())
+  orderId         String
+  orderNo         String
+  channel         String   @default("WECHAT")
+  transactionId   String?
+  amountFen       Int
+  status          String   // SUCCESS, FAILED, REFUND
+  rawNotification String?  // 加密通知或脱敏审计摘要 (严禁明文记录 PII 及商户私钥)
+  eventId         String?  // 微信回调通知唯一标识 ID (用于通知去重)
+  ipAddress       String?
+  createdAt       DateTime @default(now())
+
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderNo])
+  @@index([transactionId])
+  @@index([orderNo, status])
+}
+
+model DownloadAuthorizationLog {
+  id                String    @id @default(cuid())
+  userId            String
+  resourceId        String
+  fileId            String?
+  orderId           String?
+  entitlementId     String?
+  token             String?   // 兼容字段 (即将废弃)
+  tokenHash         String?   @unique // SHA-256 哈希存储，客户端仅持有原始单次令牌
+  expiresAt         DateTime
+  isConsumed        Boolean   @default(false)
+  consumedAt        DateTime?
+  status            String    @default("ACTIVE") // ACTIVE, CONSUMED, EXPIRED, REVOKED
+  compensationCount Int       @default(0) // 失败重试/补偿次数
+  ipAddress         String?
+  userAgent         String?
+  createdAt         DateTime  @default(now())
+
+  user              MemberUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash, isConsumed, expiresAt])
+  @@index([userId])
+}
+
+
+model Refund {
+  id               String       @id @default(cuid())
+  refundNo         String       @unique // REF20261108...
+  orderId          String
+  userId           String
+  amountFen        Int
+  reason           String
+  status           RefundStatus @default(PENDING_REVIEW)
+  rejectReason     String?
+  providerRefundId String?
+  processedAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  order            Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user             MemberUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([userId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String
+  targetType String
+  targetId   String
+  before     String?  // JSON serialized before state
+  after      String?  // JSON serialized after state
+  createdAt  DateTime @default(now())
+
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+}
+
+// ------------------------------------------
+// 6. 自动化运营、来源管理、批量导入、版本监测与健康巡检 (P3 体系)
+// ------------------------------------------
+
+model SoftwareSource {
+  id              String             @id @default(cuid())
+  name            String
+  sourceType      SoftwareSourceType @default(OFFICIAL_WEBSITE)
+  baseUrl         String
+  officialDomain  String
+  developerName   String?
+  discoveryMethod String?            @default("API_CRAWLER")
+  apiEndpoint     String?
+  enabled         Boolean            @default(true)
+  trustStatus     SourceTrustStatus  @default(PENDING)
+  rateLimit       Int                @default(60) // 每分钟请求限制
+  checkInterval   Int                @default(86400) // 检测周期 (秒，默认 1 天)
+  lastCheckedAt   DateTime?
+  lastSuccessAt   DateTime?
+  lastError       String?
+  softwareId      String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  software          Software?          @relation(fields: [softwareId], references: [id], onDelete: SetNull)
+  versionCandidates VersionCandidate[]
+  batchItems        ImportBatchItem[]
+
+  @@index([officialDomain])
+  @@index([trustStatus, enabled])
+  @@index([softwareId])
+}
+
+model ImportBatch {
+  id             String            @id @default(cuid())
+  batchNo        String            @unique // BTH20261108...
+  importType     ImportType        @default(CSV)
+  fileName       String?
+  totalCount     Int               @default(0)
+  successCount   Int               @default(0)
+  failedCount    Int               @default(0)
+  duplicateCount Int               @default(0)
+  status         ImportBatchStatus @default(PENDING_REVIEW)
+  actorId        String?
+  summary        String?           // 统计摘要 JSON
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  items          ImportBatchItem[]
+
+  @@index([batchNo])
+  @@index([status])
+}
+
+model ImportBatchItem {
+  id                String                @id @default(cuid())
+  batchId           String
+  rawRowIndex       Int
+  rawPayload        String                // 原始行数据 JSON
+  parsedName        String
+  parsedSlug        String?
+  parsedVersion     String?
+  parsedDeveloper   String?
+  parsedUrl         String?
+  parsedCategory    String?
+  parsedLicense     String?               @default("FREE")
+  parsedDescription String?
+  parsedPlatform    String?               @default("Windows 10/11")
+  matchStatus       MatchStatus           @default(NEW_RESOURCE)
+  matchedSoftwareId String?
+  reviewStatus      BatchItemReviewStatus @default(PENDING)
+  sourceId          String?
+  errorReason       String?
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+
+  batch             ImportBatch           @relation(fields: [batchId], references: [id], onDelete: Cascade)
+  source            SoftwareSource?       @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@index([batchId, matchStatus])
+  @@index([reviewStatus])
+}
+
+model VersionCandidate {
+  id               String                @id @default(cuid())
+  softwareId       String
+  sourceId         String?
+  currentVersion   String?
+  candidateVersion String
+  releaseDate      String?
+  changelog        String?
+  sourceUrl        String?
+  downloadUrl      String?
+  platform         String?               @default("Windows 10/11")
+  architecture     String?               @default("x64")
+  discoverySource  String?               // GITHUB, GITLAB, RSS, OFFICIAL_SITE
+  reviewStatus     CandidateReviewStatus @default(DISCOVERED)
+  reviewNotes      String?
+  discoveredAt     DateTime              @default(now())
+  reviewedAt       DateTime?
+  reviewedBy       String?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  software         Software              @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  source           SoftwareSource?       @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+
+  @@unique([softwareId, candidateVersion, platform, architecture])
+  @@index([softwareId, reviewStatus])
+  @@index([reviewStatus, discoveredAt])
+}
+
+model LinkCheckLog {
+  id             String           @id @default(cuid())
+  sourceId       String
+  url            String
+  httpStatus     Int?
+  healthStatus   LinkHealthStatus @default(UNKNOWN)
+  responseTimeMs Int?
+  redirectUrl    String?
+  isSafeUrl      Boolean          @default(true)
+  errorMessage   String?
+  checkedAt      DateTime         @default(now())
+
+  downloadSource DownloadSource   @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@index([sourceId, checkedAt])
+  @@index([healthStatus])
+}
+
+model ResourceQualityReport {
+  id                String   @id @default(cuid())
+  softwareId        String   @unique
+  completenessScore Int      @default(0) // 0-100 内部运营完整度评分
+  details           String   // 打分细则 JSON
+  missingFields     String   @default("[]") // 缺失字段列表 JSON
+  recommendations   String   @default("[]") // 优化建议 JSON
+  evaluatedAt       DateTime @default(now())
+
+  software          Software @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+
+  @@index([completenessScore])
+}
+
+model Topic {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  title          String
+  description    String
+  coverUrl       String?
+  isFeatured     Boolean         @default(false)
+  status         TopicStatus     @default(DRAFT)
+  sortOrder      Int             @default(0)
+  seoTitle       String?
+  seoKeywords    String?
+  seoDescription String?
+  publishedAt    DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  resources      TopicResource[]
+
+  @@index([status, sortOrder])
+  @@index([slug])
+}
+
+model TopicResource {
+  id         String   @id @default(cuid())
+  topicId    String
+  softwareId String
+  sortOrder  Int      @default(0)
+  customNote String?
+  createdAt  DateTime @default(now())
+
+  topic      Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  software   Software @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+
+  @@unique([topicId, softwareId])
+  @@index([topicId, sortOrder])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  jobType     JobType
+  description String?
+  cronExpr    String?
+  intervalSec Int       @default(86400)
+  status      JobStatus @default(IDLE)
+  enabled     Boolean   @default(true)
+  lockToken   String?
+  lockedAt    DateTime?
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  runs        JobRun[]
+
+  @@index([jobType, enabled])
+}
+
+model JobRun {
+  id           String       @id @default(cuid())
+  jobId        String
+  runNo        String       @unique // RUN20261108...
+  status       JobRunStatus @default(PENDING)
+  totalItems   Int          @default(0)
+  successItems Int          @default(0)
+  failedItems  Int          @default(0)
+  logOutput    String?
+  errorSummary String?
+  startedAt    DateTime     @default(now())
+  finishedAt   DateTime?
+
+  job          Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, startedAt])
+  @@index([status])
+}
+
+model OperationNotification {
+  id        String            @id @default(cuid())
+  title     String
+  message   String
+  level     NotificationLevel @default(INFO)
+  category  String            // VERSION_UPDATE, BROKEN_LINK, IMPORT_ERROR, QUALITY_ALERT
+  targetUrl String?
+  isRead    Boolean           @default(false)
+  createdAt DateTime          @default(now())
+
+  @@index([isRead, createdAt])
+  @@index([category])
+}
+
+// ==========================================
+// P4: SEO 关键词、页面审计、对比、评价与 AI 系统
+// ==========================================
+
+enum KeywordIntent {
+  SOFTWARE_DOWNLOAD
+  SOFTWARE_ALTERNATIVE
+  SOFTWARE_COMPARISON
+  INSTALL_GUIDE
+  TROUBLESHOOTING
+  GAME_DISCOVERY
+  GENERAL_INFORMATION
+}
+
+enum KeywordStatus {
+  TARGETED
+  PLANNED
+  RANKING
+  ABANDONED
+}
+
+enum PriorityLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model SeoKeyword {
+  id                     String        @id @default(cuid())
+  keyword                String        @unique
+  normalizedKeyword      String
+  intent                 KeywordIntent @default(SOFTWARE_DOWNLOAD)
+  topic                  String?
+  targetPageType         String?       // SOFTWARE, GAME, CATEGORY, TOPIC, COMPARE, TUTORIAL
+  targetPageId           String?
+  status                 KeywordStatus @default(TARGETED)
+  source                 String?       // MANUAL, IMPORT, SEARCH_LOGS
+  searchVolume           Int?
+  searchVolumeSource     String?
+  searchVolumeMeasuredAt DateTime?
+  competition            String?       // LOW, MEDIUM, HIGH
+  priority               PriorityLevel @default(MEDIUM)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@index([intent, status])
+  @@index([priority])
+}
+
+model SeoPageAudit {
+  id                String   @id @default(cuid())
+  pageUrl           String   @unique
+  pageType          String   // HOME, SOFTWARE, GAME, CATEGORY, TOPIC, COMPARE, TUTORIAL
+  targetId          String?
+  score             Int      @default(0) // 0 - 100 分完整度
+  issuesCount       Int      @default(0)
+  issuesList        String   @default("[]") // JSON array of issues { level, message, field, fixAdvice }
+  hasH1             Boolean  @default(false)
+  titleLength       Int      @default(0)
+  descriptionLength Int      @default(0)
+  hasCanonical      Boolean  @default(false)
+  hasSchema         Boolean  @default(false)
+  contentWords      Int      @default(0)
+  lastAuditedAt     DateTime @default(now())
+  status            String   @default("PASS") // PASS, WARNING, CRITICAL
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([pageType, status])
+  @@index([score])
+}
+
+enum ComparisonStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model SoftwareComparison {
+  id             String           @id @default(cuid())
+  slug           String           @unique // e.g. "vscode-vs-sublime-text"
+  title          String           // e.g. "VS Code 与 Sublime Text 深度对比：哪款更适合你？"
+  summary        String           // 简明导读
+  conclusion     String           // 综合选型建议
+  targetAudience String?          // 适合人群
+  scenarioGuide  String?          // 场景推荐
+  viewCount      Int              @default(0)
+  status         ComparisonStatus @default(DRAFT)
+  publishedAt    DateTime?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  items          SoftwareComparisonItem[]
+  attributes     ComparisonAttribute[]
+
+  @@index([status, updatedAt])
+}
+
+model SoftwareComparisonItem {
+  id            String             @id @default(cuid())
+  comparisonId  String
+  softwareId    String
+  sortOrder     Int                @default(0)
+  editorNotes   String?
+  isRecommended Boolean            @default(false)
+
+  comparison    SoftwareComparison @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+  software      Software           @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+
+  @@unique([comparisonId, softwareId])
+  @@index([softwareId])
+}
+
+enum ComparisonAttributeCategory {
+  BASIC
+  PLATFORM
+  LICENSE
+  PERFORMANCE
+  FEATURE
+}
+
+model ComparisonAttribute {
+  id             String                      @id @default(cuid())
+  comparisonId   String
+  attributeName  String                      // e.g. "内存占用", "插件生态", "快捷键习惯"
+  category       ComparisonAttributeCategory @default(BASIC)
+  valuesJson     String                      @default("{}") // { [softwareId]: "内容" }
+  isHighlighted  Boolean                     @default(false)
+  sortOrder      Int                         @default(0)
+
+  // P5 对比数据证据化字段
+  evidenceStatus EvidenceStatus              @default(UNVERIFIED)
+  sourceUrl      String?
+  measuredAt     DateTime?
+  reviewedAt     DateTime?
+  testEnvironment String?
+
+  comparison     SoftwareComparison          @relation(fields: [comparisonId], references: [id], onDelete: Cascade)
+
+  @@index([comparisonId, sortOrder])
+}
+
+enum AlternativeRelationType {
+  FREE_ALTERNATIVE
+  OPEN_SOURCE_ALTERNATIVE
+  CROSS_PLATFORM
+  SIMILAR_FUNCTION
+  LIGHTWEIGHT_OPTION
+}
+
+enum AlternativeReviewStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+}
+
+model SoftwareAlternative {
+  id                    String                  @id @default(cuid())
+  softwareId            String
+  alternativeSoftwareId String
+  reason                String                  // 推荐理由与核心差异说明
+  relationType          AlternativeRelationType @default(SIMILAR_FUNCTION)
+  reviewStatus          AlternativeReviewStatus @default(APPROVED)
+  reviewedBy            String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+
+  software              Software                @relation("SoftwareAlternativesFrom", fields: [softwareId], references: [id], onDelete: Cascade)
+  alternativeSoftware   Software                @relation("SoftwareAlternativesTo", fields: [alternativeSoftwareId], references: [id], onDelete: Cascade)
+
+  @@unique([softwareId, alternativeSoftwareId])
+  @@index([softwareId, reviewStatus])
+}
+
+enum ReviewStatus {
+  PENDING_REVIEW
+  APPROVED
+  REJECTED
+  HIDDEN
+}
+
+model SoftwareReview {
+  id              String         @id @default(cuid())
+  softwareId      String
+  userId          String
+  rating          Int            // 1 - 5 星
+  title           String
+  content         String
+  versionUsed     String?
+  operatingSystem String?
+  status          ReviewStatus   @default(PENDING_REVIEW)
+  isTestReview    Boolean        @default(false)
+  helpfulCount    Int            @default(0)
+  unhelpfulCount  Int            @default(0)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  software        Software       @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  user            MemberUser     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  votes           ReviewVote[]
+  reports         ReviewReport[]
+
+  @@unique([softwareId, userId]) // 每位用户对同一软件限一条主评价
+  @@index([softwareId, status, createdAt])
+}
+
+model ReviewVote {
+  id        String         @id @default(cuid())
+  reviewId  String
+  userId    String
+  isHelpful Boolean
+  createdAt DateTime       @default(now())
+
+  review    SoftwareReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user      MemberUser     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reviewId, userId])
+}
+
+model ReviewReport {
+  id             String         @id @default(cuid())
+  reviewId       String
+  reporterUserId String
+  reason         String         // SPAM, ABUSIVE, FAKE, OUTDATED, OTHER
+  description    String?
+  status         String         @default("PENDING") // PENDING, RESOLVED, DISMISSED
+  moderatedBy    String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  review         SoftwareReview @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reporter       MemberUser     @relation(fields: [reporterUserId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+}
+
+model ResourceCorrection {
+  id             String      @id @default(cuid())
+  softwareId     String
+  userId         String?
+  correctionType String      // BROKEN_LINK, OUTDATED_VERSION, WRONG_INFO, ICON_ISSUE, SECURITY_ISSUE, OTHER
+  details        String
+  contactEmail   String?
+  status         String      @default("PENDING") // PENDING, VERIFIED, REJECTED
+  moderatedBy    String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  software       Software    @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  user           MemberUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([softwareId, status])
+}
+
+enum AiProviderType {
+  OPENAI_COMPATIBLE
+  VOLCENGINE
+  DEEPSEEK
+  MOCK
+}
+
+model AiProviderConfig {
+  id              String         @id @default(cuid())
+  name            String
+  providerType    AiProviderType @default(OPENAI_COMPATIBLE)
+  baseUrl         String?
+  apiKeyEncrypted String?
+  modelName       String
+  temperature     Float          @default(0.7)
+  maxTokens       Int            @default(2000)
+  dailyTokenLimit Int            @default(100000)
+  usedTokensToday Int            @default(0)
+  isEnabled       Boolean        @default(true)
+
+  // P5 精细化定价模型
+  inputPrice      Float          @default(0) // 基础货币每 1k tokens 价格
+  outputPrice     Float          @default(0)
+  currency        String         @default("CNY")
+  pricingSource   String?        // 官方文档、自定义价目表
+  pricingUpdatedAt DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+enum AiTaskType {
+  RELEASE_NOTES_SUMMARY
+  SOFTWARE_INTRO_DRAFT
+  CATEGORY_SUGGESTION
+  COMPARISON_DRAFT
+  SEO_META_SUGGESTION
+  TUTORIAL_OUTLINE
+  USER_FEEDBACK_SUMMARY
+}
+
+enum AiTaskStatus {
+  PENDING
+  AI_DRAFT
+  APPROVED
+  REJECTED
+}
+
+model AiGenerationTask {
+  id              String       @id @default(cuid())
+  taskType        AiTaskType
+  targetType      String?      // SOFTWARE, COMPARISON, TUTORIAL, FEEDBACK
+  targetId        String?
+  inputContext    String       // JSON / Text of facts
+  generatedOutput String       // AI draft content
+  modelUsed       String
+  tokensUsed      Int          @default(0)
+  estimatedCostCny Float       @default(0)
+  status          AiTaskStatus @default(AI_DRAFT)
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  feedback        String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([taskType, status])
+  @@index([targetId])
+}
+
+model AiUsageLog {
+  id               String     @id @default(cuid())
+  providerId       String?
+  taskType         AiTaskType
+  promptTokens     Int        @default(0)
+  completionTokens Int        @default(0)
+  totalTokens      Int        @default(0)
+  durationMs       Int        @default(0)
+  pricingModel     String?
+  isEstimatedCost  Boolean    @default(false)
+  success          Boolean    @default(true)
+  errorMessage     String?
+  createdAt        DateTime   @default(now())
+
+  @@index([taskType, createdAt])
+}
+
+model SearchQueryLog {
+  id                String   @id @default(cuid())
+  query             String
+  normalizedQuery   String
+  resultsCount      Int      @default(0)
+  hasResults        Boolean  @default(true)
+  clickedSoftwareId String?
+  clientIpHash      String?
+  createdAt         DateTime @default(now())
+
+  @@index([normalizedQuery, createdAt])
+  @@index([hasResults])
+}
+
+model SitePageView {
+  id          String   @id @default(cuid())
+  pagePath    String
+  pageType    String?
+  referer     String?
+  visitorHash String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([pagePath, createdAt])
+  @@index([createdAt])
+}
+
+// ------------------------------------------
+// 9. P5 阶段扩展：数据治理、真实证据与用户收藏
+// ------------------------------------------
+
+enum DataIntegrityStatus {
+  VERIFIED_COMPLETE
+  VERIFIED_INCOMPLETE
+  NEEDS_REVIEW
+  SOURCE_UNAVAILABLE
+  DUPLICATE_CANDIDATE
+  UNVERIFIED
+}
+
+enum EvidenceStatus {
+  MEASURED
+  OFFICIAL_DOCUMENTATION
+  EDITORIAL_JUDGMENT
+  UNVERIFIED
+}
+
+model MemberBookmark {
+  id         String       @id @default(cuid())
+  memberId   String
+  targetType ResourceType @default(SOFTWARE)
+  targetId   String
+  notes      String?
+  createdAt  DateTime     @default(now())
+
+  member     MemberUser   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, targetType, targetId])
+  @@index([memberId])
+  @@index([targetType, targetId])
+}
+
+// ------------------------------------------
+// 10. P6 阶段扩展：开发者入驻、软件认领、社区讨论、开放 API 与审核凭证
+// ------------------------------------------
+
+enum DeveloperVerificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+  SUSPENDED
+}
+
+enum ClaimStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+  REVOKED
+}
+
+enum ClaimMethod {
+  DNS_TXT
+  WELL_KNOWN_FILE
+  GITHUB_AUTH
+  MANUAL_REVIEW
+}
+
+enum DiscussionCategory {
+  EXPERIENCE
+  INSTALL_ISSUE
+  QUESTION
+  FEEDBACK
+  WINDOWS
+  REPAIR
+  NETWORK
+  GAMES
+}
+
+enum DiscussionStatus {
+  ACTIVE
+  PENDING_REVIEW
+  HIDDEN
+  DELETED
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
+
+enum ApiKeyTier {
+  TIER_BASIC
+  TIER_DEVELOPER
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  REVOKED
+}
+
+model ResourceReviewEvidence {
+  id                 String   @id @default(cuid())
+  resourceId         String
+  fieldName          String
+  evidenceType       String   // DOMAIN_WHOIS, OFFICIAL_REPO, DOWNLOAD_URL, LICENSE_FILE, DIGITAL_SIGNATURE, VIRUS_SCAN
+  sourceUrl          String?
+  observedValue      String?
+  verificationStatus String   // VERIFIED, UNVERIFIED, REJECTED, INCONCLUSIVE
+  checkedAt          DateTime @default(now())
+  checkedBy          String
+  notes              String?
+
+  software           Software @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([resourceId])
+  @@index([evidenceType])
+}
+
+model DeveloperProfile {
+  id                 String                      @id @default(cuid())
+  memberUserId       String                      @unique
+  displayName        String
+  slug               String                      @unique
+  organizationName   String?
+  website            String?
+  githubUsername     String?
+  bio                String?
+  verificationStatus DeveloperVerificationStatus @default(PENDING_REVIEW)
+  verifiedAt         DateTime?
+  verifiedBy         String?
+  adminNotes         String?
+  createdAt          DateTime                    @default(now())
+  updatedAt          DateTime                    @updatedAt
+
+  member             MemberUser                  @relation(fields: [memberUserId], references: [id], onDelete: Cascade)
+  submissions        DeveloperSubmission[]
+  claims             SoftwareClaim[]
+  apiKeys            DeveloperApiKey[]
+
+  @@index([verificationStatus])
+}
+
+model DeveloperSubmission {
+  id              String           @id @default(cuid())
+  developerId     String
+  softwareName    String
+  slug            String
+  officialWebsite String
+  repoUrl         String?
+  version         String
+  license         String           @default("FREE")
+  releaseDate     String?
+  summary         String
+  description     String
+  changelog       String?
+  iconUrl         String?
+  downloadUrl     String
+  status          ResourceStatus   @default(PENDING_REVIEW)
+  adminNotes      String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  developer       DeveloperProfile @relation(fields: [developerId], references: [id], onDelete: Cascade)
+
+  @@index([developerId])
+  @@index([status])
+}
+
+model SoftwareClaim {
+  id                 String           @id @default(cuid())
+  softwareId         String
+  developerId        String
+  claimMethod        ClaimMethod      @default(DNS_TXT)
+  challengeCode      String
+  verificationTarget String?
+  evidenceUrl        String?
+  status             ClaimStatus      @default(PENDING)
+  rejectionReason    String?
+  verifiedAt         DateTime?
+  verifiedBy         String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  software           Software         @relation(fields: [softwareId], references: [id], onDelete: Cascade)
+  developer          DeveloperProfile @relation(fields: [developerId], references: [id], onDelete: Cascade)
+
+  @@unique([softwareId, developerId])
+  @@index([developerId])
+  @@index([softwareId])
+  @@index([status])
+}
+
+model DiscussionThread {
+  id             String             @id @default(cuid())
+  softwareId     String?
+  userId         String
+  title          String
+  content        String
+  category       DiscussionCategory @default(EXPERIENCE)
+  isPinned       Boolean            @default(false)
+  isResolved     Boolean            @default(false)
+  acceptedPostId String?
+  tags           String?
+  status         DiscussionStatus   @default(ACTIVE)
+  viewCount      Int                @default(0)
+  replyCount     Int                @default(0)
+  lastActivityAt DateTime           @default(now())
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  software       Software?          @relation(fields: [softwareId], references: [id], onDelete: SetNull)
+  user           MemberUser         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  posts          DiscussionPost[]
+  reports        DiscussionReport[]
+
+  @@index([softwareId])
+  @@index([userId])
+  @@index([status, createdAt])
+}
+
+model DiscussionPost {
+  id               String             @id @default(cuid())
+  threadId         String
+  userId           String
+  parentPostId     String?
+  content          String
+  isDeveloperReply Boolean            @default(false)
+  isAccepted       Boolean            @default(false)
+  status           DiscussionStatus   @default(ACTIVE)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  thread           DiscussionThread   @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user             MemberUser         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports          DiscussionReport[]
+
+  @@index([threadId])
+  @@index([userId])
+}
+
+model DiscussionReport {
+  id          String            @id @default(cuid())
+  threadId    String?
+  postId      String?
+  reporterId  String
+  reason      String
+  status      ReportStatus      @default(PENDING)
+  adminNotes  String?
+  resolvedBy  String?
+  resolvedAt  DateTime?
+  createdAt   DateTime          @default(now())
+
+  thread      DiscussionThread? @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  post        DiscussionPost?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reporter    MemberUser        @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([status])
+}
+
+model ModerationAction {
+  id          String   @id @default(cuid())
+  targetType  String   // THREAD, POST, USER
+  targetId    String
+  action      String   // HIDE, DELETE, PIN, RESOLVE, MUTE_USER, UNMUTE_USER
+  reason      String
+  moderatorId String
+  createdAt   DateTime @default(now())
+
+  @@index([targetType, targetId])
+}
+
+model DeveloperApiKey {
+  id            String           @id @default(cuid())
+  developerId   String
+  name          String
+  keyPrefix     String
+  keyHash       String           @unique
+  rateLimitTier ApiKeyTier       @default(TIER_DEVELOPER)
+  status        ApiKeyStatus     @default(ACTIVE)
+  lastUsedAt    DateTime?
+  expiresAt     DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  developer     DeveloperProfile @relation(fields: [developerId], references: [id], onDelete: Cascade)
+
+  @@index([developerId])
+  @@index([status])
+}
+
+model ApiUsageRecord {
+  id             String   @id @default(cuid())
+  keyId          String?
+  ip             String
+  endpoint       String
+  method         String   @default("GET")
+  statusCode     Int
+  responseTimeMs Int
+  timestamp      DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([keyId])
+  @@index([ip])
+}
+
+// ------------------------------------------
+// 8. 频道运营推荐配置与焦点展位 (P8.7.1)
+// ------------------------------------------
+model ChannelRecommendation {
+  id         String    @id @default(cuid())
+  channel    String    @default("SOFTWARE") // SOFTWARE | TOOL | GAME | HOME
+  slot       String    // HERO | WEEKLY_PICK | EDITOR_PICK | TOPIC_PICK | CATEGORY_PICK
+  targetType String    // SOFTWARE | TOPIC | COMPARISON | TUTORIAL | CATEGORY
+  targetId   String
+  title      String?
+  subtitle   String?
+  badgeText  String?
+  coverImage String?
+  sortOrder  Int       @default(0)
+  isActive   Boolean   @default(true)
+  startAt    DateTime?
+  endAt      DateTime?
+  createdBy  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([channel, slot, targetType, targetId])
+  @@index([channel, slot, isActive, sortOrder])
+}
+
+
+
+
