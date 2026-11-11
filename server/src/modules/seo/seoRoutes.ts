@@ -65,6 +65,13 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     return reply.send(html);
   });
 
+  // 1.12 最新更新频道公开 HTML (/updates) (P8.7.10)
+  server.get('/updates', async (_req, reply) => {
+    const { html, status } = await SeoService.renderUpdatesChannelHtml();
+    reply.status(status).header('Content-Type', 'text/html; charset=utf-8');
+    return reply.send(html);
+  });
+
   // 2. 软件横向对比评测页面（/compare/:slug）
   server.get<{ Params: { slug: string } }>('/compare/:slug', async (req, reply) => {
     const { slug } = req.params;
@@ -252,6 +259,10 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
   </sitemap>
   <sitemap>
     <loc>${domain}/sitemap-community.xml</loc>
+    <lastmod>${now}</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>${domain}/sitemap-updates.xml</loc>
     <lastmod>${now}</lastmod>
   </sitemap>
 </sitemapindex>`;
@@ -466,6 +477,16 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     return reply.send(xml);
   });
 
+  // 最新更新频道 Sitemap (P8.7.10)
+  server.get('/sitemap-updates.xml', async (_req, reply) => {
+    const domain = config.clientUrl;
+    const now = new Date().toISOString().slice(0, 10);
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${domain}/updates</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>\n</urlset>`;
+
+    reply.header('Content-Type', 'application/xml; charset=utf-8');
+    return reply.send(xml);
+  });
+
   // robots.txt 规范输出
   server.get('/robots.txt', async (req, reply) => {
     const domain = config.clientUrl;
@@ -478,6 +499,7 @@ Allow: /system-tools
 Allow: /games
 Allow: /game/
 Allow: /essentials
+Allow: /updates
 Allow: /category/
 Allow: /topics/
 Allow: /tutorials/
@@ -501,6 +523,7 @@ Sitemap: ${domain}/sitemap.xml
 Sitemap: ${domain}/sitemap-software.xml
 Sitemap: ${domain}/sitemap-games.xml
 Sitemap: ${domain}/sitemap-essentials.xml
+Sitemap: ${domain}/sitemap-updates.xml
 Sitemap: ${domain}/sitemap-comparisons.xml
 Sitemap: ${domain}/sitemap-categories.xml
 Sitemap: ${domain}/sitemap-topics.xml

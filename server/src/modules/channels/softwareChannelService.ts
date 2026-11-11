@@ -2,7 +2,7 @@ import { ResourceStatus, ResourceType, TopicStatus, ComparisonStatus } from '@pr
 import { prisma } from '../../db';
 import { validateSafeExternalUrl } from '../../utils/security';
 
-export const ALLOWED_CHANNELS = ['SOFTWARE', 'SYSTEM_TOOLS', 'GAMES', 'ESSENTIALS', 'COMPARE'] as const;
+export const ALLOWED_CHANNELS = ['SOFTWARE', 'SYSTEM_TOOLS', 'GAMES', 'ESSENTIALS', 'COMPARE', 'UPDATES'] as const;
 export const ALLOWED_SLOTS = [
   'HERO',
   'WEEKLY_PICK',

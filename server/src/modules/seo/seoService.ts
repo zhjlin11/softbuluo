@@ -6,6 +6,7 @@ import { SystemToolsChannelService } from '../channels/systemToolsChannelService
 import { GamesChannelService } from '../channels/gamesChannelService';
 import { EssentialsChannelService } from '../channels/essentialsChannelService';
 import { CompareChannelService } from '../channels/compareChannelService';
+import { UpdatesChannelService } from '../channels/updatesChannelService';
 import { CommunityService } from '../community/communityService';
 import fs from 'fs';
 import path from 'path';
@@ -1361,6 +1362,133 @@ ${JSON.stringify(jsonLd, null, 2)}
       ${postsHtml || '<p style="color:#64748b;">暂无回复。</p>'}
     </section>
   </main>
+</body>
+</html>`;
+
+    return { html, status: 200 };
+  }
+
+  /**
+   * 生成最新更新频道公开 HTML (/updates) (P8.7.10)
+   */
+  static async renderUpdatesChannelHtml(): Promise<{ html: string; status: number }> {
+    const data = await UpdatesChannelService.getUpdatesChannelData({ limit: 20 });
+    const domain = config.clientUrl;
+    const pageUrl = config.getCanonicalUrl('/updates');
+    const pageTitle = '软件与游戏最新版本更新中心 - 官方更新日志与发布动态 - 软游部落';
+    const metaDescription = `软游部落最新更新频道收录 ${data.stats.totalPublished} 款正版软件与系统工具的真实版本更新动态（已核验 ${data.stats.totalVersions} 个版本记录）。提供按日期、类别与资源类型检索，呈现官方新版 Changelog、版本差异与安全核验来源。`;
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: '软件与游戏最新版本更新中心',
+      url: pageUrl,
+      description: metaDescription,
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '首页', item: config.getCanonicalUrl('/') },
+          { '@type': 'ListItem', position: 2, name: '最新更新', item: pageUrl },
+        ],
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: data.timeline.items.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: `${item.softwareName} v${item.version}`,
+          url: `${domain}/software/${item.softwareSlug}`,
+        })),
+      },
+    };
+
+    const featuredHtml = data.featuredUpdates
+      .map(
+        (f) =>
+          `<div style="border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:12px;background:#f8fafc;">
+            <div style="font-size:0.8rem;color:#1769d2;font-weight:bold;margin-bottom:4px;">${this.escapeHtml(f.categoryName)} · ${this.escapeHtml(f.developer)}</div>
+            <h3 style="margin:0 0 6px;"><a href="${domain}/software/${this.escapeHtml(f.softwareSlug)}">${this.escapeHtml(f.softwareName)} <span style="color:#1769d2;">v${this.escapeHtml(f.version)}</span></a></h3>
+            <p style="margin:0 0 6px;color:#475569;font-size:0.9rem;">${this.escapeHtml(f.changelogSummary)}</p>
+            <div style="font-size:0.8rem;color:#64748b;">发布日期：${this.escapeHtml(f.releaseDate)} | 支持平台：${this.escapeHtml(f.platform)}</div>
+          </div>`
+      )
+      .join('\n');
+
+    const timelineHtml = data.timeline.items
+      .map(
+        (item) =>
+          `<article style="border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <h3 style="margin:0;font-size:1.05rem;">
+                <a href="${domain}/software/${this.escapeHtml(item.softwareSlug)}">${this.escapeHtml(item.softwareName)}</a>
+                <span style="background:#e0f2fe;color:#0369a1;padding:2px 8px;border-radius:999px;font-size:0.8rem;margin-left:6px;font-weight:bold;">v${this.escapeHtml(item.version)}</span>
+                ${item.previousVersion ? `<span style="color:#94a3b8;font-size:0.8rem;margin-left:4px;">(前版 v${this.escapeHtml(item.previousVersion)})</span>` : ''}
+              </h3>
+              <span style="font-size:0.8rem;color:#64748b;font-family:monospace;">${this.escapeHtml(item.formattedDate)}</span>
+            </div>
+            <p style="margin:0 0 8px;color:#475569;font-size:0.88rem;background:#f1f5f9;padding:8px 12px;border-radius:6px;">
+              <strong>更新说明：</strong>${this.escapeHtml(item.changelog || item.missingChangelogNotice || '官方更新说明暂未收录')}
+            </p>
+            <div style="font-size:0.8rem;color:#64748b;display:flex;gap:12px;">
+              <span>分类：${this.escapeHtml(item.categoryName)}</span>
+              <span>安装包体积：${this.escapeHtml(item.fileSize)}</span>
+              <span>来源：${item.downloadSources.length > 0 ? '已审核原厂来源' : '已核验'}</span>
+            </div>
+          </article>`
+      )
+      .join('\n');
+
+    const recentlyAddedHtml = data.recentlyAdded
+      .map(
+        (r) =>
+          `<li style="margin-bottom:6px;"><a href="${domain}/software/${this.escapeHtml(r.slug)}"><strong>${this.escapeHtml(r.name)}</strong></a> <span style="color:#64748b;font-size:0.85rem;">(v${this.escapeHtml(r.currentVersion)} - 入库于 ${this.escapeHtml(r.publishedAt.slice(0, 10))})</span></li>`
+      )
+      .join('\n');
+
+    const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(pageTitle)}</title>
+  <meta name="description" content="${this.escapeHtml(metaDescription)}">
+  <meta name="keywords" content="软件更新,最新版本,更新日志,Changelog,版本历史,软件发布,安全更新,软游部落">
+  <link rel="canonical" href="${pageUrl}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="${this.escapeHtml(pageTitle)}">
+  <meta property="og:description" content="${this.escapeHtml(metaDescription)}">
+  <meta property="og:url" content="${pageUrl}">
+  <meta property="og:site_name" content="软游部落">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+  ${this.getClientAssetTags()}
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #1e293b;">
+  <header style="margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+    <nav style="font-size:0.875rem;color:#64748b;margin-bottom:6px;"><a href="${domain}/">首页</a> / <span>最新更新</span></nav>
+    <h1 style="margin:0;font-size:1.75rem;">软件与游戏最新版本更新中心</h1>
+    <p style="margin:6px 0 0;color:#475569;">严格依据原厂发布日期 (releaseDate) 追踪版本升级动态，拒绝虚假更新。全站累计 ${data.stats.totalPublished} 款正版软件、${data.stats.totalVersions} 个已审核版本、${data.stats.verifiedSourcesCount} 条已核验下载来源。</p>
+  </header>
+  <main>
+    <section aria-label="近期焦点版本更新" style="margin-bottom:28px;">
+      <h2 style="font-size:1.25rem;border-left:4px solid #1769d2;padding-left:10px;margin-bottom:12px;">近期焦点版本更新</h2>
+      ${featuredHtml || '<p style="color:#64748b;">暂无重点推荐版本。</p>'}
+    </section>
+
+    <section aria-label="最新版本更新动态时间线" style="margin-bottom:28px;">
+      <h2 style="font-size:1.25rem;border-left:4px solid #1769d2;padding-left:10px;margin-bottom:12px;">最新版本更新动态时间线</h2>
+      ${timelineHtml || '<p style="color:#64748b;">当前暂无已审核版本更新记录。</p>'}
+    </section>
+
+    <section aria-label="最近加入软游部落" style="margin-bottom:28px;background:#f8fafc;padding:16px;border-radius:10px;">
+      <h2 style="font-size:1.15rem;margin-top:0;">最近加入软游部落 (新收录入库，与版本更新严格隔离)</h2>
+      <ul style="padding-left:20px;margin:0;">
+        ${recentlyAddedHtml || '<li style="color:#64748b;">暂无新收录软件。</li>'}
+      </ul>
+    </section>
+  </main>
+  <footer style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem;">
+    <p>软游部落 &copy; ${new Date().getFullYear()} SoftTribe.top · 真实软件与游戏版本演进中心</p>
+  </footer>
 </body>
 </html>`;
 

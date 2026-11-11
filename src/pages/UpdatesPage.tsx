@@ -1,306 +1,276 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   History,
   ChevronRight,
-  Download,
-  Calendar,
-  Layers,
-  Sparkles,
-  ExternalLink,
-  Laptop,
-  CheckCircle2,
-  FileCode2,
-  ArrowRight,
   Clock,
-  PackagePlus,
-  SlidersHorizontal,
+  ShieldCheck,
+  Sparkles,
+  Layers,
+  ArrowRight,
+  RefreshCw,
 } from 'lucide-react';
-import { getVersionUpdatesList, getResourcesList } from '../services/resourceService';
-import { SoftwareIcon } from '../components/common/SoftwareIcon';
+import {
+  fetchUpdatesChannelData,
+  UpdatesChannelData,
+  UpdatesQueryParams,
+} from '../services/updatesService';
+import { UpdatesHero } from '../components/updates/UpdatesHero';
+import { UpdatesFilterBar } from '../components/updates/UpdatesFilterBar';
+import { UpdatesTimeline } from '../components/updates/UpdatesTimeline';
+import { UpdatesRecentlyAdded } from '../components/updates/UpdatesRecentlyAdded';
+import { UpdatesSidebar } from '../components/updates/UpdatesSidebar';
+import { UpdatesVersionHistoryModal } from '../components/updates/UpdatesVersionHistoryModal';
 
 export const UpdatesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<'versions' | 'cataloged'>('versions');
-  const [versionUpdates, setVersionUpdates] = useState<any[]>([]);
-  const [newlyCataloged, setNewlyCataloged] = useState<any[]>([]);
-  const [totalVersions, setTotalVersions] = useState(0);
-  const [loading, setLoading] = useState(true);
 
-  const activePlatform = searchParams.get('platform') || 'all';
+  // 状态管理
+  const [data, setData] = useState<UpdatesChannelData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // 历史版本弹窗控制
+  const [historySoftwareId, setHistorySoftwareId] = useState<string | null>(null);
+
+  // 从 URL 参数解析当前筛选器
+  const timeRange = (searchParams.get('timeRange') as any) || 'all';
+  const resourceType = (searchParams.get('resourceType') as any) || 'ALL';
+  const categoryId = searchParams.get('categoryId') || undefined;
+  const keyword = searchParams.get('keyword') || '';
+  const sort = (searchParams.get('sort') as any) || 'latest_release';
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  const filters: UpdatesQueryParams = {
+    timeRange,
+    resourceType,
+    categoryId,
+    keyword,
+    sort,
+    page,
+    limit: 15,
+  };
+
+  // 设置页面 SEO 标题与 Meta 信息
   useEffect(() => {
-    document.title = '最新版本更新日志与动态 - 软件官方版本升级与新版发布 - 软游部落';
+    document.title = '软件与游戏最新版本更新中心 - 官方更新日志与发布动态 - 软游部落';
     const metaDesc = document.querySelector('meta[name="description"]');
     if (metaDesc) {
       metaDesc.setAttribute(
         'content',
-        '软游部落最新更新频道严格区分新收录软件与软件版本升级日志，第一时间呈现 Visual Studio Code, Chrome, 7-Zip, PotPlayer 等桌面软件的官方新版 Changelog 与安全补丁。'
+        '软游部落最新更新频道严格以官方真实发版日期（releaseDate）为基准，收录正版软件与系统工具的最新版本更新日志、版本演进差异与原厂安全下载渠道。'
       );
     }
   }, []);
 
-  // 加载版本升级流水
-  useEffect(() => {
+  // 加载数据
+  const loadData = useCallback(() => {
     setLoading(true);
-    if (activeTab === 'versions') {
-      getVersionUpdatesList({
-        limit: 30,
-        platform: activePlatform,
-      })
-        .then((res) => {
-          setVersionUpdates(res.items || []);
-          setTotalVersions(res.total || 0);
-        })
-        .catch((err) => {
-          console.error('加载版本流水失败:', err);
-          setVersionUpdates([]);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      getResourcesList({
-        sort: 'latest',
-        platform: activePlatform,
-        limit: 30,
-      })
-        .then((res) => {
-          setNewlyCataloged(res.items || []);
-        })
-        .catch((err) => {
-          console.error('加载新收录软件失败:', err);
-          setNewlyCataloged([]);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [activeTab, activePlatform]);
+    setError(null);
 
-  const updatePlatform = (p: string) => {
-    const params = new URLSearchParams(searchParams);
-    if (p === 'all') params.delete('platform');
-    else params.set('platform', p);
-    setSearchParams(params);
+    fetchUpdatesChannelData(filters)
+      .then((res) => {
+        setData(res);
+      })
+      .catch((err) => {
+        console.error('加载最新更新频道数据失败:', err);
+        setError('无法加载版本更新数据，请检查网络或稍后重试。');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [timeRange, resourceType, categoryId, keyword, sort, page]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // 更新筛选参数并同步到 URL
+  const handleFilterChange = (newFilters: Partial<UpdatesQueryParams>) => {
+    const nextParams = new URLSearchParams(searchParams);
+
+    if (newFilters.timeRange !== undefined) {
+      if (newFilters.timeRange === 'all') nextParams.delete('timeRange');
+      else nextParams.set('timeRange', newFilters.timeRange);
+    }
+
+    if (newFilters.resourceType !== undefined) {
+      if (newFilters.resourceType === 'ALL') nextParams.delete('resourceType');
+      else nextParams.set('resourceType', newFilters.resourceType);
+    }
+
+    if (newFilters.categoryId !== undefined) {
+      if (!newFilters.categoryId) nextParams.delete('categoryId');
+      else nextParams.set('categoryId', newFilters.categoryId);
+    }
+
+    if (newFilters.keyword !== undefined) {
+      if (!newFilters.keyword.trim()) nextParams.delete('keyword');
+      else nextParams.set('keyword', newFilters.keyword.trim());
+    }
+
+    if (newFilters.sort !== undefined) {
+      if (newFilters.sort === 'latest_release') nextParams.delete('sort');
+      else nextParams.set('sort', newFilters.sort);
+    }
+
+    if (newFilters.page !== undefined) {
+      if (newFilters.page === 1) nextParams.delete('page');
+      else nextParams.set('page', String(newFilters.page));
+    }
+
+    setSearchParams(nextParams);
+  };
+
+  const handleResetFilters = () => {
+    setSearchParams(new URLSearchParams());
+  };
+
+  const handlePageChange = (newPage: number) => {
+    handleFilterChange({ page: newPage });
+    window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
   return (
-    <div className="max-w-[1320px] mx-auto px-4 py-6">
-      {/* 面包屑导航 */}
-      <nav className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-5">
-        <Link to="/" className="hover:text-[#1769D2] transition-colors">首页</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-900 dark:text-slate-100 font-medium">最新更新动态</span>
-      </nav>
+    <div className="min-h-screen bg-slate-50/60 dark:bg-[#0B1120] text-slate-900 dark:text-slate-100 py-6 px-4 sm:px-6">
+      <div className="max-w-[1320px] mx-auto">
+        {/* 面包屑导航 */}
+        <nav aria-label="面包屑" className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-5">
+          <Link to="/" className="hover:text-[#1769D2] transition-colors">
+            首页
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-slate-900 dark:text-slate-100 font-semibold">最新更新</span>
+        </nav>
 
-      {/* 顶部标题横幅 */}
-      <div className="mb-6 p-6 rounded-2xl bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 text-white shadow-md relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/20">
-              <History className="w-3.5 h-3.5 text-blue-400" />
-              <span>版本更新日志 · 严格区分收录与发版 · 原厂直达</span>
+        {/* 频道顶栏主标题与全站真实统计徽章 */}
+        <div className="mb-6 p-6 md:p-8 rounded-2xl bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 text-white shadow-md relative overflow-hidden border border-blue-800/40">
+          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/20">
+                <History className="w-3.5 h-3.5 text-blue-400" />
+                <span>版本更新中心 · 真实发版 · 拒绝伪造</span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">
+                软件与游戏最新版本更新中心
+              </h1>
+              <p className="mt-2 text-xs md:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                追踪正版软件、系统工具和游戏的新版本，严格以官方发布日期为基准，查看更新说明（Changelog）、版本演进历史与原厂直达下载入口。
+              </p>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              软件版本更新与发布动态
-            </h1>
-            <p className="mt-2 text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              实时追踪主流桌面软件的官方新版本迭代、功能特性、CVE 漏洞安全补丁与更新日志 (Changelog)，支持原厂安全哈希比对。
-            </p>
-          </div>
 
-          <div className="shrink-0 flex items-center gap-2">
-            <span className="text-xs text-blue-200 bg-white/10 px-3.5 py-2 rounded-xl border border-white/10 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-blue-400" />
-              <span>全库累计监测 <strong>{totalVersions || 68}</strong> 次版本演进</span>
-            </span>
+            {/* 统计指标卡 */}
+            {data?.stats && (
+              <div className="shrink-0 grid grid-cols-2 sm:grid-cols-3 gap-2.5 bg-white/5 p-3.5 rounded-xl border border-white/10 text-center">
+                <div className="p-2">
+                  <div className="text-[11px] text-blue-200">全库正版软件</div>
+                  <div className="text-lg font-mono font-bold text-white mt-0.5">
+                    {data.stats.totalPublished} 款
+                  </div>
+                </div>
+                <div className="p-2">
+                  <div className="text-[11px] text-blue-200">已核验版本演进</div>
+                  <div className="text-lg font-mono font-bold text-emerald-400 mt-0.5">
+                    {data.stats.totalVersions} 条
+                  </div>
+                </div>
+                <div className="p-2 col-span-2 sm:col-span-1">
+                  <div className="text-[11px] text-blue-200">已核验官方来源</div>
+                  <div className="text-lg font-mono font-bold text-blue-300 mt-0.5">
+                    {data.stats.verifiedSourcesCount} 条
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* 核心双重视角 Tab 切换：严格区分版本更新与新收录 */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-[#131C2E] p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setActiveTab('versions')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'versions'
-                ? 'bg-[#1769D2] text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <History className="w-3.5 h-3.5" />
-            <span>版本更新动态 (Changelog)</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('cataloged')}
-            className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-              activeTab === 'cataloged'
-                ? 'bg-[#1769D2] text-white shadow-2xs'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <PackagePlus className="w-3.5 h-3.5" />
-            <span>最新收录入库 (Newly Added)</span>
-          </button>
-        </div>
+        {/* 顶部重点更新 Hero */}
+        {data && <UpdatesHero featured={data.featuredUpdates} />}
 
-        {/* 操作系统平台过滤 */}
-        <div className="flex items-center gap-2 text-xs">
-          <span className="text-slate-400">平台:</span>
-          {[
-            { label: '全部', value: 'all' },
-            { label: 'Windows', value: 'windows' },
-            { label: 'macOS', value: 'macos' },
-            { label: 'Linux', value: 'linux' },
-          ].map((p) => (
+        {/* 多维筛选与搜索栏 */}
+        {data && (
+          <UpdatesFilterBar
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            categories={data.categories}
+            onReset={handleResetFilters}
+          />
+        )}
+
+        {/* 主体双列布局：时间线 (70%) + 侧边栏 (30%) */}
+        {loading && !data ? (
+          /* 骨架屏 */
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-8 space-y-4">
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <div
+                  key={idx}
+                  className="h-32 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 animate-pulse border border-slate-200 dark:border-slate-800"
+                />
+              ))}
+            </div>
+            <div className="lg:col-span-4 space-y-4">
+              <div className="h-64 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 animate-pulse" />
+              <div className="h-48 rounded-xl bg-slate-200/60 dark:bg-slate-800/60 animate-pulse" />
+            </div>
+          </div>
+        ) : error ? (
+          <div className="py-16 text-center bg-white dark:bg-[#131C2E] rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
+            <p className="text-sm text-rose-500 font-semibold mb-4">{error}</p>
             <button
-              key={p.value}
-              onClick={() => updatePlatform(p.value)}
-              className={`px-2.5 py-1 rounded-md transition-colors ${
-                activePlatform === p.value
-                  ? 'bg-blue-50 dark:bg-blue-950 text-[#1769D2] font-semibold'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900'
-              }`}
+              onClick={loadData}
+              className="px-4 py-2 rounded-xl bg-[#1769D2] hover:bg-blue-700 text-white text-xs font-semibold inline-flex items-center gap-1.5"
             >
-              {p.label}
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>重新加载</span>
             </button>
-          ))}
-        </div>
+          </div>
+        ) : data ? (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* 左侧主要时间线区域 */}
+            <div className="lg:col-span-8">
+              <div className="flex items-center justify-between mb-4 px-1">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-[#1769D2] flex items-center justify-center">
+                    <Clock className="w-3.5 h-3.5" />
+                  </div>
+                  <h2 className="text-sm font-bold text-slate-900 dark:text-white">
+                    版本演进动态时间线
+                  </h2>
+                </div>
+                <span className="text-xs text-slate-400">
+                  当前结果：{data.timeline.total} 条
+                </span>
+              </div>
+
+              <UpdatesTimeline
+                items={data.timeline.items}
+                total={data.timeline.total}
+                page={data.timeline.page}
+                totalPages={data.timeline.totalPages}
+                onPageChange={handlePageChange}
+                onOpenHistory={(id) => setHistorySoftwareId(id)}
+                onResetFilters={handleResetFilters}
+              />
+            </div>
+
+            {/* 右侧侧边栏 */}
+            <div className="lg:col-span-4">
+              <UpdatesSidebar stats={data.stats} meta={data.meta} />
+            </div>
+          </div>
+        ) : null}
+
+        {/* 最近加入软游部落 (新收录入库，与版本更新严格隔离) */}
+        {data && <UpdatesRecentlyAdded items={data.recentlyAdded} />}
+
+        {/* 历史版本弹窗 */}
+        <UpdatesVersionHistoryModal
+          softwareId={historySoftwareId}
+          onClose={() => setHistorySoftwareId(null)}
+        />
       </div>
-
-      {/* 列表渲染 */}
-      {loading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 6 }).map((_, idx) => (
-            <div
-              key={idx}
-              className="h-28 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse border border-slate-200 dark:border-slate-700"
-            />
-          ))}
-        </div>
-      ) : activeTab === 'versions' ? (
-        /* 视角 1: 软件版本更新时间线 */
-        <div className="space-y-3.5">
-          {versionUpdates.length === 0 ? (
-            <div className="py-20 text-center bg-white dark:bg-[#131C2E] rounded-xl border border-slate-200 dark:border-slate-800">
-              <History className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">暂无相关版本更新数据</p>
-            </div>
-          ) : (
-            versionUpdates.map((item) => (
-              <div
-                key={item.versionId}
-                className="bg-white dark:bg-[#131C2E] rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4"
-              >
-                <div className="flex items-start gap-4 flex-1">
-                  <SoftwareIcon
-                    iconUrl={item.software.iconUrl}
-                    name={item.software.name}
-                    slug={item.software.slug}
-                    categorySlug={item.software.categorySlug}
-                    size="md"
-                    className="shrink-0 mt-0.5"
-                  />
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        <Link to={`/software/${item.software.slug}`} className="hover:text-[#1769D2] hover:underline">
-                          {item.software.name}
-                        </Link>
-                      </h3>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-[#1769D2] dark:text-blue-300 font-mono font-bold">
-                        v{item.version}
-                      </span>
-                      {item.isLatest && (
-                        <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-medium">
-                          最新稳定版
-                        </span>
-                      )}
-                      <span className="text-[11px] text-slate-400 font-mono">
-                        {item.platform}
-                      </span>
-                    </div>
-
-                    {/* 更新日志 */}
-                    <div className="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                      <strong className="text-slate-800 dark:text-slate-200">更新日志：</strong>
-                      {item.changelog}
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-4 mt-2 text-[11px] text-slate-400">
-                      <span>发布日期：<strong className="text-slate-600 dark:text-slate-300 font-mono">{item.releaseDate}</strong></span>
-                      <span>安装包体积：<strong className="text-slate-600 dark:text-slate-300 font-mono">{item.fileSize}</strong></span>
-                      <span>开发者：{item.software.developer || '原厂发行'}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="shrink-0 flex items-center justify-between md:justify-end gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800">
-                  <Link
-                    to={`/software/${item.software.slug}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#1769D2] hover:bg-[#1258B5] text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>升级与下载</span>
-                  </Link>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      ) : (
-        /* 视角 2: 全站最新收录入库软件 */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {newlyCataloged.map((item) => (
-            <div
-              key={item.id}
-              className="bg-white dark:bg-[#131C2E] rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200 flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-start gap-3">
-                  <SoftwareIcon
-                    iconUrl={item.iconUrl}
-                    name={item.name}
-                    slug={item.slug}
-                    categorySlug={item.categorySlug}
-                    size="md"
-                    className="shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-white truncate">
-                      <Link to={`/software/${item.slug}`} className="hover:text-[#1769D2] hover:underline">
-                        {item.name}
-                      </Link>
-                    </h3>
-                    <div className="flex items-center gap-1.5 mt-1">
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-[#1769D2] font-medium">
-                        新收录
-                      </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">
-                        v{item.latestVersion?.version || '1.0.0'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 mt-3 leading-relaxed">
-                  {item.summary || '经软游部落人工安全核验，全新收录上线。'}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-[11px] text-slate-400">已核验官方来源</span>
-                <Link
-                  to={`/software/${item.slug}`}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-[#1769D2] text-slate-700 hover:text-white dark:bg-slate-800 dark:hover:bg-[#1769D2] dark:text-slate-200 rounded-md font-medium text-xs transition-colors"
-                >
-                  <Download className="w-3 h-3" />
-                  <span>查看收录</span>
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

@@ -15,6 +15,7 @@ import { SystemToolsChannelService } from './systemToolsChannelService';
 import { GamesChannelService } from './gamesChannelService';
 import { EssentialsChannelService } from './essentialsChannelService';
 import { CompareChannelService } from './compareChannelService';
+import { UpdatesChannelService } from './updatesChannelService';
 
 const createRecommendationSchema = z.object({
   slot: z.enum(ALLOWED_SLOTS),
@@ -127,6 +128,59 @@ export async function channelRoutes(server: FastifyInstance) {
       return reply.status(400).send({
         success: false,
         error: { code: 'COMPARE_MATRIX_ERROR', message: errMsg },
+      });
+    }
+  });
+
+  // 1.10 公开聚合接口：最新更新频道 UI 3.0 门户数据中心 (P8.7.10)
+  server.get('/api/v1/channels/updates', async (req, reply) => {
+    try {
+      const query = req.query as any;
+      const data = await UpdatesChannelService.getUpdatesChannelData({
+        timeRange: query.timeRange,
+        startDate: query.startDate,
+        endDate: query.endDate,
+        resourceType: query.resourceType,
+        categoryId: query.categoryId,
+        keyword: query.keyword,
+        sort: query.sort,
+        page: query.page ? parseInt(query.page, 10) : 1,
+        limit: query.limit ? parseInt(query.limit, 10) : 15,
+      });
+      return reply.send({ success: true, data });
+    } catch (err: any) {
+      server.log.error(err, '获取最新更新频道聚合数据失败');
+      return reply.status(500).send({
+        success: false,
+        error: { code: 'CHANNEL_AGGREGATION_ERROR', message: '最新更新频道数据加载失败' },
+      });
+    }
+  });
+
+  // 1.11 软件历史版本查询接口 (P8.7.10)
+  server.get('/api/v1/channels/updates/version-history/:softwareId', async (req, reply) => {
+    const { softwareId } = req.params as { softwareId: string };
+    if (!softwareId) {
+      return reply.status(400).send({
+        success: false,
+        error: { code: 'INVALID_SOFTWARE_ID', message: '软件标识不能为空' },
+      });
+    }
+
+    try {
+      const history = await UpdatesChannelService.getSoftwareVersionHistory(softwareId);
+      if (!history) {
+        return reply.status(404).send({
+          success: false,
+          error: { code: 'SOFTWARE_NOT_FOUND', message: '未找到指定已发布软件或该软件不存在' },
+        });
+      }
+      return reply.send({ success: true, data: history });
+    } catch (err: any) {
+      server.log.error(err, '获取软件历史版本失败');
+      return reply.status(500).send({
+        success: false,
+        error: { code: 'VERSION_HISTORY_ERROR', message: '软件历史版本加载失败' },
       });
     }
   });
