@@ -109,10 +109,6 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onCategoryClick }) => {
                 开放 API
               </Link>
               <span>·</span>
-              <Link to="/community" className="hover:text-white transition-colors">
-                社区交流
-              </Link>
-              <span>·</span>
               <Link to="/admin/login" className="text-slate-500 hover:text-slate-300 transition-colors">
                 运营登录 →
               </Link>

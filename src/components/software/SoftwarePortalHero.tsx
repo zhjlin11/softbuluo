@@ -118,11 +118,11 @@ export const SoftwarePortalHero: React.FC<SoftwarePortalHeroProps> = ({
               软件专题
             </Link>
             <Link
-              to="/compare"
+              to="/essentials"
               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors"
             >
-              <Scale className="w-3.5 h-3.5 text-[#1769D2]" />
-              对比评测
+              <Sparkles className="w-3.5 h-3.5 text-[#1769D2]" />
+              装机必备
             </Link>
             <button
               type="button"

@@ -3,6 +3,8 @@
  * 统一管理站点名称、Logo、联系方式、SEO、页脚备案及全局常量，杜绝页面硬编码。
  */
 
+import { MAIN_NAV_ITEMS } from './navigation';
+
 export interface SiteConfig {
   name: string;
   shortName: string;
@@ -39,13 +41,6 @@ export const siteConfig: SiteConfig = {
   icpRecord: "京ICP备2024098877号-1",
   publicSecurityRecord: "京公网安备 11010802039988号",
   officialSourceDisclaimer: "软游部落收录资源均经过人工比对官方发布渠道或开源许可协议。本平台非商业软件著作权方，优先引导用户前往官方网站或授权渠道下载正版软件。",
-  navItems: [
-    { label: "首页", href: "/" },
-    { label: "电脑软件", href: "/#featured" },
-    { label: "系统工具", href: "/#tools" },
-    { label: "游戏中心", href: "/#games" },
-    { label: "软件教程", href: "/#tutorials" },
-    { label: "最新更新", href: "/#updates" },
-  ],
+  navItems: MAIN_NAV_ITEMS.map(({ label, href, badge }) => ({ label, href, badge })),
   popularSearches: ["Chrome", "7-Zip", "VS Code", "CPU-Z", "DiskGenius", "VLC", "Everything"],
 };

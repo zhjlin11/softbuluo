@@ -232,10 +232,10 @@ export const EssentialSuites: React.FC<EssentialSuitesProps> = ({
             </span>
           </div>
           <Link
-            to="/compare"
+            to="/essentials"
             className="inline-flex items-center gap-1 font-semibold text-[#1769D2] dark:text-blue-400 hover:underline"
           >
-            <span>同类软件深度对比与选型指南</span>
+            <span>查看完整装机必备方案</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>

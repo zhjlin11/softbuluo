@@ -141,10 +141,10 @@ export const MultiCategoryLeaderboard: React.FC<MultiCategoryLeaderboardProps> =
         </div>
 
         <Link
-          to="/compare"
+          to="/software"
           className="inline-flex items-center gap-1 text-xs font-semibold text-[#1769D2] dark:text-blue-400 hover:text-[#1258B5] transition-colors self-start sm:self-auto cursor-pointer"
         >
-          <span>查看对比评测中心</span>
+          <span>查看完整软件中心</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

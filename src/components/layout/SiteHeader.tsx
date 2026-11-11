@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Sun, Moon, Menu, X, User, Crown } from 'lucide-react';
 import { siteConfig } from '../../config/site';
+import { MAIN_NAV_ITEMS } from '../../config/navigation';
 import { getMemberProfile } from '../../services/commerceService';
 import { AuthModal } from '../auth/AuthModal';
 
@@ -68,17 +69,7 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  const navLinks = [
-    { label: '首页', href: '/', id: 'nav-home' },
-    { label: '电脑软件', href: '/software', id: 'nav-software' },
-    { label: '系统工具', href: '/system-tools', id: 'nav-tools' },
-    { label: '游戏中心', href: '/games', id: 'nav-games' },
-    { label: '装机必备', href: '/essentials', id: 'nav-essential' },
-    { label: '对比评测', href: '/compare', id: 'nav-compare' },
-    { label: '社区交流', href: '/community', id: 'nav-community' },
-    { label: '软件教程', href: '/tutorials', id: 'nav-tutorials' },
-    { label: '最新更新', href: '/updates', id: 'nav-updates' },
-  ];
+  const navLinks = MAIN_NAV_ITEMS;
 
   const handleNavClick = (href: string) => {
     setMobileMenuOpen(false);
@@ -148,18 +139,19 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
           </Link>
         </div>
 
-        {/* 中间桌面导航 (门户 11 大频道，1280px+ 宽屏展示) */}
+        {/* 中间桌面导航 (7 大核心主导航频道) */}
         <nav
           aria-label="主站导航"
-          className="hidden xl:flex items-center gap-0.5 2xl:gap-1 text-[13.5px] font-medium"
+          className="hidden xl:flex items-center gap-1 2xl:gap-1.5 text-[14px] font-medium"
         >
           {navLinks.map((item) => {
             const active = isLinkActive(item.href);
             return (
               <button
                 key={item.label}
+                id={item.id}
                 onClick={() => handleNavClick(item.href)}
-                className={`px-2.5 2xl:px-3 py-1.5 rounded-[8px] whitespace-nowrap transition-colors duration-150 cursor-pointer ${
+                className={`px-3 py-1.5 rounded-[8px] whitespace-nowrap transition-colors duration-150 cursor-pointer ${
                   active
                     ? 'bg-[#EAF2FF] dark:bg-[#1E2D4A] text-[#1464E9] dark:text-[#4A91FF] font-semibold'
                     : 'text-[#52637D] dark:text-[#9AAFCB] hover:text-[#1464E9] dark:hover:text-[#4A91FF] hover:bg-[#F0F5FD] dark:hover:bg-slate-800/60'
@@ -246,11 +238,14 @@ export const SiteHeader: React.FC<SiteHeaderProps> = ({
               门户核心频道
             </div>
             <div className="grid grid-cols-2 gap-2">
-              {navLinks.map((item) => (
+              {navLinks.map((item, idx) => (
                 <button
                   key={item.label}
+                  id={`mobile-${item.id}`}
                   onClick={() => handleNavClick(item.href)}
                   className={`p-3 text-left rounded-[8px] text-xs font-medium transition-colors ${
+                    idx === 0 ? 'col-span-2' : ''
+                  } ${
                     isLinkActive(item.href)
                       ? 'bg-[#EAF2FF] dark:bg-[#1E2D4A] text-[#1464E9] dark:text-[#4A91FF] font-semibold'
                       : 'bg-[#F5F8FC] dark:bg-[#1E2C43] text-[#52637D] dark:text-[#9AAFCB] border border-[#E3EAF3] dark:border-[#2D405C] hover:border-[#1464E9]/40 hover:text-[#1464E9]'

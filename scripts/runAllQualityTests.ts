@@ -29,6 +29,7 @@ const SUITES: TestSuite[] = [
   { name: 'P8.7.5.1 装机必备质量专项修复', file: 'server/tests/p8751EssentialsQualityTest.ts', description: '真实非测试榜单/低样本自适应/无localhost安全导出/MemTest86草稿隔离/八步教程安全提示词' },
   { name: 'P8.7.6 对比评测频道 UI 3.0', file: 'server/tests/p876ComparePortalTest.ts', description: '交互式双软件对比/参数差异高亮/场景化选型建议/认证替代推荐/品类探索/SSR SEO/防回退' },
   { name: 'P8.7.7 社区交流频道 UI 3.0', file: 'server/tests/p877CommunityPortalTest.ts', description: '真实统计看板/70-30主从架构/采纳最佳解答闭环/安全防刷限流/合规治理/SSR QAPage' },
+  { name: 'P8.7.9 顶部导航精简治理', file: 'server/tests/p879NavigationSimplificationTest.ts', description: '保留7大核心栏目/移除对比与社区导航/多端一致性/底层数据与SEO防死链' },
   { name: 'P8.8 软件一键直链下载系统', file: 'server/tests/p88DirectDownloadTest.ts', description: '统一直链入口/授权镜像/Range断点/SSRF拦截/文件SHA256校验' }
 ];
 

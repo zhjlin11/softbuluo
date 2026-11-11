@@ -25,6 +25,8 @@ export interface CompareSoftwareItemDto {
   sha256Verified: boolean;
 }
 
+export type SelectableSoftware = CompareSoftwareItemDto;
+
 export interface QuickPairItem {
   leftSlug: string;
   leftName: string;
