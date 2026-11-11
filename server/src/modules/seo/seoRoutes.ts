@@ -72,6 +72,13 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     return reply.send(html);
   });
 
+  // 1.13 软件教程频道公开 HTML (/tutorials) (P8.7.8)
+  server.get('/tutorials', async (_req, reply) => {
+    const { html, status } = await SeoService.renderTutorialsChannelHtml();
+    reply.status(status).header('Content-Type', 'text/html; charset=utf-8');
+    return reply.send(html);
+  });
+
   // 2. 软件横向对比评测页面（/compare/:slug）
   server.get<{ Params: { slug: string } }>('/compare/:slug', async (req, reply) => {
     const { slug } = req.params;
@@ -205,6 +212,12 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
   server.get<{ Params: { slug: string } }>('/seo/topics/:slug', async (req, reply) => {
     const { slug } = req.params;
     const { html, status } = await SeoService.renderTopicHtml(slug);
+    reply.status(status).header('Content-Type', 'text/html; charset=utf-8');
+    return reply.send(html);
+  });
+
+  server.get('/seo/tutorials', async (_req, reply) => {
+    const { html, status } = await SeoService.renderTutorialsChannelHtml();
     reply.status(status).header('Content-Type', 'text/html; charset=utf-8');
     return reply.send(html);
   });
@@ -405,7 +418,9 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     });
 
     const domain = config.clientUrl;
+    const now = new Date().toISOString().slice(0, 10);
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    xml += `  <url>\n    <loc>${domain}/tutorials</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/tutorials/${it.slug}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     }
@@ -444,7 +459,9 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     });
 
     const domain = config.clientUrl;
+    const now = new Date().toISOString().slice(0, 10);
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    xml += `  <url>\n    <loc>${domain}/tutorials</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/developers/${it.slug}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     }
@@ -467,7 +484,9 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     });
 
     const domain = config.clientUrl;
+    const now = new Date().toISOString().slice(0, 10);
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+    xml += `  <url>\n    <loc>${domain}/tutorials</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/community/thread/${it.id}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     }

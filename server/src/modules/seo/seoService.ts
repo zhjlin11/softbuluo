@@ -7,6 +7,7 @@ import { GamesChannelService } from '../channels/gamesChannelService';
 import { EssentialsChannelService } from '../channels/essentialsChannelService';
 import { CompareChannelService } from '../channels/compareChannelService';
 import { UpdatesChannelService } from '../channels/updatesChannelService';
+import { TutorialsChannelService } from '../channels/tutorialsChannelService';
 import { CommunityService } from '../community/communityService';
 import fs from 'fs';
 import path from 'path';
@@ -643,9 +644,37 @@ ${JSON.stringify(jsonLd, null, 2)}
     }
 
     const domain = config.clientUrl;
-    const pageUrl = `${domain}/tutorials/${item.slug}`;
-    const pageTitle = `${item.seoTitle || item.title} - 软游部落实用教程`;
+    const pageUrl = config.getCanonicalUrl(`/tutorials/${item.slug}`);
+    const pageTitle = `${item.seoTitle || item.title} - 电脑软件与系统实操技术指南 - 软游部落`;
     const metaDescription = item.seoDescription || item.summary;
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: item.title,
+      description: metaDescription,
+      url: pageUrl,
+      datePublished: item.publishedAt ? item.publishedAt.toISOString() : item.createdAt.toISOString(),
+      dateModified: item.updatedAt.toISOString(),
+      author: {
+        '@type': 'Organization',
+        name: '软游部落技术团队',
+        url: config.getCanonicalUrl('/'),
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: '软游部落 SoftTribe',
+        url: config.getCanonicalUrl('/'),
+      },
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '软游部落首页', item: config.getCanonicalUrl('/') },
+          { '@type': 'ListItem', position: 2, name: '软件教程', item: config.getCanonicalUrl('/tutorials') },
+          { '@type': 'ListItem', position: 3, name: item.title, item: pageUrl },
+        ],
+      },
+    };
 
     const html = `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -655,22 +684,34 @@ ${JSON.stringify(jsonLd, null, 2)}
   <title>${this.escapeHtml(pageTitle)}</title>
   <meta name="description" content="${this.escapeHtml(metaDescription)}">
   <link rel="canonical" href="${pageUrl}">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
   ${this.getClientAssetTags()}
 </head>
-<body style="font-family: -apple-system, BlinkMacSystemFont, sans-serif; max-width: 900px; margin: 0 auto; padding: 24px; line-height: 1.6;">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 960px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #1e293b;">
   <header style="border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 24px;">
-    <nav><a href="${domain}/">软游部落首页</a> &gt; <a href="${domain}/tutorials">教程指南</a> &gt; ${this.escapeHtml(item.title)}</nav>
-    <h1>${this.escapeHtml(item.title)}</h1>
-    <p style="color: #64748b;">更新时间：${item.updatedAt.toISOString().slice(0, 10)}${item.software ? ` | 关联软件：${this.escapeHtml(item.software.name)}` : ''}</p>
+    <nav style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">
+      <a href="${config.getCanonicalUrl('/')}" style="color: #1769d2; text-decoration: none;">软游部落首页</a> &gt; 
+      <a href="${config.getCanonicalUrl('/tutorials')}" style="color: #1769d2; text-decoration: none;">软件教程</a> &gt; 
+      <span>${this.escapeHtml(item.title)}</span>
+    </nav>
+    <h1 style="font-size: 1.8rem; margin: 0 0 12px; color: #0f172a;">${this.escapeHtml(item.title)}</h1>
+    <div style="font-size: 0.85rem; color: #64748b; display: flex; flex-wrap: wrap; gap: 16px;">
+      <span>发布时间：${item.publishedAt ? item.publishedAt.toISOString().slice(0, 10) : item.createdAt.toISOString().slice(0, 10)}</span>
+      <span>最后复核：${item.updatedAt.toISOString().slice(0, 10)}</span>
+      <span>阅读量：${item.viewCount} 次</span>
+      ${item.software ? `<span>关联软件：<a href="${config.getCanonicalUrl(`/software/${item.software.slug}`)}" style="color: #1769d2; font-weight: bold;">${this.escapeHtml(item.software.name)}</a></span>` : ''}
+    </div>
   </header>
   <main>
     <article style="font-size: 1.05rem;">
-      <p style="background: #f8fafc; padding: 12px 16px; border-left: 4px solid #3b82f6; border-radius: 4px;"><strong>导读：</strong>${this.escapeHtml(item.summary)}</p>
-      <div>${this.escapeHtml(item.content).replace(/\n/g, '<br>')}</div>
+      <div style="background: #f0f7ff; padding: 14px 18px; border-left: 4px solid #1769d2; border-radius: 6px; margin-bottom: 24px;">
+        <strong style="color: #1769d2;">核心导读：</strong>${this.escapeHtml(item.summary)}
+      </div>
+      <div style="line-height: 1.8;">${this.escapeHtml(item.content).replace(/\n/g, '<br>')}</div>
     </article>
   </main>
-  <footer style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #64748b;">
-    <p>软游部落 &copy; ${new Date().getFullYear()} SoftBuluo.com</p>
+  <footer style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem;">
+    <p>软游部落 &copy; ${new Date().getFullYear()} SoftTribe · 官方正版纯净软件与技术实操指南</p>
   </footer>
 </body>
 </html>`;
@@ -1488,6 +1529,135 @@ ${JSON.stringify(jsonLd, null, 2)}
   </main>
   <footer style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem;">
     <p>软游部落 &copy; ${new Date().getFullYear()} SoftTribe.top · 真实软件与游戏版本演进中心</p>
+  </footer>
+</body>
+</html>`;
+
+    return { html, status: 200 };
+  }
+
+  /**
+   * 渲染软件教程频道 UI 3.0 门户 SEO 静态语义 HTML (P8.7.8)
+   */
+  static async renderTutorialsChannelHtml(): Promise<{ html: string; status: number }> {
+    const res = await TutorialsChannelService.getTutorialsChannelData({ limit: 30 });
+    const data = res.data;
+    const domain = config.clientUrl;
+    const pageUrl = config.getCanonicalUrl('/tutorials');
+    const pageTitle = '电脑软件教程与实用技术指南 - Windows系统安装、排障与办公实操 - 软游部落';
+    const metaDescription = `软游部落软件教程频道提供从 Windows 系统安装、电脑维修到软件使用与网络排障的清晰可靠技术指南。已发布 ${data.stats.totalTutorials} 篇实操教程，覆盖系统装机、网络抓包、硬件检测与开源生产力。`;
+
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: '电脑软件教程与实用技术指南',
+      url: pageUrl,
+      description: metaDescription,
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: '软游部落首页', item: config.getCanonicalUrl('/') },
+          { '@type': 'ListItem', position: 2, name: '软件教程', item: pageUrl },
+        ],
+      },
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: data.items.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.title,
+          url: config.getCanonicalUrl(`/tutorials/${item.slug}`),
+        })),
+      },
+    };
+
+    const quickTroubleshootHtml = data.quickTroubleshooting
+      .map(
+        (qt) =>
+          `<li style="margin-bottom:8px;">
+            <a href="${config.getCanonicalUrl(`/tutorials/${qt.slug}`)}" style="color:#1769d2;font-weight:bold;text-decoration:none;">
+              [${this.escapeHtml(qt.badge)}] ${this.escapeHtml(qt.problem)}
+            </a>
+            <span style="color:#64748b;font-size:0.85rem;margin-left:6px;">— ${this.escapeHtml(qt.description)}</span>
+          </li>`
+      )
+      .join('\n');
+
+    const tutorialsListHtml = data.items
+      .map(
+        (item) =>
+          `<article style="border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px;background:#ffffff;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="background:#eff6ff;color:#1769d2;padding:2px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;">
+                ${this.escapeHtml(item.categoryName)} · ${this.escapeHtml(item.difficultyLabel)}
+              </span>
+              <span style="color:#94a3b8;font-size:0.8rem;">预计耗时：${item.readingMinutes}分钟</span>
+            </div>
+            <h3 style="margin:0 0 6px;font-size:1.1rem;">
+              <a href="${config.getCanonicalUrl(`/tutorials/${item.slug}`)}" style="color:#0f172a;text-decoration:none;">
+                ${this.escapeHtml(item.title)}
+              </a>
+            </h3>
+            <p style="margin:0 0 8px;color:#475569;font-size:0.9rem;line-height:1.5;">${this.escapeHtml(item.summary)}</p>
+            <div style="font-size:0.8rem;color:#64748b;display:flex;flex-wrap:wrap;gap:12px;">
+              <span>支持平台：${this.escapeHtml(item.platform)}</span>
+              ${item.software ? `<span>涉及软件：${this.escapeHtml(item.software.name)}</span>` : ''}
+              <span>发布时间：${item.publishedAt ? item.publishedAt.slice(0, 10) : '近期更新'}</span>
+            </div>
+          </article>`
+      )
+      .join('\n');
+
+    const categoriesHtml = data.categories
+      .filter((c) => c.id !== 'all')
+      .map(
+        (c) =>
+          `<span style="display:inline-block;margin:0 8px 8px 0;padding:4px 10px;background:#f1f5f9;border-radius:6px;font-size:0.85rem;color:#334155;">
+            <strong>${this.escapeHtml(c.name)}</strong> (${c.count}篇)
+          </span>`
+      )
+      .join(' ');
+
+    const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(pageTitle)}</title>
+  <meta name="description" content="${this.escapeHtml(metaDescription)}">
+  <link rel="canonical" href="${pageUrl}">
+  <meta property="og:title" content="${this.escapeHtml(pageTitle)}">
+  <meta property="og:description" content="${this.escapeHtml(metaDescription)}">
+  <meta property="og:url" content="${pageUrl}">
+  <meta property="og:site_name" content="软游部落">
+  <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+  ${this.getClientAssetTags()}
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #1e293b; background:#f8fafc;">
+  <header style="margin-bottom: 24px; background:#ffffff; padding:24px; border-radius:12px; border: 1px solid #e2e8f0;">
+    <nav style="font-size:0.875rem;color:#64748b;margin-bottom:8px;"><a href="${config.getCanonicalUrl('/')}" style="color:#1769d2;">软游部落首页</a> / <span>软件教程</span></nav>
+    <h1 style="margin:0 0 8px;font-size:1.85rem;color:#0f172a;">电脑软件教程与实用技术指南</h1>
+    <p style="margin:0 0 16px;color:#475569;font-size:0.95rem;">从 Windows 系统安装、电脑维修到软件使用与网络排障，提供清晰、可靠、循序渐进的技术操作指南。已发布 ${data.stats.totalTutorials} 篇工程师级实操文章，累计服务阅读 ${data.stats.totalViews} 次。</p>
+    <div style="border-top:1px solid #f1f5f9;padding-top:12px;">
+      <strong style="font-size:0.85rem;color:#64748b;display:block;margin-bottom:6px;">热门分类：</strong>
+      ${categoriesHtml}
+    </div>
+  </header>
+  <main>
+    <section aria-label="常见问题快捷排障" style="margin-bottom:28px;background:#ffffff;padding:20px;border-radius:12px;border:1px solid #e2e8f0;">
+      <h2 style="font-size:1.25rem;border-left:4px solid #1769d2;padding-left:10px;margin-top:0;margin-bottom:12px;">热门问题快捷排障</h2>
+      <ul style="padding-left:20px;margin:0;">
+        ${quickTroubleshootHtml}
+      </ul>
+    </section>
+
+    <section aria-label="全部实操教程" style="margin-bottom:28px;">
+      <h2 style="font-size:1.25rem;border-left:4px solid #1769d2;padding-left:10px;margin-bottom:14px;">全部精选实操教程列表</h2>
+      ${tutorialsListHtml}
+    </section>
+  </main>
+  <footer style="margin-top: 48px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: center; color: #64748b; font-size: 0.85rem;">
+    <p>软游部落 &copy; ${new Date().getFullYear()} SoftTribe.top · 官方正版纯净软件与技术实操指南</p>
   </footer>
 </body>
 </html>`;

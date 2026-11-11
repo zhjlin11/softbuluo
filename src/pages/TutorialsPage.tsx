@@ -3,253 +3,396 @@ import { Link, useSearchParams } from 'react-router-dom';
 import {
   BookOpen,
   ChevronRight,
-  Search,
-  Clock,
-  Eye,
-  Calendar,
   Sparkles,
-  ArrowRight,
-  Download,
   CheckCircle2,
-  Bookmark,
+  HelpCircle,
+  Laptop,
+  Flame,
+  Layers,
+  ArrowRight,
 } from 'lucide-react';
-import { getTutorialsList } from '../services/resourceService';
-
-const TUTORIAL_CATEGORIES = [
-  { id: 'all', name: '全部实操教程' },
-  { id: 'system', name: '系统运维与装机' },
-  { id: 'office', name: '办公与效率技巧' },
-  { id: 'troubleshoot', name: '故障诊断与排障' },
-  { id: 'dev', name: '环境配置与编程' },
-  { id: 'security', name: '安全防护与加密' },
-];
+import {
+  fetchTutorialsChannel,
+  TutorialChannelData,
+} from '../services/tutorialService';
+import { TutorialsHero } from '../components/tutorials/TutorialsHero';
+import { TutorialsFilterBar } from '../components/tutorials/TutorialsFilterBar';
+import { TutorialCard } from '../components/tutorials/TutorialCard';
 
 export const TutorialsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tutorials, setTutorials] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [channelData, setChannelData] = useState<TutorialChannelData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const activeCat = searchParams.get('cat') || 'all';
+  // 从 URL 读取筛选参数
+  const activeCategory = searchParams.get('cat') || 'all';
   const searchQuery = searchParams.get('q') || '';
+  const difficulty = searchParams.get('diff') || 'ALL';
+  const platform = searchParams.get('plat') || 'ALL';
+  const sort = searchParams.get('sort') || 'latest';
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
   const pageSize = 12;
 
+  // SEO 标题与 Description 设置
   useEffect(() => {
-    document.title = '软件教程与电脑实用技巧库 - 官方纯净软件配置与排障实操 - 软游部落';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute(
-        'content',
-        '软游部落软件教程频道提供 Windows 原版装机、避开流氓 PE、Everything 语法、Wireshark 抓包、SSD 验机等深度实操图文教程与避坑指南。'
-      );
+    document.title = '电脑软件教程与实用技术指南 - Windows系统安装、排障与办公实操 - 软游部落';
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
     }
+    metaDesc.setAttribute(
+      'content',
+      '从 Windows 系统安装、电脑维修到软件使用与网络排障，软游部落为您提供清晰、可靠、循序渐进的技术操作指南。已收录 27 篇深度实操图文教程，拒绝水文与虚假套路。'
+    );
+
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute('href', 'https://softtribe.top/tutorials');
   }, []);
 
+  // 加载频道数据
   useEffect(() => {
     setLoading(true);
-    getTutorialsList({
+    setError(null);
+    fetchTutorialsChannel({
+      category: activeCategory,
+      difficulty,
+      platform,
+      q: searchQuery,
+      sort,
       page: currentPage,
       limit: pageSize,
     })
-      .then((res) => {
-        let items = res.items || [];
-        // 本地分类过滤
-        if (activeCat !== 'all') {
-          items = items.filter((it: any) => {
-            const text = `${it.title} ${it.summary}`.toLowerCase();
-            if (activeCat === 'system') return text.includes('win') || text.includes('装机') || text.includes('系统') || text.includes('pe');
-            if (activeCat === 'office') return text.includes('办公') || text.includes('搜索') || text.includes('everything') || text.includes('gif');
-            if (activeCat === 'troubleshoot') return text.includes('故障') || text.includes('排障') || text.includes('卸载') || text.includes('修复');
-            if (activeCat === 'dev') return text.includes('开发') || text.includes('代码') || text.includes('git') || text.includes('环境');
-            if (activeCat === 'security') return text.includes('安全') || text.includes('加密') || text.includes('抓包') || text.includes('aes');
-            return true;
-          });
-        }
-        if (searchQuery) {
-          items = items.filter((it: any) =>
-            `${it.title} ${it.summary}`.toLowerCase().includes(searchQuery.toLowerCase())
-          );
-        }
-        setTutorials(items);
-        setTotalCount(res.total || items.length);
-        setTotalPages(res.totalPages || Math.ceil(items.length / pageSize) || 1);
+      .then((data) => {
+        setChannelData(data);
       })
       .catch((err) => {
-        console.error('加载教程列表失败:', err);
-        setTutorials([]);
+        console.error('加载教程频道数据失败:', err);
+        setError('教程数据加载失败，请检查网络连接后重试。');
       })
       .finally(() => setLoading(false));
-  }, [activeCat, searchQuery, currentPage]);
+  }, [activeCategory, searchQuery, difficulty, platform, sort, currentPage]);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const input = (e.currentTarget as HTMLFormElement).elements.namedItem('q') as HTMLInputElement;
-    const p = new URLSearchParams(searchParams);
-    if (input.value.trim()) p.set('q', input.value.trim());
-    else p.delete('q');
-    p.delete('page');
-    setSearchParams(p);
+  // URL 状态更新帮助函数
+  const updateParams = (updates: Record<string, string | null>) => {
+    const next = new URLSearchParams(searchParams);
+    Object.entries(updates).forEach(([key, val]) => {
+      if (val === null || val === '' || val === 'all' || val === 'ALL') {
+        next.delete(key);
+      } else {
+        next.set(key, val);
+      }
+    });
+    // 重置分页
+    if (!updates.page) {
+      next.delete('page');
+    }
+    setSearchParams(next);
   };
 
+  const handleCategoryChange = (catId: string) => {
+    updateParams({ cat: catId });
+  };
+
+  const handleSearchChange = (q: string) => {
+    updateParams({ q: q.trim() ? q : null });
+  };
+
+  const handleDifficultyChange = (diff: string) => {
+    updateParams({ diff });
+  };
+
+  const handlePlatformChange = (plat: string) => {
+    updateParams({ plat });
+  };
+
+  const handleSortChange = (newSort: string) => {
+    updateParams({ sort: newSort });
+  };
+
+  const handleResetFilters = () => {
+    setSearchParams(new URLSearchParams());
+  };
+
+  const items = channelData?.items || [];
+  const total = channelData?.pagination.total || 0;
+  const totalPages = channelData?.pagination.totalPages || 1;
+
+  // 专题精选分块：当用户处于 "all" 且无关键词搜索时展示专题推荐
+  const isDefaultView = activeCategory === 'all' && !searchQuery.trim() && difficulty === 'ALL' && platform === 'ALL';
+
   return (
-    <div className="max-w-[1320px] mx-auto px-4 py-6">
-      {/* 面包屑导航 */}
-      <nav className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-5">
-        <Link to="/" className="hover:text-[#1769D2] transition-colors">首页</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-900 dark:text-slate-100 font-medium">软件教程</span>
-      </nav>
+    <div className="max-w-[1360px] mx-auto px-4 sm:px-6 py-6 min-h-screen">
+      {/* 顶部面包屑与全站统计 */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 mb-5">
+        <nav className="flex items-center gap-1.5">
+          <Link to="/" className="hover:text-[#1769D2] transition-colors">软游部落首页</Link>
+          <ChevronRight className="w-3.5 h-3.5" />
+          <span className="text-slate-900 dark:text-slate-100 font-semibold">软件教程</span>
+        </nav>
 
-      {/* 顶部标题横幅 */}
-      <div className="mb-6 p-6 rounded-2xl bg-gradient-to-r from-blue-900 via-sky-900 to-indigo-900 text-white shadow-md relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-semibold mb-3 border border-blue-400/20">
-              <BookOpen className="w-3.5 h-3.5 text-blue-400" />
-              <span>工程师级实操经验 · 步骤详尽 · 真实避坑</span>
-            </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-              软件教程与实用技巧中心
-            </h1>
-            <p className="mt-2 text-xs md:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              拒绝水文与虚假套路。软游部落技术团队为您提供从原版纯净装机、高强度加密、网络排障到大文件检索的专业级保姆级教程。
-            </p>
+        {channelData && (
+          <div className="flex items-center gap-3 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+            <span>已收录 <strong>{channelData.stats.totalTutorials}</strong> 篇技术指南</span>
+            <span>•</span>
+            <span><strong>{channelData.stats.totalCategories}</strong> 大专业分类</span>
+            <span>•</span>
+            <span className="text-emerald-600 dark:text-emerald-400 font-sans font-medium flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
+              100% 真实实操复核
+            </span>
           </div>
+        )}
+      </div>
 
-          <form onSubmit={handleSearch} className="relative w-full md:w-72 shrink-0">
-            <input
-              type="text"
-              name="q"
-              defaultValue={searchQuery}
-              placeholder="搜索软件教程或排障技巧..."
-              className="w-full pl-9 pr-4 py-2 bg-white/10 text-white placeholder-slate-300 border border-white/20 rounded-xl text-xs focus:outline-none focus:bg-white focus:text-slate-900 focus:placeholder-slate-400 transition-all"
-            />
-            <Search className="w-4 h-4 text-slate-300 absolute left-3 top-2.5" />
-          </form>
+      {/* 门户主标题区 */}
+      <div className="mb-6">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#1769D2] dark:text-blue-300 text-xs font-bold mb-2.5 border border-blue-200/60 dark:border-blue-900/40">
+          <BookOpen className="w-3.5 h-3.5" />
+          <span>UI 3.0 独立门户 · 拒绝水文与虚假套路</span>
         </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          电脑软件教程与实用技术指南
+        </h1>
+        <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+          从 Windows 系统安装、电脑维修到软件使用与网络排障，提供清晰、可靠、循序渐进的技术操作指南。每篇实操均包含准备清单、安全风险提示与正版软件直达。
+        </p>
       </div>
 
-      {/* 分类切换 Tab */}
-      <div className="mb-6 flex flex-wrap items-center gap-2 bg-white dark:bg-[#131C2E] p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-        {TUTORIAL_CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => {
-              const p = new URLSearchParams(searchParams);
-              if (cat.id === 'all') p.delete('cat');
-              else p.set('cat', cat.id);
-              p.delete('page');
-              setSearchParams(p);
-            }}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-              activeCat === cat.id
-                ? 'bg-[#1769D2] text-white shadow-2xs font-semibold'
-                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            {cat.name}
-          </button>
-        ))}
-      </div>
+      {/* 顶部 Hero：65% 焦点教程 + 35% 热门排障 */}
+      {channelData && (
+        <TutorialsHero
+          hero={channelData.hero}
+          quickTroubleshooting={channelData.quickTroubleshooting}
+        />
+      )}
 
-      {/* 教程列表卡片 */}
+      {/* 多维检索与分类筛选栏 */}
+      {channelData && (
+        <TutorialsFilterBar
+          categories={channelData.categories}
+          activeCategory={activeCategory}
+          onCategoryChange={handleCategoryChange}
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          difficulty={difficulty}
+          onDifficultyChange={handleDifficultyChange}
+          platform={platform}
+          onPlatformChange={handlePlatformChange}
+          sort={sort}
+          onSortChange={handleSortChange}
+          onResetFilters={handleResetFilters}
+          totalFiltered={total}
+        />
+      )}
+
+      {/* 教程列表卡片区 */}
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {Array.from({ length: 6 }).map((_, idx) => (
             <div
               key={idx}
-              className="h-56 rounded-xl bg-slate-100 dark:bg-slate-800 animate-pulse border border-slate-200 dark:border-slate-700"
+              className="h-64 rounded-2xl bg-slate-100 dark:bg-slate-800 animate-pulse border border-slate-200 dark:border-slate-700"
             />
           ))}
         </div>
-      ) : tutorials.length === 0 ? (
-        <div className="py-20 text-center bg-white dark:bg-[#131C2E] rounded-2xl border border-slate-200 dark:border-slate-800">
-          <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">暂无匹配的教程内容</p>
-          <p className="text-xs text-slate-400 mt-1">请尝试更换检索关键词或选择全部教程。</p>
+      ) : error ? (
+        <div className="py-16 text-center bg-white dark:bg-[#131C2E] rounded-2xl border border-rose-200 dark:border-rose-900/40 p-6">
+          <p className="text-sm font-bold text-rose-600 dark:text-rose-400">{error}</p>
+          <button
+            onClick={handleResetFilters}
+            className="mt-4 px-4 py-2 bg-[#1769D2] text-white rounded-xl text-xs font-semibold"
+          >
+            重置筛选条件
+          </button>
+        </div>
+      ) : items.length === 0 ? (
+        <div className="py-20 text-center bg-white dark:bg-[#131C2E] rounded-2xl border border-slate-200 dark:border-slate-800 p-8">
+          <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+            暂未找到匹配的教程内容
+          </h3>
+          <p className="text-xs text-slate-400 mt-1.5 max-w-md mx-auto leading-relaxed">
+            建议您尝试更换检索关键词、选择全部操作系统，或点击下方按钮清空筛选条件。
+          </p>
+          <button
+            onClick={handleResetFilters}
+            className="mt-5 px-4 py-2 bg-[#1769D2] hover:bg-blue-600 text-white rounded-xl text-xs font-bold transition-colors"
+          >
+            清空所有筛选条件
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {tutorials.map((item) => (
-            <article
-              key={item.id}
-              className="bg-white dark:bg-[#131C2E] rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200 flex flex-col justify-between group"
-            >
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {items.map((item) => (
+              <TutorialCard key={item.id} item={item} />
+            ))}
+          </div>
+
+          {/* 分页控制栏 */}
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-2">
+              <button
+                disabled={currentPage <= 1}
+                onClick={() => updateParams({ page: String(currentPage - 1) })}
+                className="px-3.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#131C2E] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-slate-700 dark:text-slate-200"
+              >
+                上一页
+              </button>
+              <span className="text-xs text-slate-500 dark:text-slate-400 px-3 font-mono">
+                {currentPage} / {totalPages}
+              </span>
+              <button
+                disabled={currentPage >= totalPages}
+                onClick={() => updateParams({ page: String(currentPage + 1) })}
+                className="px-3.5 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#131C2E] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-slate-700 dark:text-slate-200"
+              >
+                下一页
+              </button>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* 默认首页专题亮点板块（仅在全部视图下展示，避免干扰筛选） */}
+      {isDefaultView && (
+        <div className="mt-14 pt-10 border-t border-slate-200 dark:border-slate-800 space-y-10">
+          {/* 专题板块 1：Windows 原版装机与系统维护 */}
+          <section className="bg-slate-50 dark:bg-[#131C2E]/60 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
               <div>
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-2.5">
-                  <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-[#1769D2] dark:text-blue-300 font-medium text-[11px]">
-                    深度实操
-                  </span>
-                  <div className="flex items-center gap-3 text-[11px]">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> 5分钟
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" /> {item.viewCount || 820}
-                    </span>
-                  </div>
-                </div>
-
-                <h2 className="text-sm md:text-base font-bold text-slate-900 dark:text-white line-clamp-2 group-hover:text-[#1769D2] transition-colors leading-snug">
-                  <Link to={`/tutorials/${item.slug}`}>
-                    {item.title}
-                  </Link>
-                </h2>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 mt-2.5 leading-relaxed">
-                  {item.summary}
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="w-2 h-4 rounded bg-[#1769D2]" />
+                  <span>Windows 原版纯净装机与启动维护专题</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  避开流氓 PE 植入与全家桶捆绑，掌握 Rufus、Ventoy 与官方原厂 ISO 镜像校验。
                 </p>
               </div>
+              <button
+                onClick={() => handleCategoryChange('windows')}
+                className="text-xs font-semibold text-[#1769D2] hover:underline flex items-center gap-1 self-start sm:self-auto"
+              >
+                <span>查看该分类全量指南</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
 
-              <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                <span className="text-[11px] text-slate-400">
-                  软游技术组 · {item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '近期更新'}
-                </span>
-                <Link
-                  to={`/tutorials/${item.slug}`}
-                  className="inline-flex items-center gap-1 text-[#1769D2] hover:text-[#1258B5] font-semibold group-hover:translate-x-0.5 transition-transform"
-                >
-                  <span>阅读全文</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link
+                to="/tutorials/clean-install-win11-guide"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold block mb-1">系统重装</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  Windows 11 原版纯净装机指南：避开流氓 PE 与捆绑陷阱
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/rufus-win11-bypass-tpm-guide"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold block mb-1">启动制作</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  使用 Rufus 制作绕过 TPM 2.0 与在线微软账户启动盘
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/ventoy-custom-multiboot-usb"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold block mb-1">多系统维护</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  Ventoy 进阶玩法：个性化主题定制与多系统启动菜单
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/how-to-verify-genuine-iso-checksums"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold block mb-1">安全核验</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  如何使用系统工具验证 Windows 与 Office 安装文件完整性
+                </h4>
+              </Link>
+            </div>
+          </section>
+
+          {/* 专题板块 2：电脑故障排查与硬件健康检测 */}
+          <section className="bg-slate-50 dark:bg-[#131C2E]/60 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-200 dark:border-slate-800">
+              <div>
+                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="w-2 h-4 rounded bg-amber-500" />
+                  <span>电脑故障排查与硬件健康检测专题</span>
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  从固态硬盘寿命分析、自启流氓项地毯清理到强力无残留卸载。
+                </p>
               </div>
-            </article>
-          ))}
+              <button
+                onClick={() => handleCategoryChange('troubleshoot')}
+                className="text-xs font-semibold text-[#1769D2] hover:underline flex items-center gap-1 self-start sm:self-auto"
+              >
+                <span>查看排障分类全量指南</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <Link
+                to="/tutorials/crystaldiskinfo-smart-health-check"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block mb-1">磁盘检测</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  SSD 固态硬盘寿命与 S.M.A.R.T. 关键故障指标解读指南
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/sysinternals-autoruns-clean-startup"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block mb-1">开机加速</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  使用 Sysinternals Autoruns 地毯式清理 Windows 开机自启项
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/geek-uninstaller-clean-remnants"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block mb-1">强力卸载</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  使用 Geek Uninstaller 彻底卸载软件与残留文件/注册表清理
+                </h4>
+              </Link>
+              <Link
+                to="/tutorials/bleachbit-windows-deep-clean-privacy"
+                className="p-3.5 rounded-xl bg-white dark:bg-[#131C2E] border border-slate-200 dark:border-slate-800 hover:border-blue-400 transition-all block group"
+              >
+                <span className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block mb-1">隐私清理</span>
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-[#1769D2] line-clamp-2">
+                  BleachBit 开源深度清理实战：彻底清除软件残留与浏览器隐私
+                </h4>
+              </Link>
+            </div>
+          </section>
         </div>
       )}
 
-      {/* 分页控制 */}
-      {totalPages > 1 && (
-        <div className="mt-8 flex items-center justify-center gap-2">
-          <button
-            disabled={currentPage <= 1}
-            onClick={() => {
-              const p = new URLSearchParams(searchParams);
-              p.set('page', String(currentPage - 1));
-              setSearchParams(p);
-            }}
-            className="px-3.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#131C2E] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
-          >
-            上一页
-          </button>
-          <span className="text-xs text-slate-500 dark:text-slate-400 px-2 font-mono">
-            {currentPage} / {totalPages}
-          </span>
-          <button
-            disabled={currentPage >= totalPages}
-            onClick={() => {
-              const p = new URLSearchParams(searchParams);
-              p.set('page', String(currentPage + 1));
-              setSearchParams(p);
-            }}
-            className="px-3.5 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#131C2E] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors"
-          >
-            下一页
-          </button>
-        </div>
-      )}
+      {/* 底部免责声明 */}
+      <footer className="mt-14 pt-6 border-t border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
+        <p>软游部落技术实操教程库 · 专注计算机系统维护、网络技术与办公生产力实操指导 · 遵循知识共享准则</p>
+      </footer>
     </div>
   );
 };

@@ -16,6 +16,7 @@ import { GamesChannelService } from './gamesChannelService';
 import { EssentialsChannelService } from './essentialsChannelService';
 import { CompareChannelService } from './compareChannelService';
 import { UpdatesChannelService } from './updatesChannelService';
+import { TutorialsChannelService } from './tutorialsChannelService';
 
 const createRecommendationSchema = z.object({
   slot: z.enum(ALLOWED_SLOTS),
@@ -181,6 +182,57 @@ export async function channelRoutes(server: FastifyInstance) {
       return reply.status(500).send({
         success: false,
         error: { code: 'VERSION_HISTORY_ERROR', message: '软件历史版本加载失败' },
+      });
+    }
+  });
+
+  // 1.12 公开聚合接口：软件教程频道 UI 3.0 门户数据中心 (P8.7.8)
+  server.get('/api/v1/channels/tutorials', async (req, reply) => {
+    try {
+      const query = req.query as any;
+      const res = await TutorialsChannelService.getTutorialsChannelData({
+        category: query.category,
+        difficulty: query.difficulty,
+        platform: query.platform,
+        q: query.q,
+        sort: query.sort,
+        page: query.page,
+        limit: query.limit,
+      });
+      return reply.send(res);
+    } catch (err: any) {
+      server.log.error(err, '获取软件教程频道聚合数据失败');
+      return reply.status(500).send({
+        success: false,
+        error: { code: 'CHANNEL_AGGREGATION_ERROR', message: '软件教程频道数据加载失败' },
+      });
+    }
+  });
+
+  // 1.13 教程沉浸式阅读详情与上下文接口 (P8.7.8)
+  server.get('/api/v1/channels/tutorials/:slug', async (req, reply) => {
+    const { slug } = req.params as { slug: string };
+    if (!slug) {
+      return reply.status(400).send({
+        success: false,
+        error: { code: 'INVALID_SLUG', message: '教程 Slug 标识不能为空' },
+      });
+    }
+
+    try {
+      const detail = await TutorialsChannelService.getTutorialDetail(slug);
+      if (!detail) {
+        return reply.status(404).send({
+          success: false,
+          error: { code: 'TUTORIAL_NOT_FOUND', message: '未找到指定已发布教程或该教程已下线' },
+        });
+      }
+      return reply.send({ success: true, data: detail });
+    } catch (err: any) {
+      server.log.error(err, '获取教程详情失败');
+      return reply.status(500).send({
+        success: false,
+        error: { code: 'TUTORIAL_DETAIL_ERROR', message: '教程详情加载失败' },
       });
     }
   });
