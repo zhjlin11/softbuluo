@@ -461,7 +461,7 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     const domain = config.clientUrl;
     const now = new Date().toISOString().slice(0, 10);
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-    xml += `  <url>\n    <loc>${domain}/tutorials</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+    xml += `  <url>\n    <loc>${domain}/developers</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/developers/${it.slug}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
     }
@@ -486,7 +486,7 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     const domain = config.clientUrl;
     const now = new Date().toISOString().slice(0, 10);
     let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-    xml += `  <url>\n    <loc>${domain}/tutorials</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
+    xml += `  <url>\n    <loc>${domain}/community</loc>\n    <lastmod>${now}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/community/thread/${it.id}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
     }

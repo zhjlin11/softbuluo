@@ -636,7 +636,7 @@ ${JSON.stringify(jsonLd, null, 2)}
       },
     });
 
-    if (!item) {
+    if (!item || item.status !== 'PUBLISHED' || item.slug.startsWith('tut-p3-')) {
       return {
         status: 404,
         html: this.renderNotFoundHtml(`教程 "${slug}" 不存在`),

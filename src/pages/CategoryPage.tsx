@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { SoftwareIcon } from '../components/common/SoftwareIcon';
 import { getSimpleSoftwareName, getSimpleVersion } from '../utils/softwareName';
+import { setPageSeo } from '../utils/seo';
 
 export const CategoryPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -46,6 +47,22 @@ export const CategoryPage: React.FC = () => {
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, [slug, page]);
+
+  useEffect(() => {
+    if (category) {
+      setPageSeo({
+        title: `${category.name}软件下载与工具精选 - 软游部落`,
+        description: category.description || `软游部落${category.name}软件与工具合集，提供官方纯净下载与版本指引。`,
+        path: `/category/${slug}`,
+      });
+    } else if (slug) {
+      setPageSeo({
+        title: `分类软件列表 - 软游部落`,
+        description: '软游部落分类软件与工具精选列表',
+        path: `/category/${slug}`,
+      });
+    }
+  }, [category, slug]);
 
   return (
     <div className="max-w-[1320px] mx-auto px-4 py-8">

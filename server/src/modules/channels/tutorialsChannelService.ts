@@ -403,10 +403,11 @@ export class TutorialsChannelService {
     const keyword = (query.q || '').trim().toLowerCase();
     const sort = (query.sort || 'latest').toLowerCase();
 
-    // 1. 获取所有 PUBLISHED 教程，严格排除草稿
+    // 1. 获取所有 PUBLISHED 教程，严格排除草稿与历史测试数据
     const rawTutorials = await prisma.tutorial.findMany({
       where: {
         status: 'PUBLISHED',
+        NOT: { slug: { startsWith: 'tut-p3-' } },
       },
       orderBy: { publishedAt: 'desc' },
       include: {
@@ -672,7 +673,7 @@ export class TutorialsChannelService {
       },
     });
 
-    if (!tutorial || tutorial.status !== 'PUBLISHED') {
+    if (!tutorial || tutorial.status !== 'PUBLISHED' || tutorial.slug.startsWith('tut-p3-')) {
       return null;
     }
 

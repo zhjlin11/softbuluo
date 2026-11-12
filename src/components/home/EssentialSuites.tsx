@@ -228,7 +228,7 @@ export const EssentialSuites: React.FC<EssentialSuitesProps> = ({
           <div className="flex items-center gap-2">
             <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0" />
             <span>
-              已核验 {filteredList.length} 款场景软件 · 原厂数字签名 · SHA-256 哈希校验防篡改
+              精选 {filteredList.length} 款装机场景软件 · 官方来源人工审查 · 安全直连通道
             </span>
           </div>
           <Link

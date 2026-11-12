@@ -21,6 +21,7 @@ import { UpdatesTimeline } from '../components/updates/UpdatesTimeline';
 import { UpdatesRecentlyAdded } from '../components/updates/UpdatesRecentlyAdded';
 import { UpdatesSidebar } from '../components/updates/UpdatesSidebar';
 import { UpdatesVersionHistoryModal } from '../components/updates/UpdatesVersionHistoryModal';
+import { setPageSeo } from '../utils/seo';
 
 export const UpdatesPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,16 +52,14 @@ export const UpdatesPage: React.FC = () => {
     limit: 15,
   };
 
-  // 设置页面 SEO 标题与 Meta 信息
+  // 设置页面 SEO 标题、Meta 信息与规范链接 Canonical
   useEffect(() => {
-    document.title = '软件与游戏最新版本更新中心 - 官方更新日志与发布动态 - 软游部落';
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute(
-        'content',
-        '软游部落最新更新频道严格以官方真实发版日期（releaseDate）为基准，收录正版软件与系统工具的最新版本更新日志、版本演进差异与原厂安全下载渠道。'
-      );
-    }
+    setPageSeo({
+      title: '软件与游戏最新版本更新中心 - 官方更新日志与发布动态 - 软游部落',
+      description:
+        '软游部落最新更新频道严格以官方真实发版日期（releaseDate）为基准，收录正版软件与系统工具的最新版本更新日志、版本演进差异与原厂安全下载渠道。',
+      path: '/updates',
+    });
   }, []);
 
   // 加载数据

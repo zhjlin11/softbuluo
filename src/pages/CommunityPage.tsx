@@ -13,6 +13,7 @@ import { CommunityThreadList } from '../components/community/CommunityThreadList
 import { CommunitySidebar, PendingQuestionItem } from '../components/community/CommunitySidebar';
 import { CommunityCreateModal } from '../components/community/CommunityCreateModal';
 import { CheckCircle2 } from 'lucide-react';
+import { setPageSeo } from '../utils/seo';
 
 export const CommunityPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +39,14 @@ export const CommunityPage: React.FC = () => {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setPageSeo({
+      title: '社区交流 - 软件使用交流与技术答疑 - 软游部落',
+      description: '软游部落技术问答与社区交流中心，聚集技术人员交流软件使用经验、系统故障排查技巧与最佳解决方案。',
+      path: '/community',
+    });
+  }, []);
 
   // 加载统计与待解决问题 (真实数据)
   const loadSidebarData = useCallback(() => {

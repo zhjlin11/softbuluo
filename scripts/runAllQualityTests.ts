@@ -32,7 +32,8 @@ const SUITES: TestSuite[] = [
   { name: 'P8.7.8 软件教程频道 UI 3.0', file: 'server/tests/p878TutorialsFinalPortalTest.ts', description: '教程门户/沉浸式阅读器/TOC滚动监听/代码复制/风险提示/准备清单/关联软件/SSR SEO' },
   { name: 'P8.7.9 顶部导航精简治理', file: 'server/tests/p879NavigationSimplificationTest.ts', description: '保留7大核心栏目/移除对比与社区导航/多端一致性/底层数据与SEO防死链' },
   { name: 'P8.7.10 最新更新频道 UI 3.0', file: 'server/tests/p8710UpdatesPortalTest.ts', description: '版本更新中心/真实发版时间线/更新日志展开/新收录隔离/多维筛选/SSR SEO/七大导航收官' },
-  { name: 'P8.8 软件一键直链下载系统', file: 'server/tests/p88DirectDownloadTest.ts', description: '统一直链入口/授权镜像/Range断点/SSRF拦截/文件SHA256校验' }
+  { name: 'P8.8 软件一键直链下载系统', file: 'server/tests/p88DirectDownloadTest.ts', description: '统一直链入口/授权镜像/Range断点/SSRF拦截/文件SHA256校验' },
+  { name: 'P8.9 全站生产级深度体检与专项审计', file: 'server/tests/p89ProductionAuditTest.ts', description: '七大导航收官/草稿与测试数据物理隔离/1-6级下载来源真伪/SEO Canonical与Sitemap修复/权限与合规审计' }
 ];
 
 async function main() {
@@ -55,8 +56,8 @@ async function main() {
       });
 
       // 解析输出中的 PASS 和 FAIL
-      const passMatches = output.match(/PASS:\s*(\d+)/) || output.match(/通过:\s*(\d+)/);
-      const failMatches = output.match(/FAIL:\s*(\d+)/) || output.match(/失败:\s*(\d+)/);
+      const passMatches = output.match(/PASS:\s*(\d+)/) || output.match(/通过[:\s]+(\d+)/) || output.match(/共通过\s*(\d+)/);
+      const failMatches = output.match(/FAIL:\s*(\d+)/) || output.match(/失败[:\s]+(\d+)/);
 
       let passedCount = 0;
       let failedCount = 0;

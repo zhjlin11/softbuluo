@@ -14,6 +14,7 @@ import { CompareFeaturedArticles } from '../components/compare/CompareFeaturedAr
 import { CompareAlternativeRecommendations } from '../components/compare/CompareAlternativeRecommendations';
 import { CompareCategoryDiscovery } from '../components/compare/CompareCategoryDiscovery';
 import { CompareCatalogSection } from '../components/compare/CompareCatalogSection';
+import { setPageSeo } from '../utils/seo';
 
 export const ComparisonListPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,9 +35,13 @@ export const ComparisonListPage: React.FC = () => {
   const [isLoadingMatrix, setIsLoadingMatrix] = useState(false);
   const [matrixError, setMatrixError] = useState<string | null>(null);
 
-  // 页面标题与元数据更新
+  // 页面标题与元数据更新与 Canonical 设置
   useEffect(() => {
-    document.title = '软件横向对比与选型指南 - 深度参数功能评测 - 软游部落';
+    setPageSeo({
+      title: '软件横向对比与选型指南 - 深度参数功能评测 - 软游部落',
+      description: '软游部落对比评测频道提供主流同类软件的深度参数对照、功能矩阵横评、适用场景分析与可信替代推荐。',
+      path: '/compare',
+    });
     GrowthService.collectPageView(window.location.pathname, 'COMPARISON_LIST', document.referrer);
   }, []);
 

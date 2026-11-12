@@ -47,7 +47,7 @@ export const ToolCategories: React.FC<ToolCategoriesProps> = ({
               </span>
             </div>
             <p className="text-xs text-slate-500">
-              杜绝任何第三方商业篡改与捆绑流氓软件，提供官方 SHA-256 完整性校验与直连通道。
+              收录开源与常用系统维护工具，人工审核官方分发渠道，提供安全直连通道。
             </p>
           </div>
 

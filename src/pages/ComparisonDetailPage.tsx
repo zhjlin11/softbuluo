@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { GrowthService, ComparisonItem } from '../services/growthService';
 import { SoftwareIcon } from '../components/common/SoftwareIcon';
+import { setPageSeo } from '../utils/seo';
 
 export const ComparisonDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -33,7 +34,12 @@ export const ComparisonDetailPage: React.FC = () => {
       .then((res) => {
         if (res.success && res.data) {
           setComparison(res.data);
-          document.title = `${res.data.title} - 软游部落`;
+          setPageSeo({
+            title: `${res.data.title} - 软游部落`,
+            description: res.data.description || '软游部落软件横向对比评测与参数分析',
+            path: `/compare/${slug}`,
+            ogType: 'article',
+          });
         } else {
           setError(res.error || '未找到该对比评测');
         }

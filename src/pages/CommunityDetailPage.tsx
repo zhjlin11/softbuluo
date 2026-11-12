@@ -28,6 +28,7 @@ import {
 } from '../services/communityService';
 import { getCategoryBadgeMeta } from '../components/community/CommunityThreadList';
 import { CommunityReportModal } from '../components/community/CommunityReportModal';
+import { setPageSeo } from '../utils/seo';
 
 export const CommunityDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -71,6 +72,17 @@ export const CommunityDetailPage: React.FC = () => {
   useEffect(() => {
     loadData();
   }, [id]);
+
+  useEffect(() => {
+    if (thread) {
+      setPageSeo({
+        title: `${thread.title} - 社区讨论 - 软游部落`,
+        description: thread.content?.slice(0, 150) || '软游部落社区交流讨论详情',
+        path: `/community/thread/${thread.id}`,
+        ogType: 'article',
+      });
+    }
+  }, [thread]);
 
   // 发表回复
   const handleReplySubmit = async (e: React.FormEvent) => {

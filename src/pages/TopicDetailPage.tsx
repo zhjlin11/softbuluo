@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { SoftwareIcon } from '../components/common/SoftwareIcon';
+import { setPageSeo } from '../utils/seo';
 
 export const TopicDetailPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -23,6 +24,12 @@ export const TopicDetailPage: React.FC = () => {
       .then((res) => {
         if (res.success && res.data) {
           setTopic(res.data);
+          setPageSeo({
+            title: `${res.data.title} - 精选专题 - 软游部落`,
+            description: res.data.description || '软游部落精选装机与系统维护专题',
+            path: `/topics/${slug}`,
+            ogType: 'article',
+          });
         }
       })
       .catch(console.error)
