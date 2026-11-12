@@ -33,7 +33,8 @@ const SUITES: TestSuite[] = [
   { name: 'P8.7.9 顶部导航精简治理', file: 'server/tests/p879NavigationSimplificationTest.ts', description: '保留7大核心栏目/移除对比与社区导航/多端一致性/底层数据与SEO防死链' },
   { name: 'P8.7.10 最新更新频道 UI 3.0', file: 'server/tests/p8710UpdatesPortalTest.ts', description: '版本更新中心/真实发版时间线/更新日志展开/新收录隔离/多维筛选/SSR SEO/七大导航收官' },
   { name: 'P8.8 软件一键直链下载系统', file: 'server/tests/p88DirectDownloadTest.ts', description: '统一直链入口/授权镜像/Range断点/SSRF拦截/文件SHA256校验' },
-  { name: 'P8.9 全站生产级深度体检与专项审计', file: 'server/tests/p89ProductionAuditTest.ts', description: '七大导航收官/草稿与测试数据物理隔离/1-6级下载来源真伪/SEO Canonical与Sitemap修复/权限与合规审计' }
+  { name: 'P8.9 全站生产级深度体检与专项审计', file: 'server/tests/p89ProductionAuditTest.ts', description: '七大导航收官/草稿与测试数据物理隔离/1-6级下载来源真伪/SEO Canonical与Sitemap修复/权限与合规审计' },
+  { name: 'P8.9.1 生产加固与运维闭环', file: 'server/tests/p891OperationsRemediationTest.ts', description: 'DB独立备份/恢复演练/磁盘治理/8080收敛/下载巡检/SEO与权限安全' }
 ];
 
 async function main() {
@@ -56,25 +57,28 @@ async function main() {
       });
 
       // 解析输出中的 PASS 和 FAIL
-      const passMatches = output.match(/PASS:\s*(\d+)/) || output.match(/通过[:\s]+(\d+)/) || output.match(/共通过\s*(\d+)/);
-      const failMatches = output.match(/FAIL:\s*(\d+)/) || output.match(/失败[:\s]+(\d+)/);
-
+      const summaryMatch = output.match(/通过[:\s]+(\d+)\s*\|\s*失败[:\s]+(\d+)/);
       let passedCount = 0;
       let failedCount = 0;
 
-      if (passMatches) {
-        passedCount = parseInt(passMatches[1], 10);
+      if (summaryMatch) {
+        passedCount = parseInt(summaryMatch[1], 10);
+        failedCount = parseInt(summaryMatch[2], 10);
       } else {
-        // 计算 [PASS] 出现次数
-        const occurrences = (output.match(/\[PASS\]/g) || []).length;
-        passedCount = occurrences;
-      }
+        const passExplicit = output.match(/(?:共完成|共通过|PASS:)\s*(\d+)/);
+        const failExplicit = output.match(/(?:共失败|FAIL:)\s*(\d+)/);
 
-      if (failMatches) {
-        failedCount = parseInt(failMatches[1], 10);
-      } else {
-        const occurrences = (output.match(/\[FAIL\]/g) || []).length;
-        failedCount = occurrences;
+        if (passExplicit) {
+          passedCount = parseInt(passExplicit[1], 10);
+        } else {
+          passedCount = (output.match(/\[PASS\]/g) || output.match(/✓/g) || []).length;
+        }
+
+        if (failExplicit) {
+          failedCount = parseInt(failExplicit[1], 10);
+        } else {
+          failedCount = (output.match(/\[FAIL\]/g) || output.match(/✗/g) || []).length;
+        }
       }
 
       totalPassed += passedCount;
