@@ -27,12 +27,28 @@ mkdir -p "$BACKUP_DIR"
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/softbuluo_$DATE.dump"
 
+# Check free space (at least 2GB)
+FREE_KB=$(df "$BACKUP_DIR" | tail -1 | awk '{print $4}')
+if [ "$FREE_KB" -lt 2097152 ]; then
+  echo "[$(date)] ERROR: Not enough disk space (<2GB) for database backup!" >&2
+  exit 1
+fi
+
 echo "[$(date)] Starting daily PostgreSQL backup..."
 docker exec vasto-postgres pg_dump -U vasto_admin -F c softbuluo > "$BACKUP_FILE"
 
+# Generate SHA-256 checksum
+sha256sum "$BACKUP_FILE" > "$BACKUP_FILE.sha256"
+
+# Verify non-empty
+if [ ! -s "$BACKUP_FILE" ]; then
+  echo "[$(date)] ERROR: Backup file is empty!" >&2
+  exit 1
+fi
+
 # Keep only last 14 days of backups
-find "$BACKUP_DIR" -name "softbuluo_*.dump" -mtime +14 -exec rm -f {} \;
-echo "[$(date)] Backup completed: $BACKUP_FILE ($(du -h "$BACKUP_FILE" | cut -f1))"
+find "$BACKUP_DIR" -name "softbuluo_*.dump*" -mtime +14 -exec rm -f {} \;
+echo "[$(date)] Backup completed and verified: $BACKUP_FILE ($(du -h "$BACKUP_FILE" | cut -f1))"
 EOF
 
 chmod +x /home/ubuntu/scripts/backup_db_daily.sh
