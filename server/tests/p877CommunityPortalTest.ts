@@ -89,7 +89,26 @@ async function runTests() {
     const hotThreads = await CommunityService.listThreads({ sort: 'hottest' });
     assert(Array.isArray(hotThreads.items), '热门排序成功返回列表');
 
-    // 搜索
+    // 搜索（确保存在 Blender 种子主题供检索）
+    const existingBlender = await prisma.discussionThread.findFirst({
+      where: { title: { contains: 'Blender' }, status: DiscussionStatus.ACTIVE }
+    });
+    if (!existingBlender) {
+      const activeUser = await prisma.memberUser.findFirst({ where: { status: 'ACTIVE' } });
+      if (activeUser) {
+        await prisma.discussionThread.create({
+          data: {
+            userId: activeUser.id,
+            title: 'Blender 4.x 顶尖开源全能三维动画与渲染套件 生产力调优与插件建议',
+            content: 'Blender 4.x 版本 Cycles 渲染引擎支持了全光照评估与几何节点性能优化指南。',
+            category: DiscussionCategory.EXPERIENCE,
+            status: DiscussionStatus.ACTIVE,
+            viewCount: 100,
+            replyCount: 0
+          }
+        });
+      }
+    }
     const searchRes = await CommunityService.listThreads({ search: 'Blender' });
     assert(searchRes.items.some((t) => t.title.includes('Blender')), '关键字 "Blender" 精准检索到关联主题');
 

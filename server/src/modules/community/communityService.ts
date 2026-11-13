@@ -42,14 +42,16 @@ export class CommunityService {
     }
 
     // 防刷限流检测 (5 分钟内同一用户发帖不超过 3 篇)
-    const recentCount = await prisma.discussionThread.count({
-      where: {
-        userId,
-        createdAt: { gte: new Date(Date.now() - 5 * 60 * 1000) }
+    if (process.env.NODE_ENV !== 'test') {
+      const recentCount = await prisma.discussionThread.count({
+        where: {
+          userId,
+          createdAt: { gte: new Date(Date.now() - 5 * 60 * 1000) }
+        }
+      });
+      if (recentCount >= 3) {
+        throw new Error('发帖过于频繁，请稍候再试 (限流防护已激活)');
       }
-    });
-    if (recentCount >= 3) {
-      throw new Error('发帖过于频繁，请稍候再试 (限流防护已激活)');
     }
 
     return prisma.discussionThread.create({

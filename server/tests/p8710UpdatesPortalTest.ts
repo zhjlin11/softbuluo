@@ -236,7 +236,11 @@ export async function runP8710UpdatesPortalTests() {
   console.log('▶ [4/7] 验证软件独立历史版本接口与下载来源安全...');
   await test('GET /api/v1/channels/updates/version-history/:softwareId 成功返回软件演进历史', async () => {
     const sampleSoftware = await prisma.software.findFirst({
-      where: { status: 'PUBLISHED', isTestData: false },
+      where: {
+        status: 'PUBLISHED',
+        isTestData: false,
+        versions: { some: { reviewStatus: 'APPROVED' } },
+      },
     });
     assert(sampleSoftware, '必须存在已发布软件');
 
