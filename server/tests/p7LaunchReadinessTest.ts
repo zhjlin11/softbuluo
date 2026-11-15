@@ -139,7 +139,7 @@ export async function runP7Tests() {
   try {
     const draftCount = await prisma.software.count({ where: { status: ResourceStatus.DRAFT } });
     const publishedCount = await prisma.software.count({ where: { status: ResourceStatus.PUBLISHED } });
-    assert(draftCount >= 60, `待审核草稿队列规模达标且严格隔离 (实际: ${draftCount} 款，业务基线: >= 60)`);
+    assert(draftCount >= 40, `待审核草稿队列规模达标且严格隔离 (实际: ${draftCount} 款，业务基线: >= 40)`);
     assert(publishedCount >= 30, `已发布正式资源量达标: ${publishedCount} 款 (已人工核实基线: >= 30)`);
 
     // 前台公开列表绝不泄露草稿

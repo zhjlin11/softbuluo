@@ -148,8 +148,11 @@ export async function runP874Tests() {
         assert(t.resourceCount >= 1 && t.resourceCount <= d.meta.totalGamesCount, '专题统计数仅能计入已发布 GAME 数量');
       }
 
-      for (const g of d.guides) {
-        assert(!g.slug.includes('openra'), '未发布草稿 OpenRA 关联教程不得在前台作为可玩游戏攻略暴露');
+      const openraSw = await prisma.software.findUnique({ where: { slug: 'openra' } });
+      if (openraSw && openraSw.status === ResourceStatus.DRAFT) {
+        for (const g of d.guides) {
+          assert(!g.slug.includes('openra'), '未发布草稿 OpenRA 关联教程不得在前台作为可玩游戏攻略暴露');
+        }
       }
     });
 

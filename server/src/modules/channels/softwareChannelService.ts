@@ -614,7 +614,7 @@ export class SoftwareChannelService {
         viewCount: t.viewCount,
         publishedAt: (t.publishedAt || t.createdAt).toISOString(),
         software: t.software
-          ? { slug: t.software.slug, name: t.software.name, iconUrl: t.software.iconUrl }
+          ? { slug: t.software.slug, name: t.software.name, iconUrl: sanitizeChannelIconUrl(t.software.iconUrl) }
           : null,
       }));
 
@@ -630,7 +630,7 @@ export class SoftwareChannelService {
           .map((it) => ({
             slug: it.software.slug,
             name: it.software.name,
-            iconUrl: it.software.iconUrl,
+            iconUrl: sanitizeChannelIconUrl(it.software.iconUrl),
           })),
       }))
       .filter((c) => c.softwares.length >= 1)

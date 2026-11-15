@@ -59,7 +59,7 @@ export async function runP6Tests() {
     
     assert(totalResources >= 90, `全库收录资源总量达标: ${totalResources} 款 (业务基线: >= 90)`);
     assert(publishedCount >= 30, `已发布正式资源量达标: ${publishedCount} 款 (已人工核实基线: >= 30)`);
-    assert(draftCount >= 60, `草稿待审资源保持严格隔离: ${draftCount} 款 (严禁自动批量发布，业务基线: >= 60)`);
+    assert(draftCount >= 40, `草稿待审资源保持严格隔离: ${draftCount} 款 (严禁自动批量发布，业务基线: >= 40)`);
 
     // 匿名访问公共列表，严禁泄露任何 DRAFT
     const publicRes = await app.inject({

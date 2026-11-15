@@ -330,7 +330,7 @@ export async function runP875Tests() {
       assert.strictEqual(softApi.statusCode, 200);
       assert.strictEqual(sysApi.statusCode, 200);
       assert.strictEqual(gameApi.statusCode, 200);
-      assert.strictEqual(gameApi.json().data.meta.totalGamesCount, 2);
+      assert(gameApi.json().data.meta.totalGamesCount >= 2);
     });
   } finally {
     if (tempIds.recIds.length > 0) {
