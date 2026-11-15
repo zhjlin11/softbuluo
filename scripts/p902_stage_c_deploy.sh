@@ -67,8 +67,12 @@ pm2 status
 # STEP 6: VERIFY LOCAL BACKEND HEALTH
 # -----------------------------------------------------
 echo -e "\n▶ [STEP 6] CHECKING LOCAL FASTIFY 3008 HEALTH..."
-HEALTH_RES=$(curl -s http://127.0.0.1:3008/api/health || echo "FAILED")
+HEALTH_RES=$(curl -s http://127.0.0.1:3008/api/v1/health || echo "FAILED")
 echo "Backend health response: $HEALTH_RES"
+if [[ "$HEALTH_RES" != *"HEALTHY"* ]]; then
+    echo "[FATAL] Fastify backend health check failed!" >&2
+    exit 1
+fi
 
 # -----------------------------------------------------
 # STEP 7: DISK & LOGS HYGIENE
