@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
 import { SiteHeader } from './components/layout/SiteHeader';
 import { SiteFooter } from './components/layout/SiteFooter';
+import { RouteAnalyticsTracker } from './components/common/RouteAnalyticsTracker';
 import { HomePage } from './pages/HomePage';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 
@@ -213,6 +214,7 @@ function AppLayout({ isDark, setIsDark }: { isDark: boolean; setIsDark: (val: bo
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F5F7FA] dark:bg-[#0D1524] text-[#202938] dark:text-slate-100 transition-colors duration-150">
+      <RouteAnalyticsTracker />
       {/* 顶部吸顶导航栏 */}
       <SiteHeader
         onSearchClick={focusSearch}

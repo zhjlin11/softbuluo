@@ -37,7 +37,8 @@ const SUITES: TestSuite[] = [
   { name: 'P8.9.1 生产加固与运维闭环', file: 'server/tests/p891OperationsRemediationTest.ts', description: 'DB独立备份/恢复演练/磁盘治理/8080收敛/下载巡检/SEO与权限安全' },
   { name: 'P9.0 正式运营与长期增长', file: 'server/tests/p90OperationsGrowthTest.ts', description: '资源扩充去重/官方来源识别/死链治理/版本监测审核/SEO持续运营/RBAC与系统保全' },
   { name: 'P9.0.1 真实资源审核与异常来源治理', file: 'server/tests/p901ResourcePublishingTest.ts', description: '35条坏链逐条治理/62款草稿审核/首批10款批次发布/原子事务与回滚/七大导航与SEO保障' },
-  { name: 'P9.0.2 优质资源深度审核与增量发布', file: 'server/tests/p902ResourcePublishingTest.ts', description: '第二批10款候选深度核验/0-100评分/9项阻断机制/去重防冲突/事务原子性/本地验收' }
+  { name: 'P9.0.2 优质资源深度审核与增量发布', file: 'server/tests/p902ResourcePublishingTest.ts', description: '第二批10款候选深度核验/0-100评分/9项阻断机制/去重防冲突/事务原子性/本地验收' },
+  { name: 'P9.1.0 运营启动与数据体系', file: 'server/tests/p910OperationsAnalyticsTest.ts', description: '七大主导航锁定/50款软件与27篇教程基线/路由打点与防抖/隐私短哈希/漏斗与零命中/合规商业化' }
 ];
 
 async function main() {
