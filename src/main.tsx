@@ -7,6 +7,8 @@ if ('serviceWorker' in navigator && typeof window !== 'undefined') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((reg) => {
       console.log('✅ 软游部落 PWA Service Worker 注册成功:', reg.scope);
+      // 访问时主动触发一次 SW 更新检测，加速老旧客户端淘汰
+      reg.update().catch(() => {});
       reg.onupdatefound = () => {
         const installingWorker = reg.installing;
         if (installingWorker) {

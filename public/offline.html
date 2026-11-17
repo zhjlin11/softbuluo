@@ -144,56 +144,65 @@
       </div>
 
       <div>
-        <button class="btn" id="reload-btn" onclick="retryConnection()">重新检查网络连接</button>
+        <button class="btn" id="reload-btn" onclick="retryConnection()">⚡ 立即重置缓存并恢复访问</button>
       </div>
 
       <div class="tip-box">
         <strong>💡 为什么其他网站正常，唯独提示离线？</strong><br>
         软游部落部署在中国境内腾讯云高速服务器。若您当前开启了海外代理（如 Clash、VPN 或浏览器代理插件），海外节点连接国内服务器可能发生跨国路由抖动或连接重置。<br>
-        <strong>建议解决方案</strong>：请在您的代理工具分流规则中，将 <code>softtribe.top</code> 设为 <strong>直连 (DIRECT)</strong>。
+        <strong>建议永久解决方案</strong>：请在您的代理工具分流规则中，将 <code>softtribe.top</code> 设为 <strong>直连 (DIRECT)</strong>。
       </div>
 
       <div class="notice">软游部落 · 安全官方软件与游戏资源综合生态平台</div>
     </div>
 
     <script>
-      let isChecking = false;
+      // 核心自愈：自动注销老旧 Service Worker 并清理全部旧缓存，彻底破除离线锁死
+      async function cleanAllSWAndCaches() {
+        try {
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            for (const reg of registrations) {
+              await reg.unregister();
+            }
+          }
+          if ('caches' in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((k) => caches.delete(k)));
+          }
+        } catch (e) {
+          console.warn('[SelfHeal] 清理缓存异常:', e);
+        }
+      }
+
+      // 页面加载即刻后台触发注销与缓存清理
+      cleanAllSWAndCaches();
 
       async function retryConnection() {
         const statusText = document.getElementById('status-text');
         const btn = document.getElementById('reload-btn');
-        if (statusText) statusText.innerText = '正在验证服务器连通性...';
-        if (btn) btn.innerText = '连接中...';
+        if (statusText) statusText.innerText = '正在重置 Service Worker 并直连服务器...';
+        if (btn) btn.innerText = '正在恢复中...';
+
+        await cleanAllSWAndCaches();
 
         try {
-          // 使用时间戳穿透缓存检测
           const res = await fetch('/?_ping=' + Date.now(), { method: 'HEAD', cache: 'no-store' });
           if (res.ok || res.status < 500) {
-            if (statusText) statusText.innerText = '✅ 连接已恢复，正在跳转...';
-            setTimeout(() => { window.location.reload(); }, 300);
+            if (statusText) statusText.innerText = '✅ 网络已连通，正在进入首页...';
+            setTimeout(() => { window.location.replace('/?_clean=' + Date.now()); }, 200);
             return;
           }
         } catch (e) {
-          // 依然处于离线或连接失败
+          // 依然处于异常
         }
 
-        if (statusText) statusText.innerText = '正在后台自动重试连接...';
-        if (btn) btn.innerText = '重新检查网络连接';
+        // 无论检测结果如何，直接带防缓存时间戳强跳首页，交由浏览器内核原生处理
+        window.location.replace('/?_bypass_sw=' + Date.now());
       }
 
-      // 后台轮询探测，一旦恢复自动刷新
-      setInterval(() => {
-        if (!navigator.onLine) return;
-        fetch('/?_ping=' + Date.now(), { method: 'HEAD', cache: 'no-store' })
-          .then((res) => {
-            if (res.ok || res.status < 500) {
-              const statusText = document.getElementById('status-text');
-              if (statusText) statusText.innerText = '✅ 连接已恢复，正在跳转...';
-              setTimeout(() => { window.location.reload(); }, 400);
-            }
-          })
-          .catch(() => {});
-      }, 2500);
+      // 后台 2 秒后自动唤醒尝试跳转
+      setTimeout(retryConnection, 2000);
 
       window.addEventListener('online', retryConnection);
     </script>

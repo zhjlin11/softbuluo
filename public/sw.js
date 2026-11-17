@@ -1,5 +1,5 @@
-// 软游部落 PWA 核心 Service Worker (P8.7 / P9.1 生产自愈与智能容灾版)
-const CACHE_NAME = 'softtribe-pwa-v1.4.0';
+// 软游部落 PWA 核心 Service Worker (P9.1.1 根治假离线与导航放行稳定版)
+const CACHE_NAME = 'softtribe-pwa-v1.5.0';
 const OFFLINE_URL = '/offline.html';
 
 // 严格白名单：仅预缓存公开无隐私的静态基础资产
@@ -135,40 +135,13 @@ self.addEventListener('fetch', (event) => {
 
   // 严格安全守则 2: 私有路径与私有 API 绝对不拦截、不缓存、直连网络
   if (isStrictlyPrivate(req.url)) {
-    // 若属于私有导航请求遇到断网，直接返回离线兜底，杜绝展示上一位用户的缓存数据
-    if (req.mode === 'navigate') {
-      event.respondWith(
-        fetchWithRetry(req, 1, 300).catch(async () => {
-          const offlinePage = await caches.match(OFFLINE_URL);
-          return offlinePage || new Response('Network offline', { status: 503 });
-        })
-      );
-    }
     return;
   }
 
-  // 严格安全守则 3: 公开导航请求 (如首页、分类、公开详情页)
-  // 采用 NetworkFirst + 微重试 + 缓存 SPA 壳降级策略，坚决避免因代理抖动误跳离线页
+  // 严格安全守则 3: 页面导航请求 (req.mode === 'navigate'，如打开网页、刷新、地址栏输入、外链进入)
+  // 坚决放行！完全交由浏览器底层原生网络栈与 Nginx 处理，绝对不拦截、不篡改、绝不强行展示离线页！
+  // 彻底根治科学上网代理切换、DNS 抖动、跨国握手超时导致的“假离线”拦截与死锁问题
   if (req.mode === 'navigate') {
-    event.respondWith(
-      fetchWithRetry(req, 2, 400).catch(async (err) => {
-        console.warn('[SW] 页面导航直连重试失败，尝试智能降级:', err);
-        // 优先使用已缓存的根首页 SPA 应用壳，让客户端 React Router 尝试正常渲染
-        const cachedHome = await caches.match('/');
-        if (cachedHome) {
-          return cachedHome;
-        }
-        // 兜底返回离线自愈页
-        const offlinePage = await caches.match(OFFLINE_URL);
-        return (
-          offlinePage ||
-          new Response('网络连接暂时中断，请检查网络设置', {
-            status: 503,
-            headers: { 'Content-Type': 'text/plain; charset=utf-8' },
-          })
-        );
-      })
-    );
     return;
   }
 
