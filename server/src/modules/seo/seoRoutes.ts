@@ -302,7 +302,6 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     xml += `  <url>\n    <loc>${domain}/system-tools</loc>\n    <lastmod>${new Date().toISOString().slice(0, 10)}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>\n`;
     for (const it of items) {
       xml += `  <url>\n    <loc>${domain}/software/${it.slug}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
-      xml += `  <url>\n    <loc>${domain}/tool/${it.slug}</loc>\n    <lastmod>${it.updatedAt.toISOString().slice(0, 10)}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.9</priority>\n  </url>\n`;
     }
     xml += `</urlset>`;
 
@@ -386,12 +385,23 @@ export const seoRoutes: FastifyPluginAsync = async (server: FastifyInstance) => 
     return reply.send(xml);
   });
 
-  // 专题 Sitemap
+  // 专题 Sitemap (排除已归属于装机必备 sitemap-essentials 的 6 个核心专题，杜绝跨表重复)
   server.get('/sitemap-topics.xml', async (req, reply) => {
+    const essentialSlugs = [
+      'win11-essential-tools',
+      'genuine-microsoft-installation-media',
+      'open-source-office-suite',
+      'disk-health-diagnosis',
+      'software-clean-uninstallation',
+      'windows-sysinternals-guide',
+    ];
     const items = await prisma.topic.findMany({
       where: {
         status: TopicStatus.PUBLISHED,
-        NOT: { slug: { startsWith: 'topic-p3-' } },
+        NOT: [
+          { slug: { startsWith: 'topic-p3-' } },
+          { slug: { in: essentialSlugs } },
+        ],
       },
       select: { slug: true, updatedAt: true },
     });
@@ -529,6 +539,8 @@ Allow: /developer
 Allow: /community
 Allow: /community/
 Allow: /seo/
+Allow: /llms.txt
+Allow: /llms-full.txt
 Disallow: /admin
 Disallow: /admin/
 Disallow: /api/
@@ -552,5 +564,23 @@ Sitemap: ${domain}/sitemap-community.xml
 `;
     reply.header('Content-Type', 'text/plain; charset=utf-8');
     return reply.send(robots);
+  });
+
+  // ================= AEO / GEO 生成式 AI 标准规范文件 (llms.txt) =================
+
+  // /llms.txt 站点摘要与核心资源导览
+  server.get('/llms.txt', async (_req, reply) => {
+    const text = await SeoService.renderLlmsTxt();
+    reply.header('Content-Type', 'text/plain; charset=utf-8');
+    reply.header('Cache-Control', 'public, max-age=3600');
+    return reply.send(text);
+  });
+
+  // /llms-full.txt 全量资源与教程索引
+  server.get('/llms-full.txt', async (_req, reply) => {
+    const text = await SeoService.renderLlmsFullTxt();
+    reply.header('Content-Type', 'text/plain; charset=utf-8');
+    reply.header('Cache-Control', 'public, max-age=3600');
+    return reply.send(text);
   });
 };

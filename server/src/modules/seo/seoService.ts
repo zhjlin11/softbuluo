@@ -209,28 +209,85 @@ ${JSON.stringify(jsonLd, null, 2)}
     const pageTitle = `${item.name} ${latestVersion} 官方下载渠道与版本信息 - ${categoryName} - 软游部落`;
     const metaDescription = `${item.summary} 软游部落提供 ${item.name} 官方正规获取途径与版本信息，最新版本号 ${latestVersion}，支持平台：${platforms}。来源清晰、规范透明、版本更新及时追踪。`;
 
-    // 结构化数据 Schema.org SoftwareApplication
-    const jsonLd = {
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      name: item.name,
-      operatingSystem: platforms,
-      applicationCategory: categoryName,
-      softwareVersion: latestVersion,
-      description: item.description,
-      datePublished: releaseDate,
-      dateModified: item.updatedAt.toISOString().slice(0, 10),
-      publisher: {
-        '@type': 'Organization',
-        name: item.developer || '官方开发者',
+    // 结构化数据 Schema.org SoftwareApplication + FAQPage
+    const jsonLd = [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: item.name,
+        operatingSystem: platforms,
+        applicationCategory: categoryName,
+        softwareVersion: latestVersion,
+        description: item.description,
+        datePublished: releaseDate,
+        dateModified: item.updatedAt.toISOString().slice(0, 10),
+        publisher: {
+          '@type': 'Organization',
+          name: item.developer || '官方开发者',
+        },
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'CNY',
+        },
+        url: pageUrl,
       },
-      offers: {
-        '@type': 'Offer',
-        price: '0',
-        priceCurrency: 'CNY',
+      {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: `${item.name} 是官方正版且无捆绑软件吗？`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: `是的。软游部落收录的 ${item.name} 均经过人工逐项核验，直连原厂官方发布通道或开源代码仓库，坚决杜绝高速下载器、广告全家桶与静默捆绑。`,
+            },
+          },
+          {
+            '@type': 'Question',
+            name: `${item.name} 最新版本是多少？支持 Windows 11 吗？`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: `${item.name} 当前最新核验版本为 v${latestVersion}，支持 ${platforms}。`,
+            },
+          },
+          {
+            '@type': 'Question',
+            name: `如何校验 ${item.name} 下载安装包的完整性？`,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: `用户可在 Windows PowerShell 中使用 Get-FileHash 指令计算安装文件的 SHA-256 哈希值，并与软游部落页面公布的原厂官方哈希进行比对。`,
+            },
+          },
+        ],
       },
-      url: pageUrl,
-    };
+    ];
+
+    // 查询该软件关联的已发布实操教程（双向内链闭环）
+    const relatedTutorials = await prisma.tutorial.findMany({
+      where: {
+        softwareId: item.id,
+        status: 'PUBLISHED',
+        NOT: { slug: { startsWith: 'tut-p3-' } },
+      },
+      select: {
+        title: true,
+        slug: true,
+        summary: true,
+      },
+      take: 4,
+    });
+
+    const relatedTutorialsHtml = relatedTutorials.length > 0
+      ? `
+    <section style="margin: 24px 0; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px;">
+      <h2 style="margin-top: 0; color: #166534;">配套实操教程与技巧指南</h2>
+      <ul style="margin-bottom: 0; padding-left: 20px;">
+        ${relatedTutorials.map((t) => `<li style="margin-bottom: 8px;"><a href="${domain}/tutorials/${t.slug}" style="font-weight: 600; color: #15803d;">${this.escapeHtml(t.title)}</a>: <span style="color: #475569; font-size: 0.9rem;">${this.escapeHtml(t.summary)}</span></li>`).join('\n')}
+      </ul>
+    </section>`
+      : '';
 
     // 收集所有下载来源
     const sourcesList: { name: string; url: string }[] = [];
@@ -321,13 +378,22 @@ ${JSON.stringify(jsonLd, null, 2)}
       </div>
     </section>
 
+    ${downloadLinksHtml ? `
     <section class="download-section">
       <h2>官方下载与核验信息</h2>
       <p>软游部落坚持“官方来源、无捆绑、安全可靠”的准则，以下为经过系统核验的官方来源：</p>
       <ul>
-        ${downloadLinksHtml || '<li>官方下载通道维护中，请访问上方官网获取安装包。</li>'}
+        ${downloadLinksHtml}
       </ul>
-    </section>
+      <p style="margin-bottom: 0; font-size: 0.85rem; color: #059669;">提示：软游部落严格核验原厂发布渠道与 SHA256 校验值，杜绝捆绑与第三方篡改。</p>
+    </section>` : `
+    <section class="download-section" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+      <h2 style="color: #334155;">官方获取渠道与授权说明</h2>
+      <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6;">本资源为原厂商业授权或已停止官方支持的历史归档版本。为保障用户纯净安全，本站杜绝收录未经授权的第三方修改版镜像。</p>
+      ${item.officialWebsite || (item.developer && item.developer.includes('Microsoft')) ? `<p style="margin-top: 10px;"><a href="${this.escapeHtml(item.officialWebsite || 'https://www.microsoft.com/zh-cn/evalcenter/')}" target="_blank" rel="nofollow noopener noreferrer" style="color: #1769d2; font-weight: 600; text-decoration: underline;">前往原厂官方评估中心与支持文档通道 &rarr;</a></p>` : ''}
+    </section>`}
+
+    ${relatedTutorialsHtml}
 
     <section>
       <h2>历史更新版本记录</h2>
@@ -699,7 +765,7 @@ ${JSON.stringify(jsonLd, null, 2)}
       <span>发布时间：${item.publishedAt ? item.publishedAt.toISOString().slice(0, 10) : item.createdAt.toISOString().slice(0, 10)}</span>
       <span>最后复核：${item.updatedAt.toISOString().slice(0, 10)}</span>
       <span>阅读量：${item.viewCount} 次</span>
-      ${item.software ? `<span>关联软件：<a href="${config.getCanonicalUrl(`/software/${item.software.slug}`)}" style="color: #1769d2; font-weight: bold;">${this.escapeHtml(item.software.name)}</a></span>` : ''}
+      ${item.software ? (item.software.status === 'PUBLISHED' && !item.software.isTestData ? `<span>关联软件：<a href="${config.getCanonicalUrl(`/software/${item.software.slug}`)}" style="color: #1769d2; font-weight: bold;">${this.escapeHtml(item.software.name)}</a></span>` : `<span>关联软件：<strong>${this.escapeHtml(item.software.name)}</strong>（官方渠道核验入库中）</span>`) : ''}
     </div>
   </header>
   <main>
@@ -1663,6 +1729,108 @@ ${JSON.stringify(jsonLd, null, 2)}
 </html>`;
 
     return { html, status: 200 };
+  }
+
+  /**
+   * 生成规范 /llms.txt 文件内容 (AEO / GEO 生成式 AI 标准)
+   */
+  static async renderLlmsTxt(): Promise<string> {
+    const domain = config.clientUrl;
+    const softwareCount = await prisma.software.count({
+      where: { status: ResourceStatus.PUBLISHED, isTestData: false },
+    });
+    const tutorialCount = await prisma.tutorial.count({
+      where: { status: 'PUBLISHED', NOT: { slug: { startsWith: 'tut-p3-' } } },
+    });
+
+    const topSoftware = await prisma.software.findMany({
+      where: { status: ResourceStatus.PUBLISHED, isTestData: false },
+      orderBy: { viewCount: 'desc' },
+      take: 20,
+      select: {
+        name: true,
+        slug: true,
+        summary: true,
+        versions: { where: { isLatest: true }, select: { version: true } },
+      },
+    });
+
+    const topTutorials = await prisma.tutorial.findMany({
+      where: { status: 'PUBLISHED', NOT: { slug: { startsWith: 'tut-p3-' } } },
+      orderBy: { viewCount: 'desc' },
+      take: 15,
+      select: { title: true, slug: true, summary: true },
+    });
+
+    return `# 软游部落 SoftTribe
+
+> 官方安全核验软件与游戏资源门户。全站资源由人工逐项核验安全来源、官方发布日期、真实 SHA256 哈希与许可协议，杜绝高速下载器、全家桶捆绑与恶意篡改。
+
+## 平台核心原则
+- **100% 官方正版来源直达**：仅收录原厂官网、GitHub Releases 或经官方授权的正规分发通道；
+- **真实哈希防伪比对**：收录资源提供 SHA256 校验和与原厂数字签名信息；
+- **严格遵循真实发布日期 (releaseDate)**：杜绝虚标版本号与虚假更新欺骗；
+- **全站纯净开源运营**：无静默推广、无弹窗广告、无欺诈下载按钮。
+
+## 七大核心频道导航
+- [首页](${domain}/): 精选推荐、最新版本与核心装机合集
+- [电脑软件](${domain}/software): Windows 常用桌面应用与生产力工具
+- [系统工具](${domain}/system-tools): PE制作、磁盘检测、深度清理与系统调试
+- [游戏中心](${domain}/games): 开源与独立游戏（如 OpenRA 红色警戒重制）
+- [装机必备](${domain}/essentials): 新机纯净装机与原版介质制作指引
+- [软件教程](${domain}/tutorials): 工程师级技术实操与电脑故障排查
+- [最新更新](${domain}/updates): 追踪已收录软件原厂最新版本发布动态
+
+## 热门核验软件 (${softwareCount} 款正式收录)
+${topSoftware.map((s) => `- [${s.name} v${s.versions[0]?.version || '最新'}](${domain}/software/${s.slug}): ${s.summary}`).join('\n')}
+
+## 热门实操教程 (${tutorialCount} 篇正式指南)
+${topTutorials.map((t) => `- [${t.title}](${domain}/tutorials/${t.slug}): ${t.summary}`).join('\n')}
+
+## 完整资源列表与 Sitemap
+- 全量知识库索引：[${domain}/llms-full.txt](${domain}/llms-full.txt)
+- Sitemap 索引主表：[${domain}/sitemap.xml](${domain}/sitemap.xml)
+- 软件资源地图：[${domain}/sitemap-software.xml](${domain}/sitemap-software.xml)
+- 实操教程地图：[${domain}/sitemap-tutorials.xml](${domain}/sitemap-tutorials.xml)
+`;
+  }
+
+  /**
+   * 生成全量 /llms-full.txt 文件内容
+   */
+  static async renderLlmsFullTxt(): Promise<string> {
+    const domain = config.clientUrl;
+    const allSoftware = await prisma.software.findMany({
+      where: { status: ResourceStatus.PUBLISHED, isTestData: false },
+      orderBy: { name: 'asc' },
+      include: {
+        category: { select: { name: true } },
+        versions: { where: { isLatest: true }, select: { version: true, releaseDate: true } },
+      },
+    });
+
+    const allTutorials = await prisma.tutorial.findMany({
+      where: { status: 'PUBLISHED', NOT: { slug: { startsWith: 'tut-p3-' } } },
+      orderBy: { publishedAt: 'desc' },
+      select: { title: true, slug: true, summary: true, publishedAt: true },
+    });
+
+    return `# 软游部落 SoftTribe - 全量知识库索引 (Full Index)
+
+> 包含当前已正式发布的 ${allSoftware.length} 款软件与 ${allTutorials.length} 篇实操教程的完整清单。
+
+## 全量已核验软件库 (${allSoftware.length} 款)
+${allSoftware.map((s, idx) => `${idx + 1}. [${s.name}](${domain}/software/${s.slug})
+   - 最新版本: v${s.versions[0]?.version || '标准版'} (${s.versions[0]?.releaseDate || '近期'})
+   - 分类: ${s.category?.name || '实用软件'} | 开发者: ${s.developer || '官方'}
+   - 支持平台: ${s.supportedPlatforms || 'Windows 10/11'} | 许可类型: ${s.licenseType}
+   - 摘要: ${s.summary}`).join('\n\n')}
+
+## 全量实操技术教程 (${allTutorials.length} 篇)
+${allTutorials.map((t, idx) => `${idx + 1}. [${t.title}](${domain}/tutorials/${t.slug})
+   - 发布日期: ${t.publishedAt ? t.publishedAt.toISOString().slice(0, 10) : '近期'}
+   - 摘要: ${t.summary}`).join('\n\n')}
+`;
   }
 
   private static renderNotFoundHtml(message: string): string {
