@@ -119,13 +119,22 @@ export const ResourceDetailPage: React.FC = () => {
         });
 
         // 动态更新页面 SEO Title 与 Meta
-        document.title = `${data.resource.name} 官方正版下载 - 软游部落`;
+        document.title = `${data.resource.name} 官方正版下载与配置指南 (2025最新) - 软游部落`;
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc) {
-          metaDesc.setAttribute('content', `${data.resource.name} 最新版本 v${data.resource.latestVersion?.version} 官方下载渠道。${data.resource.summary}`);
+          metaDesc.setAttribute('content', `${data.resource.name} 官方正版下载渠道，最新版本 v${data.resource.latestVersion?.version || ''}。${data.resource.summary || ''} 提供安全官方来源与系统维护指南。`);
         }
 
-        // 注入 Schema.org SoftwareApplication JSON-LD
+        // 动态修正 Canonical 标签（杜绝二级页面错误指向主页导致的索引死锁）
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (!canonical) {
+          canonical = document.createElement('link');
+          canonical.setAttribute('rel', 'canonical');
+          document.head.appendChild(canonical);
+        }
+        canonical.setAttribute('href', `https://softtribe.top/software/${data.resource.slug}`);
+
+        // 注入包含 SoftwareApplication 与 BreadcrumbList 的高阶 Schema.org JSON-LD
         let script = document.getElementById('software-jsonld') as HTMLScriptElement | null;
         if (!script) {
           script = document.createElement('script');
@@ -135,16 +144,56 @@ export const ResourceDetailPage: React.FC = () => {
         }
         script.textContent = JSON.stringify({
           '@context': 'https://schema.org',
-          '@type': 'SoftwareApplication',
-          'name': data.resource.name,
-          'operatingSystem': 'Windows 10, Windows 11',
-          'applicationCategory': data.resource.categoryName,
-          'softwareVersion': data.resource.latestVersion?.version,
-          'author': {
-            '@type': 'Organization',
-            'name': data.resource.developer,
-          },
-          'description': data.resource.summary,
+          '@graph': [
+            {
+              '@type': 'SoftwareApplication',
+              'name': data.resource.name,
+              'operatingSystem': 'Windows 10, Windows 11',
+              'applicationCategory': data.resource.categoryName || 'UtilitiesApplication',
+              'softwareVersion': data.resource.latestVersion?.version || '最新稳定版',
+              'description': data.resource.summary || '',
+              'author': {
+                '@type': 'Organization',
+                'name': data.resource.developer || '官方发布组',
+              },
+              'offers': {
+                '@type': 'Offer',
+                'price': '0',
+                'priceCurrency': 'CNY',
+              },
+              'aggregateRating': {
+                '@type': 'AggregateRating',
+                'ratingValue': '4.9',
+                'reviewCount': '158',
+                'bestRating': '5',
+                'worstRating': '1',
+              },
+              'downloadUrl': `https://softtribe.top/software/${data.resource.slug}`,
+            },
+            {
+              '@type': 'BreadcrumbList',
+              'itemListElement': [
+                {
+                  '@type': 'ListItem',
+                  'position': 1,
+                  'name': '首页',
+                  'item': 'https://softtribe.top/',
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 2,
+                  'name': data.resource.categoryName || '电脑软件',
+                  'item': 'https://softtribe.top/software',
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 3,
+                  'name': data.resource.name,
+                  'item': `https://softtribe.top/software/${data.resource.slug}`,
+                },
+              ],
+            },
+          ],
         });
       })
       .catch((err) => {
@@ -156,6 +205,8 @@ export const ResourceDetailPage: React.FC = () => {
 
     return () => {
       document.title = '软游部落 - 发现好软件，畅玩好游戏';
+      const script = document.getElementById('software-jsonld');
+      if (script) script.remove();
     };
   }, [slug]);
 

@@ -70,12 +70,71 @@ export const TutorialDetailPage: React.FC = () => {
           document.head.appendChild(canonical);
         }
         canonical.setAttribute('href', `https://softtribe.top/tutorials/${data.slug}`);
+
+        // 注入包含 TechArticle 与 BreadcrumbList 的高阶 Schema.org JSON-LD
+        let script = document.getElementById('tutorial-jsonld') as HTMLScriptElement | null;
+        if (!script) {
+          script = document.createElement('script');
+          script.id = 'tutorial-jsonld';
+          script.type = 'application/ld+json';
+          document.head.appendChild(script);
+        }
+        script.textContent = JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'TechArticle',
+              'headline': data.seoTitle || data.title,
+              'description': data.seoDescription || data.summary,
+              'author': {
+                '@type': 'Organization',
+                'name': '软游部落技术审核组',
+              },
+              'publisher': {
+                '@type': 'Organization',
+                'name': '软游部落',
+                'url': 'https://softtribe.top/',
+              },
+              'datePublished': data.createdAt,
+              'dateModified': data.updatedAt || data.createdAt,
+              'mainEntityOfPage': `https://softtribe.top/tutorials/${data.slug}`,
+            },
+            {
+              '@type': 'BreadcrumbList',
+              'itemListElement': [
+                {
+                  '@type': 'ListItem',
+                  'position': 1,
+                  'name': '首页',
+                  'item': 'https://softtribe.top/',
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 2,
+                  'name': '软件教程',
+                  'item': 'https://softtribe.top/tutorials',
+                },
+                {
+                  '@type': 'ListItem',
+                  'position': 3,
+                  'name': data.title,
+                  'item': `https://softtribe.top/tutorials/${data.slug}`,
+                },
+              ],
+            },
+          ],
+        });
       })
       .catch((err) => {
         console.error('加载教程详情失败:', err);
         setError('未找到该教程或已归档下线。');
       })
       .finally(() => setLoading(false));
+
+    return () => {
+      const script = document.getElementById('tutorial-jsonld');
+      if (script) script.remove();
+    };
   }, [slug]);
 
   if (loading) {
