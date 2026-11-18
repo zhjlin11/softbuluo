@@ -31,12 +31,16 @@ export class SeoService {
         const matches: string[] = [];
         const linkRegex = /<link[^>]+rel=["']stylesheet["'][^>]*>/gi;
         const scriptRegex = /<script[^>]+type=["']module["'][^>]*>[\s\S]*?<\/script>/gi;
+        const metaVerificationRegex = /<meta[^>]+name=["'](?:msvalidate\.01|google-site-verification|baidu-site-verification|sogou_site_verification|360-site-verification)["'][^>]*>/gi;
 
         let m;
         while ((m = linkRegex.exec(content)) !== null) {
           matches.push(m[0]);
         }
         while ((m = scriptRegex.exec(content)) !== null) {
+          matches.push(m[0]);
+        }
+        while ((m = metaVerificationRegex.exec(content)) !== null) {
           matches.push(m[0]);
         }
         this.cachedClientScripts = matches.join('\n  ');
